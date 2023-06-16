@@ -30,7 +30,12 @@ poj = ['poj', 'peh-oe-ji']
 tl = ['tl', 'tai-lo']
 zhuyin = ['zhuyin', 'bpmf', 'bomopofo']
 
+poj_tones = 	["", "", "́", "̀", "", "̂", "", "̄", "̍", ""]
+tl_tones = 		["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
 zhuyin_tones = 	["", "", "ˋ", "˪", "", "ˊ", "", "˫", ""]
+bp_tones = 		["", "̄", "̌", "̀", "̄", "́", "", "̂", "́", ""]
+dt_tones = 		["̊", "", "̀", "̂", "̄", "̌", "", "̄", "", "́"]
+hg_tones = 		["", "ᄋ", "ᄅ", "ᄂ", "ᄋ", "ᄉ", "", "ᄀ", "ᄇ", ""]
 
 # system, format, delimiter, dialect
 def converter(input, system="Tai-lo", format="mark", delimiter='-', dialect="南"):
@@ -87,24 +92,34 @@ def markToNumber(input):
         if len(w) > 0: input += '-' + getNumberTone(w)
     return input[1:].replace('+', '--')
 
+def markConvert(input, placement, dictionary):
+    input = input.replace('--', '-+')
+    words = input.split('-')
+    input = ""
+    print(words)
+    for w in words:
+        if len(w) > 0: input += '-' + getMarkTone(__replacement_tool(dictionary, getNumberTone(w)), placement)
+    return input[1:].replace('+', '--')
+
 
 def tailo_to_poj(input):
+    placement_poj = [
+        'oa*h', 'oa*n', 'oa*ng', 'oa*ⁿ', 'oa*t',
+        'ia*u', 'oe*h', 'o*e', 'oa*i', 'u*i', 'o*a',
+        'a*i', 'a*u', 'ia*', 'iu*', 'io*', 'a*',
+        'o*', 'o͘*', 'e*', 'i*', 'u*', 'n*g', 'm*'
+    ]
     poj = {
-        'nn':'ⁿ', 'ts':'ch', 'Ts':'Ch',
-        'ing':'eng', 'íng':'éng', 'ìng':'èng', 'îng':'êng', 'īng':'ēng',
-        'uai':'oai', 'uái':'oái', 'uài':'oài', 'uâi':'oâi', 'uāi':'oāi',
-        'uan':'oan', 'uán':'oán', 'uàn':'oàn', 'uân':'oân', 'uān':'oān',
-        'ik':'ek', 'i̍k':'e̍k',
-        'ua':'oa', 'uá':'óa', 'uà':'òa', 'uâ':'ôa', 'uā':'ōa', 'ua̍':'o̍a',
-        'ue':'oe', 'ué':'óe', 'uè':'òe', 'uê':'ôe', 'uē':'ōe', 'ue̍':'o̍e',
-        'oo':'o͘', 'óo':'ó͘', 'òo':'ò͘', 'ôo':'ô͘', 'ōo':'ō͘', 'o̍o':'o̍͘',
+        'nn':'ⁿ', 'ts':'ch',
+        'ing':'eng', 'uai':'oai', 'uan':'oan',
+        'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘',
     }
-    return __replacement_tool(poj, input)
+    return markConvert(input, placement_poj, poj)
 
 
 def poj_to_tailo(input):
     tailo = {
-        'ⁿ': 'nn', 'ch': 'ts', 'Ch': 'Ts',
+        'ⁿ': 'nn', 'ch': 'ts',
         'eng': 'ing', 'éng': 'íng', 'èng': 'ìng', 'êng': 'îng', 'ēng': 'īng',
         'oái': 'uái', 'oài': 'uài', 'oâi': 'uâi', 'oāi': 'uāi',
         'oán': 'uán', 'oàn': 'uàn', 'oân': 'uân', 'oān': 'uān',
@@ -160,7 +175,7 @@ def getNumberTone(input):
         input += "8"
     elif input[-1] in finals:
         input += "4"
-    elif re.search("a|e|i|o|u", input):
+    else: #re.search("a|e|i|o|u", input):
         input += "1"
     input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
     return input
@@ -200,3 +215,10 @@ def __replacement_tool(dictionary, input):
 def __system_conversion(system, word):
     if system in poj: return tailo_to_poj(word)
     else: return word
+
+def getMarkTone(input, placement):
+    for s in placement:
+        if s.replace("*", "") in input:
+            part = s
+            break
+    return unicodedata.normalize('NFC', input.replace(part.replace('*',''), part.replace('*', poj_tones[int(input[-1])]))[:-1])
