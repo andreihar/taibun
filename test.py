@@ -7,8 +7,8 @@ print("\n 漢字")
 print(trad)
 
 print("\n Tâi-lô")
-print(taibun.converter(trad, system="Tai-lo", dialect="south"))
-print(taibun.converter(simp, system="Tai-lo", dialect="north"))
+print(taibun.converter(trad, system="Tai-lo", dialect="south", format="number"))
+print(taibun.converter(simp, system="Tai-lo", dialect="north", format="strip"))
 
 print("\n POJ")
 print(taibun.converter(simp, system="POJ", dialect="south"))
@@ -27,5 +27,5 @@ if ting != taibun.converter(trad, system="POJ"):
     print("Error")
     print(ting)
 print()
-print(taibun.converter(trad, system="Tai-lo", delimiter=" "))
+print(taibun.converter(trad, system="Tai-lo", format='strip'))
 #print(taibun.converter(trad, system="zhuyin"))

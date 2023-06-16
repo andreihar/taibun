@@ -14,6 +14,10 @@ Invariant: Phonetic transcription depends on the dialect passed into the method.
 		   Transcription depends on the system passed into the method.
            Tai-lo for 臺灣閩南語羅馬字拼音方案 (set by default).
            POJ for Pe̍h-ōe-jī.
+
+           format = mark for diacritical representation
+					number for numeric representation
+                    strip for no representation of tones
 """
 
 ### invariant calls
@@ -47,6 +51,8 @@ def converter(input, system="Tai-lo", format="mark", delimiter='-', dialect="南
                         else:
                             word = word.split("/")[0]
                     word = __system_conversion(system, word)
+                    if format == 'number': word = markToNumber(word)
+                    if format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
                     word = word.replace('--', 'SPECIAL_CHAR_SUFFIX').replace('-', delimiter).replace('SPECIAL_CHAR_SUFFIX', '--')
                     converted += word + " "
                     break
@@ -74,12 +80,12 @@ def simplifiedToTraditional(input):
 
 
 def markToNumber(input):
-    input = input.replace("--", "-+")
-    words = input.split("-")
+    input = input.replace('--', '-+')
+    words = input.split('-')
     input = ""
     for w in words:
-        if len(w) > 0: input += " " + getNumberTone(w)
-    return input.strip()
+        if len(w) > 0: input += '-' + getNumberTone(w)
+    return input[1:].replace('+', '--')
 
 
 def tailo_to_poj(input):
@@ -193,8 +199,4 @@ def __replacement_tool(dictionary, input):
 
 def __system_conversion(system, word):
     if system in poj: return tailo_to_poj(word)
-    elif system in zhuyin:
-        list = markToNumber(word).split(" ")
-        for l in list: list[list.index(l)] = bpmf(l)
-        return " ".join(list)
     else: return word
