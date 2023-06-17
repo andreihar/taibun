@@ -86,10 +86,7 @@ def __convert_tokenised(word, system, format, delimiter, dialect):
 
 # Helper to format text to match dictionary keys
 def __simp_to_trad(input):
-    reader = csv.reader(open("data/simplified.csv", encoding="utf-8"))
-    simp = {}
-    for k, v in reader:
-        simp[k] = v
+    simp = json.load(open("data/simplified.json", encoding="utf-8"))
     for c in simp:
         input = input.replace(c, simp[c])
     return input
