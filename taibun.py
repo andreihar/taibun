@@ -1,6 +1,5 @@
 import json
 import re
-import csv
 import unicodedata
 
 """
@@ -58,8 +57,12 @@ def tokenise(input):
 ### Input formatting, interface with conversion methods
 
 # Convert tokenised text into specified transliteration system
-def get(input, system='Tai-lo', format='mark', delimiter='-', dialect='南', punctuation='format'):
+DEFAULT_DELIMITER = object()
+def get(input, system='Tai-lo', format='mark', delimiter=DEFAULT_DELIMITER, dialect='南', punctuation='format'):
     system = system.lower()
+    #if system in __tlpa and format == 'number': format = 'mark'
+    if delimiter == DEFAULT_DELIMITER: delimiter = __set_default_delimiter(system)
+
     converted = tokenise(__simp_to_trad(input))
     converted = [__convert_tokenised(i, system, format, delimiter, dialect).strip() for i in converted]
     converted = ' '.join(converted).strip()
@@ -99,6 +102,13 @@ def __system_conversion(system, word):
     if system in __tlpa: return __tailo_to_tlpa(word)
     if system in __bp: return __tailo_to_bp(word)
     else: return word
+
+
+# Set delimiter according to system if wasn't defined by user
+def __set_default_delimiter(system):
+    if system in __poj or system in __tl: return '-'
+    if system in __bp: return ''
+    return ' '
 
 
 ### Conversion methods
@@ -232,6 +242,7 @@ def __tailo_to_bp(input):
     convert_bp = {
         'ainn':'nai', 'iunn':'niu', 'ann':'na', 'onn':'noo', 'enn':'ne',
         'inn':'ni', 'unn':'nu', 'au':'ao', 'ph':'p', 'nng':'lng', 'tsh':'c',
+        'ng':'ng',
         'ts':'z', 'th':'t', 'kh':'k', 'ir':'i', 'p':'b', 'b':'bb',
         't':'d', 'k':'g', 'g':'gg', 'j':'l'
     } #'m':'bb',
