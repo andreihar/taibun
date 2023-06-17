@@ -96,7 +96,6 @@ def markConvert(input, placement, dictionary):
     input = input.replace('--', '-+')
     words = input.split('-')
     input = ""
-    print(words)
     for w in words:
         if len(w) > 0: input += '-' + getMarkTone(__replacement_tool(dictionary, getNumberTone(w)), placement)
     return input[1:].replace('+', '--')
@@ -160,16 +159,17 @@ def bpmf(input):
             input = input.replace(t, zhuyin_tones[int(t)])
     return input
 
-
+tl_tones = 		["", "", "U+0301", "U+0300", "", "U+0302", "U+030C", "U+0304", "U+030D", "U+030B"]
+"", "", "U+0301", "U+0300", "", "U+0302", "U+030C", "U+0304", "U+030D", "U+030B"
 def getNumberTone(input):
     finals = ["p", "t", "k", "h"]
-    if re.search("á|é|í|ó|ú", input):
+    if re.search("á|é|í|ó|ú|́", input):
         input += "2"
-    elif re.search("à|è|ì|ò|ù", input):
+    elif re.search("à|è|ì|ò|ù|̀", input):
         input += "3"
-    elif re.search("â|ê|î|ô|û", input):
+    elif re.search("â|ê|î|ô|û|̂", input):
         input += "5"
-    elif re.search("ā|ē|ī|ō|ū", input):
+    elif re.search("ā|ē|ī|ō|ū|̄", input):
         input += "7"
     elif re.search("̍", input):
         input += "8"
