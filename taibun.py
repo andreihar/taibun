@@ -32,13 +32,14 @@ zhuyin = ['zhuyin', 'bpmf', 'bomopofo']
 tlpa = ['tlpa']
 bp = ['bp']
 
+word_dict = json.load(open("data/words.json", encoding="utf-8"))
+
 # system, format, delimiter, dialect
 def converter(input, system='Tai-lo', format='mark', delimiter='-', dialect='南', punctuation='format'):
-    word_dict = json.load(open("data/words.json", encoding="utf-8"))
     system = system.lower()
 
     input = simplifiedToTraditional(input)
-    converted = ""
+    converted = []
     while input != "":
         for j in reversed(range(1, 5)):
             if len(input) >= j:
@@ -52,23 +53,25 @@ def converter(input, system='Tai-lo', format='mark', delimiter='-', dialect='南
                     if format == 'number': word = markToNumber(word)
                     if format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
                     word = word.replace('--', 'SPECIAL_CHAR_SUFFIX').replace('-', delimiter).replace('SPECIAL_CHAR_SUFFIX', '--')
-                    converted += word + " "
+                    converted.append(word)
                     break
                 elif j == 1:
-                    if re.search("[\u4e00-\u9FFF]", input[0:j]):
-                        converted += " " + input[0:j]
+                    if not re.search("[\u4e00-\u9FFF]", converted[-1]) and \
+                       not re.search("[\u4e00-\u9FFF]", input[0:j]):
+                        converted[-1] += input[0:j]
                     else:
-                        converted += input[0:j]
+                        converted.append(input[0:j])
         if len(input) == 1: input = ""
         else: input = input[j:]
-    converted = converted[0].upper() + converted[1:]
-    if punctuation == 'format': return format_punctuation(converted.strip())
-    return converted.strip()
+    #if punctuation == 'format':
+        #converted = converted[0].upper() + converted[1:]
+        #return format_punctuation(converted.strip())
+    converted = [format_punctuation(i).strip() for i in converted]
+    return ' '.join(converted).strip()
 
 
 ### Potential addon to package, tokenizer method
-def tokenize(input):
-    word_dict = json.load(open("data/words.json", encoding="utf-8"))
+def tokenise(input):
     converted = []
     while input != "":
         for j in reversed(range(1, 5)):
@@ -85,7 +88,22 @@ def tokenize(input):
                         converted.append(input[0:j])
         if len(input) == 1: input = ""
         else: input = input[j:]
+    converted = [convert_tokenised(i).strip() for i in converted]
     return converted
+
+
+def convert_tokenised(word, system='Tai-lo', format='mark', delimiter='-', dialect='南', punctuation='format'):
+    if word in word_dict:
+        word = word_dict[word]
+        if "/" in word:
+            if dialect.lower() in quanzhou: word = word.split("/")[1]
+            else: word = word.split("/")[0]
+        word = __system_conversion(system, word)
+        if format == 'number': word = markToNumber(word)
+        if format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
+        word = word.replace('--', 'SPECIAL_CHAR_SUFFIX').replace('-', delimiter).replace('SPECIAL_CHAR_SUFFIX', '--')
+        return word
+    return word
 
 
 def simplifiedToTraditional(input):
@@ -223,15 +241,20 @@ def format_punctuation(input):
         .replace('【', ' [').replace('】', '] ')
         .replace('」', '"').replace('「', ' "')
     )
+    """
     input = ( # Format spacing for punctuation
         input.replace(' . ', '. ').replace(' ,', ',')
         .replace('" ', '"').replace(' ;', '; ').replace(' --', '--')
         .replace('( ', '(').replace('  (', ' (').replace(' ) ', ') ')
     )
+    """
+    return input
+
+
+def format_text(input):
     punc_filter = re.compile("([.!?]\s*)")
     split_with_punc = punc_filter.split(input)
     input = "".join([i[0].upper() + i[1:] for i in split_with_punc if len(i) > 1]).strip()
-    return input
 
 
 def __replacement_tool(dictionary, input):
