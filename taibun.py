@@ -6,11 +6,11 @@ import unicodedata
 Description: Converts Chinese characters to phonetic transcription of any
 	 		 of two main pronunciations of Taiwanese Hokkien. Supports both
              Traditional and Simplified characters.
-Invariant: Phonetic transcription depends on the dialect passed into the method.
+Invariant: Phonetic transcription depends on the dialect passed into the function.
 	 	   南 or 漳 for Zhangzhou (漳州)-leaning pronunciation (set by default).
 		   北 or 泉 for Quanzhou (泉州)-leaning pronunciation.
 
-		   Transcription depends on the system passed into the method.
+		   Transcription depends on the system passed into the function.
            Tai-lo for 臺灣閩南語羅馬字拼音方案 (set by default).
            POJ for Pe̍h-ōe-jī.
 
@@ -29,9 +29,28 @@ __poj = ['poj', 'peh-oe-ji']
 __tl = ['tl', 'tai-lo']
 __zhuyin = ['zhuyin', 'bpmf', 'bomopofo']
 __tlpa = ['tlpa']
-__bp = ['bp']
+__bp = ['bp', 'bbanlam pingyim']
+__dt = ['dt', 'daighi tongiong pingim', 'daighi tongiong']
 
 word_dict = json.load(open("data/words.json", encoding="utf-8"))
+
+
+### Interface functions
+
+# Convert tokenised text into specified transliteration system
+DEFAULT_DELIMITER = object()
+def get(input, system='Tai-lo', format='mark', delimiter=DEFAULT_DELIMITER, dialect='南', punctuation='format'):
+    system = system.lower()
+    if system in __tlpa and format == 'number': format = 'mark'
+    if delimiter == DEFAULT_DELIMITER: delimiter = __set_default_delimiter(system)
+
+    converted = tokenise(to_traditional(input))
+    converted = [__convert_tokenised(i, system, format, delimiter, dialect).strip() for i in converted]
+    converted = ' '.join(converted).strip()
+    if punctuation == 'format':
+        converted = converted[0].upper() + converted[1:]
+        return __format_text(__format_punctuation(converted.strip()))
+    return converted.strip()
 
 
 # Tokenise the text into separate words
@@ -54,23 +73,25 @@ def tokenise(input):
         else: input = input[j:]
     return tokenised
 
-### Input formatting, interface with conversion methods
 
-# Convert tokenised text into specified transliteration system
-DEFAULT_DELIMITER = object()
-def get(input, system='Tai-lo', format='mark', delimiter=DEFAULT_DELIMITER, dialect='南', punctuation='format'):
-    system = system.lower()
-    #if system in __tlpa and format == 'number': format = 'mark'
-    if delimiter == DEFAULT_DELIMITER: delimiter = __set_default_delimiter(system)
+# Convert Simplified to Traditional characters
+def to_traditional(input):
+    trad = json.load(open("data/simplified.json", encoding="utf-8"))
+    for c in trad:
+        input = input.replace(c, trad[c])
+    return input
 
-    converted = tokenise(__simp_to_trad(input))
-    converted = [__convert_tokenised(i, system, format, delimiter, dialect).strip() for i in converted]
-    converted = ' '.join(converted).strip()
-    if punctuation == 'format':
-        converted = converted[0].upper() + converted[1:]
-        return __format_text(__format_punctuation(converted.strip()))
-    return converted.strip()
 
+# Convert Traditional to Simplified characters
+def to_simplified(input):
+    simp = json.load(open("data/simplified.json", encoding="utf-8"))
+    simp = {v: k for k, v in simp.items()}
+    for c in simp:
+        input = input.replace(c, simp[c])
+    return input
+
+
+### Input formatting
 
 # Helper to convert separate words
 def __convert_tokenised(word, system, format, delimiter, dialect):
@@ -87,31 +108,24 @@ def __convert_tokenised(word, system, format, delimiter, dialect):
     return word
 
 
-# Helper to format text to match dictionary keys
-def __simp_to_trad(input):
-    simp = json.load(open("data/simplified.json", encoding="utf-8"))
-    for c in simp:
-        input = input.replace(c, simp[c])
-    return input
-
-
-# Switch for converting 漢字 based on defined transliteration system
+# Helper switch for converting 漢字 based on defined transliteration system
 def __system_conversion(system, word):
     if system in __poj: return __tailo_to_poj(word)
     if system in __zhuyin: return __tailo_to_zhuyin(word)
     if system in __tlpa: return __tailo_to_tlpa(word)
     if system in __bp: return __tailo_to_bp(word)
+    if system in __dt: return __tailo_to_dt(word)
     else: return word
 
 
-# Set delimiter according to system if wasn't defined by user
+# Helper functions to set delimiter according to transliteration system if wasn't explicitly defined by user
 def __set_default_delimiter(system):
-    if system in __poj or system in __tl: return '-'
+    if system in __poj or system in __tl or system in __dt: return '-'
     if system in __bp: return ''
     return ' '
 
 
-### Conversion methods
+### Conversion functions
 
 # Helper to convert between transliteration systems
 def __replacement_tool(dictionary, input):
@@ -180,7 +194,7 @@ def __tailo_to_poj(input):
         'o[TONE_TOKEN]', 'o͘[TONE_TOKEN]', 'e[TONE_TOKEN]', 'i[TONE_TOKEN]', 'u[TONE_TOKEN]', 'n[TONE_TOKEN]g', 'm[TONE_TOKEN]'
     ]
     convert_poj = {
-        'nn':'ⁿ', 'ts':'ch',
+        'nng':'nng', 'nn':'ⁿ', 'ts':'ch',
         'ing':'eng', 'uai':'oai', 'uan':'oan',
         'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘',
     }
@@ -189,6 +203,7 @@ def __tailo_to_poj(input):
 
 
 # Helper to convert syllable from Tai-lo to 方音符號 (zhuyin)
+# TODO: incorrect conversions
 def __tailo_to_zhuyin(input):
     input = __mark_to_number(input)
     zhuyin = {
@@ -232,6 +247,7 @@ def __tailo_to_tlpa(input):
 
 
 # Helper to convert syllable from Tai-lo to Bbanlam pingyim
+# TODO: initial i to yi
 def __tailo_to_bp(input):
     placement_bp = [
         'ua[TONE_TOKEN]i', 'ia[TONE_TOKEN]o', 'a[TONE_TOKEN]i', 'a[TONE_TOKEN]o', 
@@ -248,6 +264,27 @@ def __tailo_to_bp(input):
     } #'m':'bb',
     tones_bp = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
     return __mark_to_mark(input, placement_bp, convert_bp, tones_bp)
+
+
+# Helper to convert syllable from Tai-lo to Tong-iong ping-im
+# TODO: Fix conversion of o -> or, possibly positions of tone tokens
+#       Not enough information on tone mark placement
+def __tailo_to_dt(input):
+    print(input)
+    placement_dt = [
+        'ua[TONE_TOKEN]i', 'ia[TONE_TOKEN]o', 'a[TONE_TOKEN]i', 'a[TONE_TOKEN]o', 
+        'oo[TONE_TOKEN]', 'ia[TONE_TOKEN]', 'iu[TONE_TOKEN]', 'io[TONE_TOKEN]', 'ua[TONE_TOKEN]', 'ue[TONE_TOKEN]', 'ui[TONE_TOKEN]',
+        'a[TONE_TOKEN]', 'o[TONE_TOKEN]', 'e[TONE_TOKEN]', 'i[TONE_TOKEN]', 'u[TONE_TOKEN]', 'n[TONE_TOKEN]g', 'm[TONE_TOKEN]'
+    ]
+    # plosives don't change, ptkh 4/8 -> ptkh 4/8
+    # o -> or only if last letter of syllable, 例 lok -> lok
+    convert_dt = {'p4':'p4', 't4':'t4', 'k4':'k4', 'h4':'h4', 'p8':'p8', 't8':'t8', 'k8':'k8', 'h8':'h8',
+                  'oo':'o', 'om':'om', 'ong':'ong', 'o':'or', 'ir':'i', 'tsh':'c',
+                  'ts':'z', 'nng':'nng', 'ng':'ng', 'g':'gh', 'kh':'k', 'k':'g',
+                  'ph':'p', 'p':'b', 'b':'bh', 'th':'t', 't':'d',
+                  'j':'r'}
+    tones_dt = ["̊", "", "̀", "̂", "̄", "̌", "", "̄", "", "́"]
+    return __mark_to_mark(input, placement_dt, convert_dt, tones_dt)
 
 
 ### Converted output formatting
