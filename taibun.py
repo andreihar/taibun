@@ -34,42 +34,6 @@ bp = ['bp']
 
 word_dict = json.load(open("data/words.json", encoding="utf-8"))
 
-# system, format, delimiter, dialect
-def converter(input, system='Tai-lo', format='mark', delimiter='-', dialect='南', punctuation='format'):
-    system = system.lower()
-
-    input = simplifiedToTraditional(input)
-    converted = []
-    while input != "":
-        for j in reversed(range(1, 5)):
-            if len(input) >= j:
-                word = input[0:j]
-                if word in word_dict:
-                    word = word_dict[word]
-                    if "/" in word:
-                        if dialect.lower() in quanzhou: word = word.split("/")[1]
-                        else: word = word.split("/")[0]
-                    word = __system_conversion(system, word)
-                    if format == 'number': word = markToNumber(word)
-                    if format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
-                    word = word.replace('--', 'SPECIAL_CHAR_SUFFIX').replace('-', delimiter).replace('SPECIAL_CHAR_SUFFIX', '--')
-                    converted.append(word)
-                    break
-                elif j == 1:
-                    if not re.search("[\u4e00-\u9FFF]", converted[-1]) and \
-                       not re.search("[\u4e00-\u9FFF]", input[0:j]):
-                        converted[-1] += input[0:j]
-                    else:
-                        converted.append(input[0:j])
-        if len(input) == 1: input = ""
-        else: input = input[j:]
-    #if punctuation == 'format':
-        #converted = converted[0].upper() + converted[1:]
-        #return format_punctuation(converted.strip())
-    converted = [format_punctuation(i).strip() for i in converted]
-    return ' '.join(converted).strip()
-
-
 ### Potential addon to package, tokenizer method
 def tokenise(input):
     converted = []
@@ -88,11 +52,18 @@ def tokenise(input):
                         converted.append(input[0:j])
         if len(input) == 1: input = ""
         else: input = input[j:]
-    converted = [convert_tokenised(i).strip() for i in converted]
     return converted
 
 
-def convert_tokenised(word, system='Tai-lo', format='mark', delimiter='-', dialect='南', punctuation='format'):
+def converter(input, system='Tai-lo', format='mark', delimiter='-', dialect='南', punctuation='format'):
+    system = system.lower()
+    converted = tokenise(simplifiedToTraditional(input))
+    converted = [convert_tokenised(i, system, format, delimiter, dialect).strip() for i in converted]
+    converted = ' '.join(converted).strip()
+    return format_punctuation(converted)
+
+
+def convert_tokenised(word, system, format, delimiter, dialect):
     if word in word_dict:
         word = word_dict[word]
         if "/" in word:
@@ -229,25 +200,19 @@ def getNumberTone(input):
     input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
     return input
 
-
+# TODO make a smarter conversion for punctuators where left- or right- spaces are removed
 def format_punctuation(input):
     input = ( # Chinese to Latin punctuation
-        input.replace('。', '. ').replace('．', ' ')
-        .replace('，', ', ').replace('、', ', ')
+        input.replace(' 。', '.').replace('。', '.').replace(' ．', ' ')
+        .replace(' ，', ',').replace('、', ',')
         .replace('！', '! ').replace('？', '? ')
         .replace('；', '; ').replace('：', ': ')
-        .replace('（', ' (').replace('）', ') ')
+        .replace('（ ', '(').replace(' ）', ')').replace('（', '(').replace('）', ')')
         .replace('［', ' [').replace('］', '] ')
         .replace('【', ' [').replace('】', '] ')
         .replace('」', '"').replace('「', ' "')
+        .replace('“ ', '"').replace(' ”', '"')
     )
-    """
-    input = ( # Format spacing for punctuation
-        input.replace(' . ', '. ').replace(' ,', ',')
-        .replace('" ', '"').replace(' ;', '; ').replace(' --', '--')
-        .replace('( ', '(').replace('  (', ' (').replace(' ) ', ') ')
-    )
-    """
     return input
 
 
