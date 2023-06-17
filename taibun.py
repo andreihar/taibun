@@ -245,20 +245,18 @@ def __tailo_to_bp(input):
 ### Converted output formatting
 
 # Helper to convert Chinese punctuation to Latin punctuation with appropriate spacing
-# TODO make a smarter conversion for punctuators where left- or right- spaces are removed
 def __format_punctuation(input):
-    input = (
-        input.replace(' 。', '.').replace('。', '.').replace(' ．', ' ')
-        .replace(' ，', ',').replace('、', ',')
-        .replace('！', '! ').replace('？', '? ')
-        .replace('；', '; ').replace('：', ': ')
-        .replace('（ ', '(').replace(' ）', ')').replace('（', '(').replace('）', ')')
-        .replace('［', ' [').replace('］', '] ')
-        .replace('【', ' [').replace('】', '] ')
-        .replace('」', '"').replace('「', ' "')
-        .replace('“ ', '"').replace(' ”', '"')
-        .replace(' --', '--')
-    )
+    left_space = {'。':'.', '．':' ', '，':',', '、':',',
+                  '！':'!', '？':'?', '；':';', '：':':',
+                  '）':')', '］':']', '】':']', '」':'"',
+                  '”':'"', '--':'--'}
+    right_space = {'（':'(', '［':'[', '【':'[', '「':'"', '“':'"'}
+    for left in left_space:
+        input = input.replace(' ' + left, left_space[left])
+        input = input.replace(left, left_space[left])
+    for right in right_space:
+        input = input.replace(right + ' ', right_space[right])
+        input = input.replace(right, right_space[right])
     return input
 
 
