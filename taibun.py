@@ -33,12 +33,9 @@ zhuyin = ['zhuyin', 'bpmf', 'bomopofo']
 poj_tones = 	["", "", "́", "̀", "", "̂", "", "̄", "̍", ""]
 tl_tones = 		["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
 zhuyin_tones = 	["", "", "ˋ", "˪", "", "ˊ", "", "˫", ""]
-bp_tones = 		["", "̄", "̌", "̀", "̄", "́", "", "̂", "́", ""]
-dt_tones = 		["̊", "", "̀", "̂", "̄", "̌", "", "̄", "", "́"]
-hg_tones = 		["", "ᄋ", "ᄅ", "ᄂ", "ᄋ", "ᄉ", "", "ᄀ", "ᄇ", ""]
 
 # system, format, delimiter, dialect
-def converter(input, system="Tai-lo", format="mark", delimiter='-', dialect="南"):
+def converter(input, system="Tai-lo", format="mark", delimiter='-', dialect="南", punctuation="format"):
     word_dict = json.load(open("data/words.json", encoding="utf-8"))
     system = system.lower()
 
@@ -51,10 +48,8 @@ def converter(input, system="Tai-lo", format="mark", delimiter='-', dialect="南
                 if word in word_dict:
                     word = word_dict[word]
                     if "/" in word:
-                        if dialect.lower() in quanzhou:
-                            word = word.split("/")[1]
-                        else:
-                            word = word.split("/")[0]
+                        if dialect.lower() in quanzhou: word = word.split("/")[1]
+                        else: word = word.split("/")[0]
                     word = __system_conversion(system, word)
                     if format == 'number': word = markToNumber(word)
                     if format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
@@ -66,12 +61,11 @@ def converter(input, system="Tai-lo", format="mark", delimiter='-', dialect="南
                         converted += " " + input[0:j]
                     else:
                         converted += input[0:j]
-        if len(input) == 1:
-            input = ""
-        else:
-            input = input[j:]
+        if len(input) == 1: input = ""
+        else: input = input[j:]
     converted = converted[0].upper() + converted[1:]
-    return format_punctuation(converted.strip())
+    if punctuation == "format": return format_punctuation(converted.strip())
+    return converted.strip()
 
 
 def simplifiedToTraditional(input):
@@ -91,6 +85,7 @@ def markToNumber(input):
     for w in words:
         if len(w) > 0: input += '-' + getNumberTone(w)
     return input[1:].replace('+', '--')
+
 
 def markConvert(input, placement, dictionary):
     input = input.replace('--', '-+')
@@ -116,21 +111,7 @@ def tailo_to_poj(input):
     return markConvert(input, placement_poj, poj)
 
 
-def poj_to_tailo(input):
-    tailo = {
-        'ⁿ': 'nn', 'ch': 'ts',
-        'eng': 'ing', 'éng': 'íng', 'èng': 'ìng', 'êng': 'îng', 'ēng': 'īng',
-        'oái': 'uái', 'oài': 'uài', 'oâi': 'uâi', 'oāi': 'uāi',
-        'oán': 'uán', 'oàn': 'uàn', 'oân': 'uân', 'oān': 'uān',
-        'ek': 'ik', 'e̍k': 'i̍k',
-        'oa': 'ua', 'óa': 'uá', 'òa': 'uà', 'ôa': 'uâ', 'ōa': 'uā', 'o̍a': 'ua̍',
-        'oe': 'ue', 'óe': 'ué', 'òe': 'uè', 'ôe': 'uê', 'ōe': 'uē', 'o̍e': 'ue̍',
-        'o͘': 'oo', 'ó͘': 'óo', 'ò͘': 'òo', 'ô͘': 'ôo', 'ō͘': 'ōo', 'o̍͘': 'o̍o',
-    }
-    return __replacement_tool(tailo, input)
-
-
-def bpmf(input):
+def tailo_to_zhuyin(input):
     zhuyin = {
         'p4': 'ㆴ', 't4': 'ㆵ', 'k4': 'ㆶ', 'h4': 'ㆷ', 'p8': 'ㆴ˙', 't8': 'ㆵ˙', 'k8': 'ㆶ˙', 'h8': 'ㆷ˙',
         'tshi': 'ㄑ', 'iunn': 'ㆫ', 'ainn': 'ㆮ', 'unn': 'ㆫ', 'inn': 'ㆪ', 'enn': 'ㆥ', 'ann': 'ㆩ', 'onn': 'ㆧ',
@@ -159,24 +140,25 @@ def bpmf(input):
             input = input.replace(t, zhuyin_tones[int(t)])
     return input
 
-tl_tones = 		["", "", "U+0301", "U+0300", "", "U+0302", "U+030C", "U+0304", "U+030D", "U+030B"]
-"", "", "U+0301", "U+0300", "", "U+0302", "U+030C", "U+0304", "U+030D", "U+030B"
+
 def getNumberTone(input):
-    finals = ["p", "t", "k", "h"]
+    finals = ['p', 't', 'k', 'h']
     if re.search("á|é|í|ó|ú|́", input):
-        input += "2"
+        input += '2'
     elif re.search("à|è|ì|ò|ù|̀", input):
-        input += "3"
+        input += '3'
     elif re.search("â|ê|î|ô|û|̂", input):
-        input += "5"
+        input += '5'
     elif re.search("ā|ē|ī|ō|ū|̄", input):
-        input += "7"
+        input += '7'
     elif re.search("̍", input):
-        input += "8"
+        input += '8'
     elif input[-1] in finals:
-        input += "4"
+        input += '4'
     else: #re.search("a|e|i|o|u", input):
-        input += "1"
+        input += '1'
+    if input[0] == '+' and input[-1] == '4':
+        input = input[:-1] + '0'
     input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
     return input
 
@@ -214,7 +196,9 @@ def __replacement_tool(dictionary, input):
 
 def __system_conversion(system, word):
     if system in poj: return tailo_to_poj(word)
+    if system in zhuyin: return tailo_to_zhuyin(word)
     else: return word
+
 
 def getMarkTone(input, placement):
     for s in placement:
