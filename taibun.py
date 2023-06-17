@@ -36,31 +36,34 @@ word_dict = json.load(open("data/words.json", encoding="utf-8"))
 
 ### Potential addon to package, tokenizer method
 def tokenise(input):
-    converted = []
+    tokenised = []
     while input != "":
         for j in reversed(range(1, 5)):
             if len(input) >= j:
                 word = input[0:j]
                 if word in word_dict:
-                    converted.append(word)
+                    tokenised.append(word)
                     break
                 elif j == 1:
-                    if not re.search("[\u4e00-\u9FFF]", converted[-1]) and \
+                    if not re.search("[\u4e00-\u9FFF]", tokenised[-1]) and \
                        not re.search("[\u4e00-\u9FFF]", input[0:j]):
-                        converted[-1] += input[0:j]
+                        tokenised[-1] += input[0:j]
                     else:
-                        converted.append(input[0:j])
+                        tokenised.append(input[0:j])
         if len(input) == 1: input = ""
         else: input = input[j:]
-    return converted
+    return tokenised
 
 
-def converter(input, system='Tai-lo', format='mark', delimiter='-', dialect='南', punctuation='format'):
+def get(input, system='Tai-lo', format='mark', delimiter='-', dialect='南', punctuation='format'):
     system = system.lower()
-    converted = tokenise(simplifiedToTraditional(input))
+    converted = tokenise(simp_to_trad(input))
     converted = [convert_tokenised(i, system, format, delimiter, dialect).strip() for i in converted]
     converted = ' '.join(converted).strip()
-    return format_punctuation(converted)
+    if punctuation == 'format':
+        converted = converted[0].upper() + converted[1:]
+        return format_text(format_punctuation(converted.strip()))
+    return converted.strip()
 
 
 def convert_tokenised(word, system, format, delimiter, dialect):
@@ -70,14 +73,14 @@ def convert_tokenised(word, system, format, delimiter, dialect):
             if dialect.lower() in quanzhou: word = word.split("/")[1]
             else: word = word.split("/")[0]
         word = __system_conversion(system, word)
-        if format == 'number': word = markToNumber(word)
+        if format == 'number': word = mark_to_number(word)
         if format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
         word = word.replace('--', 'SPECIAL_CHAR_SUFFIX').replace('-', delimiter).replace('SPECIAL_CHAR_SUFFIX', '--')
         return word
     return word
 
 
-def simplifiedToTraditional(input):
+def simp_to_trad(input):
     reader = csv.reader(open("data/simplified.csv", encoding="utf-8"))
     simp = {}
     for k, v in reader:
@@ -87,21 +90,21 @@ def simplifiedToTraditional(input):
     return input
 
 
-def markToNumber(input):
+def mark_to_number(input):
     input = input.replace('--', '-+')
     words = input.split('-')
     input = ""
     for w in words:
-        if len(w) > 0: input += '-' + getNumberTone(w)
+        if len(w) > 0: input += '-' + get_number_tone(w)
     return input[1:].replace('+', '--')
 
 
-def markConvert(input, placement, dictionary, tones):
+def mark_convert(input, placement, dictionary, tones):
     input = input.replace('--', '-+')
     words = input.split('-')
     input = ""
     for w in words:
-        if len(w) > 0: input += '-' + getMarkTone(__replacement_tool(dictionary, getNumberTone(w)), placement, tones)
+        if len(w) > 0: input += '-' + get_mark_tone(__replacement_tool(dictionary, get_number_tone(w)), placement, tones)
     return input[1:].replace('+', '--')
 
 
@@ -118,11 +121,11 @@ def tailo_to_poj(input):
         'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘',
     }
     tones_poj = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
-    return markConvert(input, placement_poj, convert_poj, tones_poj)
+    return mark_convert(input, placement_poj, convert_poj, tones_poj)
 
 
 def tailo_to_zhuyin(input):
-    input = markToNumber(input)
+    input = mark_to_number(input)
     zhuyin = {
         'p4': 'ㆴ', 't4': 'ㆵ', 'k4': 'ㆶ', 'h4': 'ㆷ', 'p8': 'ㆴ˙', 't8': 'ㆵ˙', 'k8': 'ㆶ˙', 'h8': 'ㆷ˙',
         'tshi': 'ㄑ', 'iunn': 'ㆫ', 'ainn': 'ㆮ', 'unn': 'ㆫ', 'inn': 'ㆪ', 'enn': 'ㆥ', 'ann': 'ㆩ', 'onn': 'ㆧ',
@@ -159,7 +162,7 @@ def tailo_to_tlpa(input):
     convert_tlpa = {
         'tsh':'ch', 'ts':'c'
     }
-    return __replacement_tool(convert_tlpa, markToNumber(input))
+    return __replacement_tool(convert_tlpa, mark_to_number(input))
 
 
 def tailo_to_bp(input):
@@ -176,10 +179,10 @@ def tailo_to_bp(input):
         't':'d', 'k':'g', 'g':'gg', 'j':'l'
     } #'m':'bb',
     tones_bp = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
-    return markConvert(input, placement_bp, convert_bp, tones_bp)
+    return mark_convert(input, placement_bp, convert_bp, tones_bp)
 
 
-def getNumberTone(input):
+def get_number_tone(input):
     finals = ['p', 't', 'k', 'h']
     if re.search("á|é|í|ó|ú|́", input):
         input += '2'
@@ -212,6 +215,7 @@ def format_punctuation(input):
         .replace('【', ' [').replace('】', '] ')
         .replace('」', '"').replace('「', ' "')
         .replace('“ ', '"').replace(' ”', '"')
+        .replace(' --', '--')
     )
     return input
 
@@ -219,7 +223,7 @@ def format_punctuation(input):
 def format_text(input):
     punc_filter = re.compile("([.!?]\s*)")
     split_with_punc = punc_filter.split(input)
-    input = "".join([i[0].upper() + i[1:] for i in split_with_punc if len(i) > 1]).strip()
+    return "".join([i[0].upper() + i[1:] for i in split_with_punc if len(i) > 1]).strip()
 
 
 def __replacement_tool(dictionary, input):
@@ -235,7 +239,7 @@ def __system_conversion(system, word):
     else: return word
 
 
-def getMarkTone(input, placement, tones):
+def get_mark_tone(input, placement, tones):
     for s in placement:
         if s.replace('*', '') in input:
             part = s
