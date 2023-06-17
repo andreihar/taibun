@@ -22,19 +22,20 @@ Invariant: Phonetic transcription depends on the dialect passed into the method.
 
 ### invariant calls
 # dialect
-zhangzhou = ['南', 'south', '漳', 'zhangzhou', 'zhang']
-quanzhou = ['北', 'north', '泉', 'quanzhou', 'quan']
+__zhangzhou = ['南', 'south', '漳', 'zhangzhou', 'zhang']
+__quanzhou = ['北', 'north', '泉', 'quanzhou', 'quan']
 
 # system
-poj = ['poj', 'peh-oe-ji']
-tl = ['tl', 'tai-lo']
-zhuyin = ['zhuyin', 'bpmf', 'bomopofo']
-tlpa = ['tlpa']
-bp = ['bp']
+__poj = ['poj', 'peh-oe-ji']
+__tl = ['tl', 'tai-lo']
+__zhuyin = ['zhuyin', 'bpmf', 'bomopofo']
+__tlpa = ['tlpa']
+__bp = ['bp']
 
 word_dict = json.load(open("data/words.json", encoding="utf-8"))
 
-### Potential addon to package, tokenizer method
+
+# Tokenise the text into separate words
 def tokenise(input):
     tokenised = []
     while input != "":
@@ -54,33 +55,37 @@ def tokenise(input):
         else: input = input[j:]
     return tokenised
 
+### Input formatting, interface with conversion methods
 
+# Convert tokenised text into specified transliteration system
 def get(input, system='Tai-lo', format='mark', delimiter='-', dialect='南', punctuation='format'):
     system = system.lower()
-    converted = tokenise(simp_to_trad(input))
-    converted = [convert_tokenised(i, system, format, delimiter, dialect).strip() for i in converted]
+    converted = tokenise(__simp_to_trad(input))
+    converted = [__convert_tokenised(i, system, format, delimiter, dialect).strip() for i in converted]
     converted = ' '.join(converted).strip()
     if punctuation == 'format':
         converted = converted[0].upper() + converted[1:]
-        return format_text(format_punctuation(converted.strip()))
+        return __format_text(__format_punctuation(converted.strip()))
     return converted.strip()
 
 
-def convert_tokenised(word, system, format, delimiter, dialect):
+# Helper to convert separate words
+def __convert_tokenised(word, system, format, delimiter, dialect):
     if word in word_dict:
         word = word_dict[word]
         if "/" in word:
-            if dialect.lower() in quanzhou: word = word.split("/")[1]
+            if dialect.lower() in __quanzhou: word = word.split("/")[1]
             else: word = word.split("/")[0]
         word = __system_conversion(system, word)
-        if format == 'number': word = mark_to_number(word)
+        if format == 'number': word = __mark_to_number(word)
         if format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
         word = word.replace('--', 'SPECIAL_CHAR_SUFFIX').replace('-', delimiter).replace('SPECIAL_CHAR_SUFFIX', '--')
         return word
     return word
 
 
-def simp_to_trad(input):
+# Helper to format text to match dictionary keys
+def __simp_to_trad(input):
     reader = csv.reader(open("data/simplified.csv", encoding="utf-8"))
     simp = {}
     for k, v in reader:
@@ -90,25 +95,77 @@ def simp_to_trad(input):
     return input
 
 
-def mark_to_number(input):
+# Switch for converting 漢字 based on defined transliteration system
+def __system_conversion(system, word):
+    if system in __poj: return __tailo_to_poj(word)
+    if system in __zhuyin: return __tailo_to_zhuyin(word)
+    if system in __tlpa: return __tailo_to_tlpa(word)
+    if system in __bp: return __tailo_to_bp(word)
+    else: return word
+
+
+### Conversion methods
+
+# Helper to convert between transliteration systems
+def __replacement_tool(dictionary, input):
+    pattern = re.compile('|'.join(dictionary.keys()))
+    return pattern.sub(lambda m: dictionary[re.escape(m.group(0))], input)
+
+
+# Helper to convert word from Tai-lo to number
+def __mark_to_number(input):
     input = input.replace('--', '-+')
     words = input.split('-')
     input = ""
     for w in words:
-        if len(w) > 0: input += '-' + get_number_tone(w)
+        if len(w) > 0: input += '-' + __get_number_tone(w)
     return input[1:].replace('+', '--')
 
+# Helper to convert syllable from Tai-lo diacritic tones to number tones
+def __get_number_tone(input):
+    finals = ['p', 't', 'k', 'h']
+    if re.search("á|é|í|ó|ú|́", input):
+        input += '2'
+    elif re.search("à|è|ì|ò|ù|̀", input):
+        input += '3'
+    elif re.search("â|ê|î|ô|û|̂", input):
+        input += '5'
+    elif re.search("ā|ē|ī|ō|ū|̄", input):
+        input += '7'
+    elif re.search('̍', input):
+        input += '8'
+    elif input[-1] in finals:
+        input += '4'
+    else:
+        input += '1'
+    if input[0] == '+' and input[-1] == '4':
+        input = input[:-1] + '0'
+    input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
+    return input
 
-def mark_convert(input, placement, dictionary, tones):
+
+# Helper to convert word to specified system
+def __mark_to_mark(input, placement, dictionary, tones):
     input = input.replace('--', '-+')
     words = input.split('-')
     input = ""
     for w in words:
-        if len(w) > 0: input += '-' + get_mark_tone(__replacement_tool(dictionary, get_number_tone(w)), placement, tones)
+        if len(w) > 0: input += '-' + __get_mark_tone(__replacement_tool(dictionary, __get_number_tone(w)), placement, tones)
     return input[1:].replace('+', '--')
 
+# Helper to convert syllable from Tai-lo number tones to diacritic tones
+def __get_mark_tone(input, placement, tones):
+    for s in placement:
+        if s.replace('*', '') in input:
+            part = s
+            break
+    return unicodedata.normalize('NFC', input.replace(part.replace('*',''), part.replace('*', tones[int(input[-1])]))[:-1])
 
-def tailo_to_poj(input):
+
+### Tai-lo to other transliteration systems converting
+
+# Helper to convert syllable from Tai-lo to POJ
+def __tailo_to_poj(input):
     placement_poj = [
         'oa*h', 'oa*n', 'oa*ng', 'oa*ⁿ', 'oa*t',
         'ia*u', 'oe*h', 'o*e', 'oa*i', 'u*i', 'o*a',
@@ -121,11 +178,12 @@ def tailo_to_poj(input):
         'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘',
     }
     tones_poj = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
-    return mark_convert(input, placement_poj, convert_poj, tones_poj)
+    return __mark_to_mark(input, placement_poj, convert_poj, tones_poj)
 
 
-def tailo_to_zhuyin(input):
-    input = mark_to_number(input)
+# Helper to convert syllable from Tai-lo to 方音符號 (zhuyin)
+def __tailo_to_zhuyin(input):
+    input = __mark_to_number(input)
     zhuyin = {
         'p4': 'ㆴ', 't4': 'ㆵ', 'k4': 'ㆶ', 'h4': 'ㆷ', 'p8': 'ㆴ˙', 't8': 'ㆵ˙', 'k8': 'ㆶ˙', 'h8': 'ㆷ˙',
         'tshi': 'ㄑ', 'iunn': 'ㆫ', 'ainn': 'ㆮ', 'unn': 'ㆫ', 'inn': 'ㆪ', 'enn': 'ㆥ', 'ann': 'ㆩ', 'onn': 'ㆧ',
@@ -158,14 +216,16 @@ def tailo_to_zhuyin(input):
     return input
 
 
-def tailo_to_tlpa(input):
+# Helper to convert syllable from Tai-lo to TLPA
+def __tailo_to_tlpa(input):
     convert_tlpa = {
         'tsh':'ch', 'ts':'c'
     }
-    return __replacement_tool(convert_tlpa, mark_to_number(input))
+    return __replacement_tool(convert_tlpa, __mark_to_number(input))
 
 
-def tailo_to_bp(input):
+# Helper to convert syllable from Tai-lo to Bbanlam pingyim
+def __tailo_to_bp(input):
     placement_bp = [
         'ua*i', 'ia*o', 'a*i', 'a*o', 
         'oo*', 'ia*', 'iu*', 'io*', 'ua*', 'ue*', 'ui*',
@@ -179,33 +239,15 @@ def tailo_to_bp(input):
         't':'d', 'k':'g', 'g':'gg', 'j':'l'
     } #'m':'bb',
     tones_bp = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
-    return mark_convert(input, placement_bp, convert_bp, tones_bp)
+    return __mark_to_mark(input, placement_bp, convert_bp, tones_bp)
 
 
-def get_number_tone(input):
-    finals = ['p', 't', 'k', 'h']
-    if re.search("á|é|í|ó|ú|́", input):
-        input += '2'
-    elif re.search("à|è|ì|ò|ù|̀", input):
-        input += '3'
-    elif re.search("â|ê|î|ô|û|̂", input):
-        input += '5'
-    elif re.search("ā|ē|ī|ō|ū|̄", input):
-        input += '7'
-    elif re.search('̍', input):
-        input += '8'
-    elif input[-1] in finals:
-        input += '4'
-    else: #re.search("a|e|i|o|u", input):
-        input += '1'
-    if input[0] == '+' and input[-1] == '4':
-        input = input[:-1] + '0'
-    input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
-    return input
+### Converted output formatting
 
+# Helper to convert Chinese punctuation to Latin punctuation with appropriate spacing
 # TODO make a smarter conversion for punctuators where left- or right- spaces are removed
-def format_punctuation(input):
-    input = ( # Chinese to Latin punctuation
+def __format_punctuation(input):
+    input = (
         input.replace(' 。', '.').replace('。', '.').replace(' ．', ' ')
         .replace(' ，', ',').replace('、', ',')
         .replace('！', '! ').replace('？', '? ')
@@ -220,28 +262,11 @@ def format_punctuation(input):
     return input
 
 
-def format_text(input):
+# Helper to capitalise text in according to punctuation
+def __format_text(input):
     punc_filter = re.compile("([.!?]\s*)")
     split_with_punc = punc_filter.split(input)
-    return "".join([i[0].upper() + i[1:] for i in split_with_punc if len(i) > 1]).strip()
-
-
-def __replacement_tool(dictionary, input):
-    pattern = re.compile('|'.join(dictionary.keys()))
-    return pattern.sub(lambda m: dictionary[re.escape(m.group(0))], input)
-
-
-def __system_conversion(system, word):
-    if system in poj: return tailo_to_poj(word)
-    if system in zhuyin: return tailo_to_zhuyin(word)
-    if system in tlpa: return tailo_to_tlpa(word)
-    if system in bp: return tailo_to_bp(word)
-    else: return word
-
-
-def get_mark_tone(input, placement, tones):
-    for s in placement:
-        if s.replace('*', '') in input:
-            part = s
-            break
-    return unicodedata.normalize('NFC', input.replace(part.replace('*',''), part.replace('*', tones[int(input[-1])]))[:-1])
+    formatted = "".join([i[0].upper() + i[1:] for i in split_with_punc if len(i) > 1]).strip()
+    if len(input) != len(formatted):
+        return formatted+input[-1]
+    return formatted
