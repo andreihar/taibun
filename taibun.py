@@ -66,6 +66,28 @@ def converter(input, system='Tai-lo', format='mark', delimiter='-', dialect='南
     return converted.strip()
 
 
+### Potential addon to package, tokenizer method
+def tokenize(input):
+    word_dict = json.load(open("data/words.json", encoding="utf-8"))
+    converted = []
+    while input != "":
+        for j in reversed(range(1, 5)):
+            if len(input) >= j:
+                word = input[0:j]
+                if word in word_dict:
+                    converted.append(word)
+                    break
+                elif j == 1:
+                    if not re.search("[\u4e00-\u9FFF]", converted[-1]) and \
+                       not re.search("[\u4e00-\u9FFF]", input[0:j]):
+                        converted[-1] += input[0:j]
+                    else:
+                        converted.append(input[0:j])
+        if len(input) == 1: input = ""
+        else: input = input[j:]
+    return converted
+
+
 def simplifiedToTraditional(input):
     reader = csv.reader(open("data/simplified.csv", encoding="utf-8"))
     simp = {}
@@ -191,24 +213,20 @@ def getNumberTone(input):
 
 
 def format_punctuation(input):
-    input = input.replace('。', '. ')
-    input = input.replace('，', ', ').replace('、', ', ')
-    input = input.replace('！', '! ').replace('？', '? ')
-    input = input.replace('；', '; ').replace('：', ': ')
-    input = input.replace('（', ' (').replace('）', ') ')
-    input = input.replace('［', ' [').replace('］', '] ')
-    input = input.replace('【', ' [').replace('】', '] ')
-    input = input.replace('」', '"').replace('「', ' "')
-    input = input.replace('．', ' ')
-    input = (
-        input.replace(' . ', '. ')
-        .replace('" ', '"')
-        .replace(' ,', ',')
-        .replace('( ', '(')
-        .replace(' ;', '; ')
-        .replace('  (', ' (')
-        .replace(' ) ', ') ')
-        .replace(' --', '--')
+    input = ( # Chinese to Latin punctuation
+        input.replace('。', '. ').replace('．', ' ')
+        .replace('，', ', ').replace('、', ', ')
+        .replace('！', '! ').replace('？', '? ')
+        .replace('；', '; ').replace('：', ': ')
+        .replace('（', ' (').replace('）', ') ')
+        .replace('［', ' [').replace('］', '] ')
+        .replace('【', ' [').replace('】', '] ')
+        .replace('」', '"').replace('「', ' "')
+    )
+    input = ( # Format spacing for punctuation
+        input.replace(' . ', '. ').replace(' ,', ',')
+        .replace('" ', '"').replace(' ;', '; ').replace(' --', '--')
+        .replace('( ', '(').replace('  (', ' (').replace(' ) ', ') ')
     )
     punc_filter = re.compile("([.!?]\s*)")
     split_with_punc = punc_filter.split(input)
