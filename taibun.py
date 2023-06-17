@@ -111,18 +111,20 @@ def tailo_to_poj(input):
 
 
 def tailo_to_zhuyin(input):
+    input = markToNumber(input)
     zhuyin = {
         'p4': 'ㆴ', 't4': 'ㆵ', 'k4': 'ㆶ', 'h4': 'ㆷ', 'p8': 'ㆴ˙', 't8': 'ㆵ˙', 'k8': 'ㆶ˙', 'h8': 'ㆷ˙',
         'tshi': 'ㄑ', 'iunn': 'ㆫ', 'ainn': 'ㆮ', 'unn': 'ㆫ', 'inn': 'ㆪ', 'enn': 'ㆥ', 'ann': 'ㆩ', 'onn': 'ㆧ',
-        'tsi': 'ㄐㄧ', 'nng': 'ㄋㆭ', 'ong': 'ㆲ', 'ang': 'ㆭ', 'uan': 'ㄨㄢ', 'uai': 'ㄨㄞ',
+        'tsi': 'ㄐ', 'nng': 'ㄋㆭ', 'ong': 'ㆲ', 'ang': 'ㆭ', 'uan': 'ㄨㄢ', 'uai': 'ㄨㄞ',
         'tsh': 'ㄘ', 'ing': 'ㄧㄥ',
         'ji': 'ㆢ', 'si': 'ㄒ', 'ts': 'ㄗ',
-        'ai': 'ㄞ', 'an': 'ㄢ', 'au': 'ㆯ', 'am': 'ㆰ', 'om': 'ㆱ', 'ua': 'ㄨㄚ', 'ue': 'ㄨㆤ', 'ng': 'ㆭ', 'oo': 'ㆦ',
+        'ai': 'ㄞ', 'an': 'ㄢ', 'au': 'ㄠ', 'am': 'ㆰ', 'om': 'ㆱ', 'ua': 'ㄨㄚ', 'ue': 'ㄨㆤ', 'ng': 'ㆭ', 'oo': 'ㆦ',
         'ir': 'ㆨ', 'ph': 'ㄆ', 'th': 'ㄊ', 'kh': 'ㄎ', 'p': 'ㄅ', 'b': 'ㆠ', 'm': 'ㄇ', 't': 'ㄉ', 'n': 'ㄋ',
         'l': 'ㄌ', 'k': 'ㄍ', 'g': 'ㆣ', 'h': 'ㄏ', 'j': 'ㆡ', 's': 'ㄙ', 'i': 'ㄧ', 'm': 'ㄇ', 'u': 'ㄨ',
         'a': 'ㄚ', 'o': 'ㄜ', 'e': 'ㆤ'
     }
     zhuyin_tones = 	['', '', 'ˋ', '˪', '', 'ˊ', '', '˫', '']
+    """
     if len(input) > 3:
         if input[0] == 's' and input[1] == 'i':
             input = input.replace('si', 'ㄒㄧ')
@@ -134,6 +136,7 @@ def tailo_to_zhuyin(input):
         l = list(input)
         l[-2] = 'ㄣ'
         input = "".join(l)
+    """
     input = __replacement_tool(zhuyin, input)
     for t in input:
         if t.isnumeric():
