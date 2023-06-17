@@ -79,7 +79,7 @@ def __convert_tokenised(word, system, format, delimiter, dialect):
         word = __system_conversion(system, word)
         if format == 'number': word = __mark_to_number(word)
         if format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
-        word = word.replace('--', 'SPECIAL_CHAR_SUFFIX').replace('-', delimiter).replace('SPECIAL_CHAR_SUFFIX', '--')
+        word = word.replace('--', '[SUFFIX_TOKEN]').replace('-', delimiter).replace('[SUFFIX_TOKEN]', '--')
         return word
     return word
 
@@ -111,12 +111,12 @@ def __replacement_tool(dictionary, input):
 
 # Helper to convert word from Tai-lo to number
 def __mark_to_number(input):
-    input = input.replace('--', '-+')
+    input = input.replace('--', '-[SUFFIX_TOKEN]')
     words = input.split('-')
     input = ""
     for w in words:
         if len(w) > 0: input += '-' + __get_number_tone(w)
-    return input[1:].replace('+', '--')
+    return input[1:].replace('[SUFFIX_TOKEN]', '--')
 
 # Helper to convert syllable from Tai-lo diacritic tones to number tones
 def __get_number_tone(input):
@@ -143,20 +143,20 @@ def __get_number_tone(input):
 
 # Helper to convert word to specified system
 def __mark_to_mark(input, placement, dictionary, tones):
-    input = input.replace('--', '-+')
+    input = input.replace('--', '-[SUFFIX_TOKEN]')
     words = input.split('-')
     input = ""
     for w in words:
         if len(w) > 0: input += '-' + __get_mark_tone(__replacement_tool(dictionary, __get_number_tone(w)), placement, tones)
-    return input[1:].replace('+', '--')
+    return input[1:].replace('[SUFFIX_TOKEN]', '--')
 
 # Helper to convert syllable from Tai-lo number tones to diacritic tones
 def __get_mark_tone(input, placement, tones):
     for s in placement:
-        if s.replace('*', '') in input:
+        if s.replace('[TONE_TOKEN]', '') in input:
             part = s
             break
-    return unicodedata.normalize('NFC', input.replace(part.replace('*',''), part.replace('*', tones[int(input[-1])]))[:-1])
+    return unicodedata.normalize('NFC', input.replace(part.replace('[TONE_TOKEN]',''), part.replace('[TONE_TOKEN]', tones[int(input[-1])]))[:-1])
 
 
 ### Tai-lo to other transliteration systems converting
@@ -164,10 +164,10 @@ def __get_mark_tone(input, placement, tones):
 # Helper to convert syllable from Tai-lo to POJ
 def __tailo_to_poj(input):
     placement_poj = [
-        'oa*h', 'oa*n', 'oa*ng', 'oa*ⁿ', 'oa*t',
-        'ia*u', 'oe*h', 'o*e', 'oa*i', 'u*i', 'o*a',
-        'a*i', 'a*u', 'ia*', 'iu*', 'io*', 'a*',
-        'o*', 'o͘*', 'e*', 'i*', 'u*', 'n*g', 'm*'
+        'oa[TONE_TOKEN]h', 'oa[TONE_TOKEN]n', 'oa[TONE_TOKEN]ng', 'oa[TONE_TOKEN]ⁿ', 'oa[TONE_TOKEN]t',
+        'ia[TONE_TOKEN]u', 'oe[TONE_TOKEN]h', 'o[TONE_TOKEN]e', 'oa[TONE_TOKEN]i', 'u[TONE_TOKEN]i', 'o[TONE_TOKEN]a',
+        'a[TONE_TOKEN]i', 'a[TONE_TOKEN]u', 'ia[TONE_TOKEN]', 'iu[TONE_TOKEN]', 'io[TONE_TOKEN]', 'a[TONE_TOKEN]',
+        'o[TONE_TOKEN]', 'o͘[TONE_TOKEN]', 'e[TONE_TOKEN]', 'i[TONE_TOKEN]', 'u[TONE_TOKEN]', 'n[TONE_TOKEN]g', 'm[TONE_TOKEN]'
     ]
     convert_poj = {
         'nn':'ⁿ', 'ts':'ch',
@@ -224,9 +224,9 @@ def __tailo_to_tlpa(input):
 # Helper to convert syllable from Tai-lo to Bbanlam pingyim
 def __tailo_to_bp(input):
     placement_bp = [
-        'ua*i', 'ia*o', 'a*i', 'a*o', 
-        'oo*', 'ia*', 'iu*', 'io*', 'ua*', 'ue*', 'ui*',
-        'a*', 'o*', 'e*', 'i*', 'u*', 'n*g', 'm*'
+        'ua[TONE_TOKEN]i', 'ia[TONE_TOKEN]o', 'a[TONE_TOKEN]i', 'a[TONE_TOKEN]o', 
+        'oo[TONE_TOKEN]', 'ia[TONE_TOKEN]', 'iu[TONE_TOKEN]', 'io[TONE_TOKEN]', 'ua[TONE_TOKEN]', 'ue[TONE_TOKEN]', 'ui[TONE_TOKEN]',
+        'a[TONE_TOKEN]', 'o[TONE_TOKEN]', 'e[TONE_TOKEN]', 'i[TONE_TOKEN]', 'u[TONE_TOKEN]', 'n[TONE_TOKEN]g', 'm[TONE_TOKEN]'
     ]
     input = input.lower()
     convert_bp = {
