@@ -10,18 +10,14 @@ print("\n Tâi-lô")
 print(taibun.get(trad, system="Tai-lo", dialect="south", format="number"))
 print(taibun.get(simp, system="Tai-lo", dialect="north", format="strip"))
 
-print("\n POJ")
-print(taibun.get(simp, system="POJ", dialect="south"))
-print(taibun.get(trad, system="POJ", dialect="north"))
-
-print("\n Zhuyin")
-print(taibun.get(trad, system="zhuyin", dialect="south"))
-print(taibun.get(simp, system="zhuyin", dialect="north"))
-
-print("\n TLPA")
-print(taibun.get(trad, system="tlpa", dialect="south"))
-print(taibun.get(simp, system="tlpa", dialect="north"))
-
-print("\n Bbanlam pingyim")
-print(taibun.get(trad, system="bp", dialect="south"))
-print(taibun.get(simp, system="bp", dialect="north"))
+systems = ['Tai-lo', 'POJ', 'Zhuyin', 'TLPA', 'Bbanlam Pingyim', 'Daighi Tongiong']
+siansinn = "先生講，學生恬恬聽。"
+kinajit = "今仔日彼个查某囡仔來阮兜看我。"
+pengiu = "太空朋友，恁好！恁食飽未？有閒著來阮遮坐喔。"
+langkai = "人皆生而自由；在尊嚴及權利上各平等。人各賦有理性良知，誠應和睦相處，情同手足。"
+for s in systems:
+    print("\n " + s)
+    print(taibun.get(siansinn, system=s))
+    print(taibun.get(kinajit, system=s))
+    print(taibun.get(pengiu, system=s))
+    print(taibun.get(langkai, system=s))
