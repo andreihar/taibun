@@ -257,7 +257,7 @@ def __tailo_to_tlpa(input):
 
 
 # Helper to convert syllable from Tai-lo to Bbanlam pingyim
-# TODO: initial i to yi
+# TODO: initial i to yi, probably solved
 def __tailo_to_bp(input):
     placement_bp = [
         'ua'+tone_token+'i', 'ia'+tone_token+'o', 'a'+tone_token+'i', 'a'+tone_token+'o', 
@@ -286,7 +286,6 @@ def __tailo_to_bp(input):
 
 
 # Helper to convert syllable from Tai-lo to Tong-iong ping-im
-# TODO: Fix conversion of o -> or, possibly positions of tone tokens
 #       Not enough information on tone mark placement
 def __tailo_to_dt(input):
     placement_dt = [
@@ -295,15 +294,21 @@ def __tailo_to_dt(input):
         'a'+tone_token+'', 'o'+tone_token+'', 'e'+tone_token+'', 'i'+tone_token+'', 'u'+tone_token+'', 'n'+tone_token+'g', 'm'+tone_token+''
     ]
     # plosives don't change, ptkh 4/8 -> ptkh 4/8
-    # o -> or only if last letter of syllable, 例 lok -> lok
     convert_dt = {'p4':'p4', 't4':'t4', 'k4':'k4', 'h4':'h4', 'p8':'p8', 't8':'t8', 'k8':'k8', 'h8':'h8',
-                  'oo':'o', 'om':'om', 'ong':'ong', 'o':'or', 'ir':'i', 'tsh':'c',
+                  'oo':'o', 'om':'om', 'ong':'ong', 'ir':'i', 'tsh':'c',
                   'ts':'z', 'nng':'nng', 'ng':'ng', 'g':'gh', 'kh':'k', 'k':'g',
                   'ph':'p', 'p':'b', 'b':'bh', 'th':'t', 't':'d',
                   'j':'r'}
     tones_dt = ["̊", "", "̀", "̂", "̄", "̌", "", "̄", "", "́"]
     words = __preprocess_word(input)
-    return __mark_to_mark(words, placement_dt, convert_dt, tones_dt)
+    input = ""
+    number_tones = [__get_number_tone(w) for w in words if len(w) > 0]
+    for nt in number_tones:
+        if nt[-2] == 'o':
+            number_tones[number_tones.index(nt)] = (nt[:-2] + 'or' + nt[-1])
+    for nt in number_tones:
+        input += '-' + __get_mark_tone(__replacement_tool(convert_dt, nt), placement_dt, tones_dt)
+    return input[1:].replace(suffix_token, '--')
 
 
 ### Converted output formatting
