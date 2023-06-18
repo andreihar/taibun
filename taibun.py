@@ -34,6 +34,8 @@ __dt = ['dt', 'daighi tongiong pingim', 'daighi tongiong']
 
 word_dict = json.load(open("data/words.json", encoding="utf-8"))
 
+suffix_token = '[SUFFIX_TOKEN]'
+tone_token = '[TONE_TOKEN]'
 
 ### Interface functions
 
@@ -64,9 +66,12 @@ def tokenise(input):
                     tokenised.append(word)
                     break
                 elif j == 1:
-                    if not re.search("[\u4e00-\u9FFF]", tokenised[-1]) and \
-                       not re.search("[\u4e00-\u9FFF]", input[0:j]):
-                        tokenised[-1] += input[0:j]
+                    if len(tokenised) > 0:
+                        if not re.search("[\u4e00-\u9FFF]", tokenised[-1]) and \
+                        not re.search("[\u4e00-\u9FFF]", input[0:j]):
+                            tokenised[-1] += input[0:j]
+                        else:
+                            tokenised.append(input[0:j])
                     else:
                         tokenised.append(input[0:j])
         if len(input) == 1: input = ""
@@ -103,7 +108,7 @@ def __convert_tokenised(word, system, format, delimiter, dialect):
         word = __system_conversion(system, word)
         if format == 'number': word = __mark_to_number(word)
         if format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
-        word = word.replace('--', '[SUFFIX_TOKEN]').replace('-', delimiter).replace('[SUFFIX_TOKEN]', '--')
+        word = word.replace('--', suffix_token).replace('-', delimiter).replace(suffix_token, '--')
         return word
     return word
 
@@ -135,12 +140,12 @@ def __replacement_tool(dictionary, input):
 
 # Helper to convert word from Tai-lo to number
 def __mark_to_number(input):
-    input = input.replace('--', '-[SUFFIX_TOKEN]')
+    input = input.replace('--', '-'+suffix_token)
     words = input.split('-')
     input = ""
     for w in words:
         if len(w) > 0: input += '-' + __get_number_tone(w)
-    return input[1:].replace('[SUFFIX_TOKEN]', '--')
+    return input[1:].replace(suffix_token, '--')
 
 # Helper to convert syllable from Tai-lo diacritic tones to number tones
 def __get_number_tone(input):
@@ -166,21 +171,25 @@ def __get_number_tone(input):
 
 
 # Helper to convert word to specified system
-def __mark_to_mark(input, placement, dictionary, tones):
-    input = input.replace('--', '-[SUFFIX_TOKEN]')
-    words = input.split('-')
+def __mark_to_mark(words, placement, dictionary, tones):
     input = ""
     for w in words:
         if len(w) > 0: input += '-' + __get_mark_tone(__replacement_tool(dictionary, __get_number_tone(w)), placement, tones)
-    return input[1:].replace('[SUFFIX_TOKEN]', '--')
+    return input[1:].replace(suffix_token, '--')
+
+
+# Helper to break down a word into syllables for conversion
+def __preprocess_word(word):
+    return word.replace('--', '-'+suffix_token).split('-')
+
 
 # Helper to convert syllable from Tai-lo number tones to diacritic tones
 def __get_mark_tone(input, placement, tones):
     for s in placement:
-        if s.replace('[TONE_TOKEN]', '') in input:
+        if s.replace(''+tone_token+'', '') in input:
             part = s
             break
-    return unicodedata.normalize('NFC', input.replace(part.replace('[TONE_TOKEN]',''), part.replace('[TONE_TOKEN]', tones[int(input[-1])]))[:-1])
+    return unicodedata.normalize('NFC', input.replace(part.replace(''+tone_token+'',''), part.replace(''+tone_token+'', tones[int(input[-1])]))[:-1])
 
 
 ### Tai-lo to other transliteration systems converting
@@ -188,10 +197,10 @@ def __get_mark_tone(input, placement, tones):
 # Helper to convert syllable from Tai-lo to POJ
 def __tailo_to_poj(input):
     placement_poj = [
-        'oa[TONE_TOKEN]h', 'oa[TONE_TOKEN]n', 'oa[TONE_TOKEN]ng', 'oa[TONE_TOKEN]ⁿ', 'oa[TONE_TOKEN]t',
-        'ia[TONE_TOKEN]u', 'oe[TONE_TOKEN]h', 'o[TONE_TOKEN]e', 'oa[TONE_TOKEN]i', 'u[TONE_TOKEN]i', 'o[TONE_TOKEN]a',
-        'a[TONE_TOKEN]i', 'a[TONE_TOKEN]u', 'ia[TONE_TOKEN]', 'iu[TONE_TOKEN]', 'io[TONE_TOKEN]', 'a[TONE_TOKEN]',
-        'o[TONE_TOKEN]', 'o͘[TONE_TOKEN]', 'e[TONE_TOKEN]', 'i[TONE_TOKEN]', 'u[TONE_TOKEN]', 'n[TONE_TOKEN]g', 'm[TONE_TOKEN]'
+        'oa'+tone_token+'h', 'oa'+tone_token+'n', 'oa'+tone_token+'ng', 'oa'+tone_token+'ⁿ', 'oa'+tone_token+'t',
+        'ia'+tone_token+'u', 'oe'+tone_token+'h', 'o'+tone_token+'e', 'oa'+tone_token+'i', 'u'+tone_token+'i', 'o'+tone_token+'a',
+        'a'+tone_token+'i', 'a'+tone_token+'u', 'ia'+tone_token+'', 'iu'+tone_token+'', 'io'+tone_token+'', 'a'+tone_token+'',
+        'o'+tone_token+'', 'o͘'+tone_token+'', 'e'+tone_token+'', 'i'+tone_token+'', 'u'+tone_token+'', 'n'+tone_token+'g', 'm'+tone_token+''
     ]
     convert_poj = {
         'nng':'nng', 'nn':'ⁿ', 'ts':'ch',
@@ -199,7 +208,8 @@ def __tailo_to_poj(input):
         'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘',
     }
     tones_poj = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
-    return __mark_to_mark(input, placement_poj, convert_poj, tones_poj)
+    words = __preprocess_word(input)
+    return __mark_to_mark(words, placement_poj, convert_poj, tones_poj)
 
 
 # Helper to convert syllable from Tai-lo to 方音符號 (zhuyin)
@@ -250,9 +260,9 @@ def __tailo_to_tlpa(input):
 # TODO: initial i to yi
 def __tailo_to_bp(input):
     placement_bp = [
-        'ua[TONE_TOKEN]i', 'ia[TONE_TOKEN]o', 'a[TONE_TOKEN]i', 'a[TONE_TOKEN]o', 
-        'oo[TONE_TOKEN]', 'ia[TONE_TOKEN]', 'iu[TONE_TOKEN]', 'io[TONE_TOKEN]', 'ua[TONE_TOKEN]', 'ue[TONE_TOKEN]', 'ui[TONE_TOKEN]',
-        'a[TONE_TOKEN]', 'o[TONE_TOKEN]', 'e[TONE_TOKEN]', 'i[TONE_TOKEN]', 'u[TONE_TOKEN]', 'n[TONE_TOKEN]g', 'm[TONE_TOKEN]'
+        'ua'+tone_token+'i', 'ia'+tone_token+'o', 'a'+tone_token+'i', 'a'+tone_token+'o', 
+        'oo'+tone_token+'', 'ia'+tone_token+'', 'iu'+tone_token+'', 'io'+tone_token+'', 'ua'+tone_token+'', 'ue'+tone_token+'', 'ui'+tone_token+'',
+        'a'+tone_token+'', 'o'+tone_token+'', 'e'+tone_token+'', 'i'+tone_token+'', 'u'+tone_token+'', 'n'+tone_token+'g', 'm'+tone_token+''
     ]
     input = input.lower()
     convert_bp = {
@@ -263,18 +273,26 @@ def __tailo_to_bp(input):
         't':'d', 'k':'g', 'g':'gg', 'j':'l'
     } #'m':'bb',
     tones_bp = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
-    return __mark_to_mark(input, placement_bp, convert_bp, tones_bp)
+    words = __preprocess_word(input)
+    input = ""
+    number_tones = [__replacement_tool(convert_bp, __get_number_tone(w)) for w in words if len(w) > 0]
+    for nt in number_tones:
+        if nt[0] == 'i':
+            number_tones[number_tones.index(nt)] = 'y'+nt
+    for w in number_tones:
+        if len(w) > 0:
+            input += '-' + __get_mark_tone(w, placement_bp, tones_bp)
+    return input[1:].replace(suffix_token, '--')
 
 
 # Helper to convert syllable from Tai-lo to Tong-iong ping-im
 # TODO: Fix conversion of o -> or, possibly positions of tone tokens
 #       Not enough information on tone mark placement
 def __tailo_to_dt(input):
-    print(input)
     placement_dt = [
-        'ua[TONE_TOKEN]i', 'ia[TONE_TOKEN]o', 'a[TONE_TOKEN]i', 'a[TONE_TOKEN]o', 
-        'oo[TONE_TOKEN]', 'ia[TONE_TOKEN]', 'iu[TONE_TOKEN]', 'io[TONE_TOKEN]', 'ua[TONE_TOKEN]', 'ue[TONE_TOKEN]', 'ui[TONE_TOKEN]',
-        'a[TONE_TOKEN]', 'o[TONE_TOKEN]', 'e[TONE_TOKEN]', 'i[TONE_TOKEN]', 'u[TONE_TOKEN]', 'n[TONE_TOKEN]g', 'm[TONE_TOKEN]'
+        'ua'+tone_token+'i', 'ia'+tone_token+'o', 'a'+tone_token+'i', 'a'+tone_token+'o', 
+        'oo'+tone_token+'', 'ia'+tone_token+'', 'iu'+tone_token+'', 'io'+tone_token+'', 'ua'+tone_token+'', 'ue'+tone_token+'', 'ui'+tone_token+'',
+        'a'+tone_token+'', 'o'+tone_token+'', 'e'+tone_token+'', 'i'+tone_token+'', 'u'+tone_token+'', 'n'+tone_token+'g', 'm'+tone_token+''
     ]
     # plosives don't change, ptkh 4/8 -> ptkh 4/8
     # o -> or only if last letter of syllable, 例 lok -> lok
@@ -284,7 +302,8 @@ def __tailo_to_dt(input):
                   'ph':'p', 'p':'b', 'b':'bh', 'th':'t', 't':'d',
                   'j':'r'}
     tones_dt = ["̊", "", "̀", "̂", "̄", "̌", "", "̄", "", "́"]
-    return __mark_to_mark(input, placement_dt, convert_dt, tones_dt)
+    words = __preprocess_word(input)
+    return __mark_to_mark(words, placement_dt, convert_dt, tones_dt)
 
 
 ### Converted output formatting
@@ -309,7 +328,7 @@ def __format_punctuation(input):
 def __format_text(input):
     punc_filter = re.compile("([.!?]\s*)")
     split_with_punc = punc_filter.split(input)
-    formatted = "".join([i[0].upper() + i[1:] for i in split_with_punc if len(i) > 1]).strip()
-    if len(input) != len(formatted):
-        return formatted+input[-1]
-    return formatted
+    for i in split_with_punc:
+        if len(i) > 1:
+            split_with_punc[split_with_punc.index(i)] = (i[0].upper() + i[1:])
+    return "".join(split_with_punc)
