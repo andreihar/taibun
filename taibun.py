@@ -41,13 +41,15 @@ tone_token = '[TONE_TOKEN]'
 
 # Convert tokenised text into specified transliteration system
 DEFAULT_DELIMITER = object()
-def get(input, system='Tai-lo', format='mark', delimiter=DEFAULT_DELIMITER, dialect='南', punctuation='format'):
+DEFAULT_SANDHI = object()
+def get(input, system='Tai-lo', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, dialect='南', punctuation='format'):
     system = system.lower()
     if system in __tlpa and format == 'number': format = 'mark'
     if delimiter == DEFAULT_DELIMITER: delimiter = __set_default_delimiter(system)
+    if sandhi == DEFAULT_SANDHI: sandhi = __set_default_sandhi(sandhi)
 
     converted = tokenise(to_traditional(input))
-    converted = [__convert_tokenised(i, system, format, delimiter, dialect).strip() for i in converted]
+    converted = [__convert_tokenised(i, system, format, delimiter, sandhi, dialect).strip() for i in converted]
     converted = ' '.join(converted).strip()
     if punctuation == 'format':
         converted = converted[0].upper() + converted[1:]
@@ -99,13 +101,13 @@ def to_simplified(input):
 ### Input formatting
 
 # Helper to convert separate words
-def __convert_tokenised(word, system, format, delimiter, dialect):
+def __convert_tokenised(word, system, format, delimiter, sandhi, dialect):
     if word in word_dict:
         word = word_dict[word]
         if "/" in word:
             if dialect.lower() in __quanzhou: word = word.split("/")[1]
             else: word = word.split("/")[0]
-        word = __system_conversion(system, word)
+        word = __system_conversion(word, system, sandhi, dialect)
         if format == 'number': word = __mark_to_number(word)
         if format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
         word = word.replace('--', suffix_token).replace('-', delimiter).replace(suffix_token, '--')
@@ -114,12 +116,12 @@ def __convert_tokenised(word, system, format, delimiter, dialect):
 
 
 # Helper switch for converting 漢字 based on defined transliteration system
-def __system_conversion(system, word):
-    if system in __poj: return __tailo_to_poj(word)
-    if system in __zhuyin: return __tailo_to_zhuyin(word)
-    if system in __tlpa: return __tailo_to_tlpa(word)
-    if system in __bp: return __tailo_to_bp(word)
-    if system in __dt: return __tailo_to_dt(word)
+def __system_conversion(word, system, sandhi, dialect):
+    if system in __poj: return __tailo_to_poj(word, sandhi, dialect)
+    if system in __zhuyin: return __tailo_to_zhuyin(word, sandhi, dialect)
+    if system in __tlpa: return __tailo_to_tlpa(word, sandhi, dialect)
+    if system in __bp: return __tailo_to_bp(word, sandhi, dialect)
+    if system in __dt: return __tailo_to_dt(word, sandhi, dialect)
     else: return word
 
 
@@ -128,6 +130,12 @@ def __set_default_delimiter(system):
     if system in __poj or system in __tl or system in __dt: return '-'
     if system in __bp: return ''
     return ' '
+
+
+# Helper functions to set sandhi according to transliteration system if wasn't explicitly defined by user
+def __set_default_sandhi(sandhi):
+    if sandhi in __dt: return True
+    return False
 
 
 ### Conversion functions
@@ -192,10 +200,20 @@ def __get_mark_tone(input, placement, tones):
     return unicodedata.normalize('NFC', input.replace(part.replace(''+tone_token+'',''), part.replace(''+tone_token+'', tones[int(input[-1])]))[:-1])
 
 
+# Helper to apply tone sandhi to a word
+def __tone_sandhi(word, dialect):
+    sandhi = {'1':'7', '7':'3', '3':'2', '2':'1', '5':'7',
+              'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'2',
+              'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'3'}
+    if dialect in __quanzhou:
+        sandhi.update({'5':'3'})
+    return __replacement_tool(sandhi, word)
+
+
 ### Tai-lo to other transliteration systems converting
 
 # Helper to convert syllable from Tai-lo to POJ
-def __tailo_to_poj(input):
+def __tailo_to_poj(input, sandhi, dialect):
     placement_poj = [
         'oa'+tone_token+'h', 'oa'+tone_token+'n', 'oa'+tone_token+'ng', 'oa'+tone_token+'ⁿ', 'oa'+tone_token+'t',
         'ia'+tone_token+'u', 'oe'+tone_token+'h', 'o'+tone_token+'e', 'oa'+tone_token+'i', 'u'+tone_token+'i', 'o'+tone_token+'a',
@@ -214,7 +232,7 @@ def __tailo_to_poj(input):
 
 # Helper to convert syllable from Tai-lo to 方音符號 (zhuyin)
 # TODO: incorrect conversions
-def __tailo_to_zhuyin(input):
+def __tailo_to_zhuyin(input, sandhi, dialect):
     input = __mark_to_number(input)
     zhuyin = {
         'p4': 'ㆴ', 't4': 'ㆵ', 'k4': 'ㆶ', 'h4': 'ㆷ', 'p8': 'ㆴ˙', 't8': 'ㆵ˙', 'k8': 'ㆶ˙', 'h8': 'ㆷ˙',
@@ -249,7 +267,7 @@ def __tailo_to_zhuyin(input):
 
 
 # Helper to convert syllable from Tai-lo to TLPA
-def __tailo_to_tlpa(input):
+def __tailo_to_tlpa(input, sandhi, dialect):
     convert_tlpa = {
         'tsh':'ch', 'ts':'c'
     }
@@ -258,7 +276,7 @@ def __tailo_to_tlpa(input):
 
 # Helper to convert syllable from Tai-lo to Bbanlam pingyim
 # TODO: initial i to yi, probably solved
-def __tailo_to_bp(input):
+def __tailo_to_bp(input, sandhi, dialect):
     placement_bp = [
         'ua'+tone_token+'i', 'ia'+tone_token+'o', 'a'+tone_token+'i', 'a'+tone_token+'o', 
         'oo'+tone_token+'', 'ia'+tone_token+'', 'iu'+tone_token+'', 'io'+tone_token+'', 'ua'+tone_token+'', 'ue'+tone_token+'', 'ui'+tone_token+'',
@@ -287,7 +305,7 @@ def __tailo_to_bp(input):
 
 # Helper to convert syllable from Tai-lo to Tong-iong ping-im
 #       Not enough information on tone mark placement
-def __tailo_to_dt(input):
+def __tailo_to_dt(input, sandhi, dialect):
     placement_dt = [
         'ua'+tone_token+'i', 'ia'+tone_token+'o', 'a'+tone_token+'i', 'a'+tone_token+'o', 
         'oo'+tone_token+'', 'ia'+tone_token+'', 'iu'+tone_token+'', 'io'+tone_token+'', 'ua'+tone_token+'', 'ue'+tone_token+'', 'ui'+tone_token+'',
@@ -306,6 +324,9 @@ def __tailo_to_dt(input):
     for nt in number_tones:
         if nt[-2] == 'o':
             number_tones[number_tones.index(nt)] = (nt[:-2] + 'or' + nt[-1])
+    if sandhi:
+        for i in range(0, len(number_tones)-1):
+            number_tones[i] = __tone_sandhi(number_tones[i], dialect)
     for nt in number_tones:
         input += '-' + __get_mark_tone(__replacement_tool(convert_dt, nt), placement_dt, tones_dt)
     return input[1:].replace(suffix_token, '--')
