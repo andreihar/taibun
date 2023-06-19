@@ -19,6 +19,9 @@ Invariant: Phonetic transcription depends on the dialect passed into the functio
                     strip for no representation of tones
 """
 
+## TODO: strip doesn't work for zhuyin and TLPA
+##       zhuyin conversion incorrect
+
 ### invariant calls
 # dialect
 __zhangzhou = ['南', 'south', '漳', 'zhangzhou', 'zhang']
@@ -122,6 +125,7 @@ def __system_conversion(word, system, sandhi, dialect):
     if system in __tlpa: return __tailo_to_tlpa(word, sandhi, dialect)
     if system in __bp: return __tailo_to_bp(word, sandhi, dialect)
     if system in __dt: return __tailo_to_dt(word, sandhi, dialect)
+    if sandhi: return __tailo_to_tailo(word, dialect)
     else: return word
 
 
@@ -203,6 +207,25 @@ def __tone_sandhi(word, dialect):
 
 
 ### Tai-lo to other transliteration systems converting
+
+# Helper to convert syllable from Tai-lo to Tai-lo
+# (called only in cases when tone sandhi is applied)
+def __tailo_to_tailo(input, dialect):
+    placement_tl = [
+        'ia'+tone_token+'u', 'ua'+tone_token+'i', 'ua'+tone_token+'', 'ue'+tone_token+'', 'ui'+tone_token+'', 'a'+tone_token+'i',
+        'a'+tone_token+'u', 'o'+tone_token+'o','ia'+tone_token+'', 'iu'+tone_token+'', 'io'+tone_token+'', 'o'+tone_token+'o', 'a'+tone_token+'', 
+        'o'+tone_token+'', 'e'+tone_token+'', 'i'+tone_token+'', 'u'+tone_token+'', 'n'+tone_token+'g', 'm'+tone_token+''
+    ]
+    tones_tl = ["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
+    words = __preprocess_word(input)
+    input = ""
+    number_tones = [__get_number_tone(w) for w in words if len(w) > 0]
+    for i in range(0, len(number_tones)-1):
+        number_tones[i] = __tone_sandhi(number_tones[i], dialect)
+    for nt in number_tones:
+        input += '-' + __get_mark_tone(nt, placement_tl, tones_tl)
+    return input[1:].replace(suffix_token, '--')
+
 
 # Helper to convert syllable from Tai-lo to POJ
 def __tailo_to_poj(input, sandhi, dialect):
