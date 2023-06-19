@@ -44,7 +44,7 @@ DEFAULT_DELIMITER = object()
 DEFAULT_SANDHI = object()
 def get(input, system='Tai-lo', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, dialect='南', punctuation='format'):
     system = system.lower()
-    if system in __tlpa and format == 'number': format = 'mark'
+    if system in __tlpa and format == 'number' or system in __zhuyin and format == 'number': format = 'mark'
     if delimiter == DEFAULT_DELIMITER: delimiter = __set_default_delimiter(system)
     if sandhi == DEFAULT_SANDHI: sandhi = __set_default_sandhi(sandhi)
 
@@ -178,14 +178,6 @@ def __get_number_tone(input):
     return input
 
 
-# Helper to convert word to specified system
-def __mark_to_mark(words, placement, dictionary, tones):
-    input = ""
-    for w in words:
-        if len(w) > 0: input += '-' + __get_mark_tone(__replacement_tool(dictionary, __get_number_tone(w)), placement, tones)
-    return input[1:].replace(suffix_token, '--')
-
-
 # Helper to break down a word into syllables for conversion
 def __preprocess_word(word):
     return word.replace('--', '-'+suffix_token).split('-')
@@ -227,13 +219,20 @@ def __tailo_to_poj(input, sandhi, dialect):
     }
     tones_poj = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
     words = __preprocess_word(input)
-    return __mark_to_mark(words, placement_poj, convert_poj, tones_poj)
+    input = ""
+    number_tones = [__get_number_tone(w) for w in words if len(w) > 0]
+    if sandhi:
+        for i in range(0, len(number_tones)-1):
+            number_tones[i] = __tone_sandhi(number_tones[i], dialect)
+    for nt in number_tones:
+        input += '-' + __get_mark_tone(__replacement_tool(convert_poj, nt), placement_poj, tones_poj)
+    return input[1:].replace(suffix_token, '--')
 
 
 # Helper to convert syllable from Tai-lo to 方音符號 (zhuyin)
 # TODO: incorrect conversions
 def __tailo_to_zhuyin(input, sandhi, dialect):
-    input = __mark_to_number(input)
+    #input = __mark_to_number(input)
     zhuyin = {
         'p4': 'ㆴ', 't4': 'ㆵ', 'k4': 'ㆶ', 'h4': 'ㆷ', 'p8': 'ㆴ˙', 't8': 'ㆵ˙', 'k8': 'ㆶ˙', 'h8': 'ㆷ˙',
         'tshi': 'ㄑ', 'iunn': 'ㆫ', 'ainn': 'ㆮ', 'unn': 'ㆫ', 'inn': 'ㆪ', 'enn': 'ㆥ', 'ann': 'ㆩ', 'onn': 'ㆧ',
@@ -246,24 +245,17 @@ def __tailo_to_zhuyin(input, sandhi, dialect):
         'a': 'ㄚ', 'o': 'ㄜ', 'e': 'ㆤ'
     }
     zhuyin_tones = 	['', '', 'ˋ', '˪', '', 'ˊ', '', '˫', '']
-    """
-    if len(input) > 3:
-        if input[0] == 's' and input[1] == 'i':
-            input = input.replace('si', 'ㄒㄧ')
-    if input[-2] == 'm' and len(input) > 3:
-        l = list(input)
-        l[-2] = 'ㆬ'
-        input = "".join(l)
-    if input[-2] == 'n' and len(input) > 3:
-        l = list(input)
-        l[-2] = 'ㄣ'
-        input = "".join(l)
-    """
-    input = __replacement_tool(zhuyin, input)
-    for t in input:
-        if t.isnumeric():
-            input = input.replace(t, zhuyin_tones[int(t)])
-    return input
+    words = __preprocess_word(input)
+    input = ""
+    number_tones = [__get_number_tone(w) for w in words if len(w) > 0]
+    if sandhi:
+        for i in range(0, len(number_tones)-1):
+            number_tones[i] = __tone_sandhi(number_tones[i], dialect)
+    for nt in number_tones:
+        for t in nt:
+            if t.isnumeric(): nt = nt.replace(t, zhuyin_tones[int(t)])
+        input += '-' + __replacement_tool(zhuyin, nt)
+    return input[1:].replace(suffix_token, '--')
 
 
 # Helper to convert syllable from Tai-lo to TLPA
@@ -271,7 +263,15 @@ def __tailo_to_tlpa(input, sandhi, dialect):
     convert_tlpa = {
         'tsh':'ch', 'ts':'c'
     }
-    return __replacement_tool(convert_tlpa, __mark_to_number(input))
+    words = __preprocess_word(input)
+    input = ""
+    number_tones = [__get_number_tone(w) for w in words if len(w) > 0]
+    if sandhi:
+        for i in range(0, len(number_tones)-1):
+            number_tones[i] = __tone_sandhi(number_tones[i], dialect)
+    for nt in number_tones:
+        input += '-' + __replacement_tool(convert_tlpa, nt)
+    return input[1:].replace(suffix_token, '--')
 
 
 # Helper to convert syllable from Tai-lo to Bbanlam pingyim
@@ -293,13 +293,14 @@ def __tailo_to_bp(input, sandhi, dialect):
     tones_bp = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
     words = __preprocess_word(input)
     input = ""
-    number_tones = [__replacement_tool(convert_bp, __get_number_tone(w)) for w in words if len(w) > 0]
+    number_tones = [__get_number_tone(w) for w in words if len(w) > 0]
+    if sandhi:
+        for i in range(0, len(number_tones)-1):
+            number_tones[i] = __tone_sandhi(number_tones[i], dialect)
     for nt in number_tones:
-        if nt[0] == 'i':
-            number_tones[number_tones.index(nt)] = 'y'+nt
-    for w in number_tones:
-        if len(w) > 0:
-            input += '-' + __get_mark_tone(w, placement_bp, tones_bp)
+        replaced = __replacement_tool(convert_bp, nt)
+        if nt[0] == 'i': replaced = 'y' + replaced
+        input += '-' + __get_mark_tone(replaced, placement_bp, tones_bp)
     return input[1:].replace(suffix_token, '--')
 
 
@@ -321,13 +322,11 @@ def __tailo_to_dt(input, sandhi, dialect):
     words = __preprocess_word(input)
     input = ""
     number_tones = [__get_number_tone(w) for w in words if len(w) > 0]
-    for nt in number_tones:
-        if nt[-2] == 'o':
-            number_tones[number_tones.index(nt)] = (nt[:-2] + 'or' + nt[-1])
     if sandhi:
         for i in range(0, len(number_tones)-1):
             number_tones[i] = __tone_sandhi(number_tones[i], dialect)
     for nt in number_tones:
+        if nt[-2] == 'o': nt = (nt[:-2] + 'or' + nt[-1])
         input += '-' + __get_mark_tone(__replacement_tool(convert_dt, nt), placement_dt, tones_dt)
     return input[1:].replace(suffix_token, '--')
 
