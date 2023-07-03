@@ -72,30 +72,6 @@ class Converter(object):
         return converted.strip()
 
 
-    # Tokenise the text into separate words
-    def tokenise(self, input):
-        tokenised = []
-        while input != "":
-            for j in reversed(range(1, 5)):
-                if len(input) >= j:
-                    word = input[0:j]
-                    if word in word_dict:
-                        tokenised.append(word)
-                        break
-                    elif j == 1:
-                        if len(tokenised) > 0:
-                            if not re.search("[\u4e00-\u9FFF]", tokenised[-1]) and \
-                            not re.search("[\u4e00-\u9FFF]", input[0:j]):
-                                tokenised[-1] += input[0:j]
-                            else:
-                                tokenised.append(input[0:j])
-                        else:
-                            tokenised.append(input[0:j])
-            if len(input) == 1: input = ""
-            else: input = input[j:]
-        return tokenised
-
-
     # Convert Simplified to Traditional characters
     def to_traditional(self, input):
         trad = json.load(open("data/simplified.json", encoding="utf-8"))
@@ -369,12 +345,19 @@ class Converter(object):
     ### Converted output formatting
 
     # Helper to convert Chinese punctuation to Latin punctuation with appropriate spacing
+    # TODO: better punctuation spacing management
     def __format_punctuation(self, input):
-        left_space = {'。':'.', '．':' ', '，':',', '、':',',
-                    '！':'!', '？':'?', '；':';', '：':':',
-                    '）':')', '］':']', '】':']', '」':'"',
+        left_space = {'.':'.', ',':',',
+                    '!':'!', '?':'?', ';':';', ':':':',
+                    ')':')', ']':']', '」':'"',
                     '”':'"', '--':'--'}
-        right_space = {'（':'(', '［':'[', '【':'[', '「':'"', '“':'"'}
+        right_space = {'(':'(', '[':'[', '「':'"', '“':'"'}
+        punctuation_converter = {'。':'.', '．':' ', '，':',', '、':',',
+                                '！':'!', '？':'?', '；':';', '：':':',
+                                '）':')', '］':']', '】':']', '」':'"',
+                                '”':'"', '（':'(', '［':'[', '【':'[',
+                                '「':'"', '“':'"'}
+        for punctuation in punctuation_converter: input = input.replace(punctuation, punctuation_converter[punctuation])
         for left in left_space:
             input = input.replace(' ' + left, left_space[left])
             input = input.replace(left, left_space[left])
@@ -423,8 +406,9 @@ class Tokeniser(object):
         for word in tokenised:
             punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
             tokenised_word = punctuations.split(word)
-            while "" in tokenised_word: tokenised_word.remove("")
             for subword in tokenised_word:
                 tokenised_word[tokenised_word.index(subword)] = subword.split(" ")
             tokenised[tokenised.index(word)] = sum(tokenised_word, [])
-        return sum(tokenised, [])
+        tokenised = sum(tokenised, [])
+        while "" in tokenised: tokenised.remove("")
+        return tokenised
