@@ -193,7 +193,7 @@ t.tokenise(input)
 ## 例子
 
 ```python
-from taibun import Converter
+from taibun import Converter, Tokeniser
 
 # System
 c = Converter() # Tailo system default
