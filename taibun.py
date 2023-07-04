@@ -1,3 +1,4 @@
+import os
 import json
 import re
 import unicodedata
@@ -22,7 +23,7 @@ Invariant: Phonetic transcription depends on the dialect passed into the functio
 ## TODO: strip doesn't work for zhuyin and TLPA
 ##       zhuyin conversion incorrect
 
-word_dict = json.load(open("data/words.json", encoding="utf-8"))
+word_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/words.json"), encoding="utf-8"))
 
 class Converter(object):
 
@@ -60,7 +61,7 @@ class Converter(object):
 
     # Convert Simplified to Traditional characters
     def to_traditional(self, input):
-        trad = json.load(open("data/simplified.json", encoding="utf-8"))
+        trad = json.load(open(os.path.join(os.path.dirname(__file__), "data/simplified.json"), encoding="utf-8"))
         for c in trad:
             input = input.replace(c, trad[c])
         return input
