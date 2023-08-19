@@ -430,4 +430,8 @@ class Tokeniser(object):
             tokenised[tokenised.index(word)] = sum(tokenised_word, [])
         tokenised = sum(tokenised, [])
         while "" in tokenised: tokenised.remove("")
+        for word in tokenised:
+            if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1:
+                tokenised.insert(tokenised.index(word)+1, word[-1])
+                tokenised[tokenised.index(word)] = word[:-1]
         return tokenised
