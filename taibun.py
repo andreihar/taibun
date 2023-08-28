@@ -7,28 +7,31 @@ import unicodedata
 Description: Converts Chinese characters to phonetic transcription of any
 	 		 of two main pronunciations of Taiwanese Hokkien. Supports both
              Traditional and Simplified characters.
-Invariant: Phonetic transcription depends on the dialect passed into the function.
-	 	   `south` for Zhangzhou (漳州)-leaning pronunciation (set by default).
-		   `north` for Quanzhou (泉州)-leaning pronunciation.
-
-		   Transcription depends on the system passed into the function.
-           Tai-lo for 臺灣閩南語羅馬字拼音方案 (set by default).
-           POJ for Pe̍h-ōe-jī.
-
+Invariant: dialect = `south` for Zhangzhou (漳州)-leaning pronunciation (set by default)
+		             `north` for Quanzhou (泉州)-leaning pronunciation
+           system = Tai-lo for Tâi-uân Lô-má-jī Phing-im Hong-àn (set by default)
+                    POJ for Pe̍h-ōe-jī.
+                    Zhuyin for Taiwanese Phonetic Symbols
+                    TLPA for Taiwanese Language Phonetic Alphabet
+                    Pingyim for Bbánlám Uē Pìngyīm Hōng'àn
+                    Tongiong for Daī-ghî Tōng-iōng Pīng-im
            format = mark for diacritical representation
 					number for numeric representation
                     strip for no representation of tones
+           sandhi = True for word-local sandhi
+                    False for no sandhi
+           delimiter = String that replaces the default delimiter
+           punctuation = 'format' for Latin-style punctuation (set by default)
+                         'none' to preserve original Chinese-style punctuation
 """
 
-## TODO: strip doesn't work for zhuyin and TLPA
-##       zhuyin conversion incorrect
 
 word_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/words.json"),'r', encoding="utf-8"))
 
 class Converter(object):
 
-    suffix_token = '[SFFX_TKN]'
-    tone_token = '[TN_TKN]'
+    suffix_token = '[ЅFFX_ТКŊ]'
+    tone_token = '[ТŊ_ТКŊ]'
     DEFAULT_DELIMITER = object()
     DEFAULT_SANDHI = object()
 
@@ -45,7 +48,6 @@ class Converter(object):
 
     # Convert tokenised text into specified transliteration system
     def get(self, input):
-        if self.system == 'tlpa' and self.format == 'number' or self.system == 'zhuyin' and self.format == 'number': self.format = 'mark'
         if self.delimiter == self.DEFAULT_DELIMITER: self.delimiter = self.__set_default_delimiter()
         if self.sandhi == self.DEFAULT_SANDHI: self.sandhi = self.__set_default_sandhi()
 
@@ -77,9 +79,14 @@ class Converter(object):
             if "/" in word:
                 if self.dialect.lower() == 'north': word = word.split("/")[1]
                 else: word = word.split("/")[0]
-            word = self.__system_conversion(word)
-            if self.format == 'number': word = self.__mark_to_number(word)
-            if self.format == 'strip': word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
+            word = self.__system_conversion(word).replace('---', '--')
+            if self.format == 'number' and (self.system == 'tailo' or self.system == 'poj'): word = self.__mark_to_number(word)
+            if self.format == 'strip':
+                if self.system == 'tlpa':
+                    for tone in ['1', '2', '3', '4', '5', '7', '8']: word = word.replace(tone, '')
+                if self.system == 'zhuyin':
+                    for tone in ['ˋ', '˪', 'ˊ', '˫', '˙']: word = word.replace(tone, '')
+                else: word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
             word = word.replace('--', self.suffix_token).replace('-', self.delimiter).replace(self.suffix_token, '--')
             return word
         return word
@@ -129,20 +136,13 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo diacritic tones to number tones
     def __get_number_tone(self, input):
         finals = ['p', 't', 'k', 'h']
-        if re.search("á|é|í|ó|ú|ḿ|ńg|́", input):
-            input += '2'
-        elif re.search("à|è|ì|ò|ù|m̀|ǹg|̀", input):
-            input += '3'
-        elif re.search("â|ê|î|ô|û|m̂|n̂g|̂", input):
-            input += '5'
-        elif re.search("ā|ē|ī|ō|ū|m̄|n̄g|̄", input):
-            input += '7'
-        elif re.search('̍', input):
-            input += '8'
-        elif input[-1] in finals:
-            input += '4'
-        else:
-            input += '1'
+        if re.search("á|é|í|ó|ú|ḿ|ńg|́", input): input += '2'
+        elif re.search("à|è|ì|ò|ù|m̀|ǹg|̀", input): input += '3'
+        elif re.search("â|ê|î|ô|û|m̂|n̂g|̂", input): input += '5'
+        elif re.search("ā|ē|ī|ō|ū|m̄|n̄g|̄", input): input += '7'
+        elif re.search('̍', input): input += '8'
+        elif input[-1] in finals: input += '4'
+        else: input += '1'
         if input[0] == '+' and input[-1] == '4':
             input = input[:-1] + '0'
         input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
@@ -230,9 +230,8 @@ class Converter(object):
 
 
     # Helper to convert syllable from Tai-lo to 方音符號 (zhuyin)
-    # TODO: incorrect conversions
+    # TODO: Make a better ruleset for Zhuyin
     def __tailo_to_zhuyin(self, input):
-        # TODO: Make a better ruleset for Zhuyin
         """
         zhuyin = {
             'p4': 'ㆴ', 't4': 'ㆵ', 'k4': 'ㆶ', 'h4': 'ㆷ', 'p8': 'ㆴ˙', 't8': 'ㆵ˙', 'k8': 'ㆶ˙', 'h8': 'ㆷ˙',
@@ -277,8 +276,9 @@ class Converter(object):
                 number_tones[i] = self.__tone_sandhi(number_tones[i])
         for nt in number_tones:
             nt = self.__replacement_tool(zhuyin, nt).replace(self.suffix_token, '')
-            for t in nt:
-                if t.isnumeric(): nt = nt.replace(t, zhuyin_tones[int(t)])
+            if self.format != 'number':
+                for t in nt:
+                    if t.isnumeric(): nt = nt.replace(t, zhuyin_tones[int(t)])
             input += '-' + nt
         return input[1:]
 
@@ -336,8 +336,9 @@ class Converter(object):
             if nt[0] == 'u' and len(nt) > 2: replaced = 'w' + replaced[1:]
             elif nt[0] == 'u' and len(nt) == 2: replaced = 'w' + replaced
             if nt[0] == 'm': replaced = 'bbn' + replaced[1:]
-            input += '-' + self.__get_mark_tone(replaced, placement_pingyim, tones_pingyim)
-        return input[1:].replace(self.suffix_token, '--')
+            if self.format != 'number': input += '-' + self.__get_mark_tone(replaced, placement_pingyim, tones_pingyim)
+            else: input += '-' + replaced
+        return input[1:].replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to Tong-iong ping-im
@@ -370,7 +371,8 @@ class Converter(object):
                 number_tones[i] = self.__tone_sandhi(number_tones[i])
         for nt in number_tones:
             if nt[-2] == 'o': nt = (nt[:-2] + 'or' + nt[-1])
-            input += '-' + self.__get_mark_tone(self.__replacement_tool(convert_ti, nt), placement_ti, tones_ti)
+            if self.format != 'number': input += '-' + self.__get_mark_tone(self.__replacement_tool(convert_ti, nt), placement_ti, tones_ti)
+            else: input += '-' + self.__replacement_tool(convert_ti, nt)
         return input[1:].replace(self.suffix_token, '--')
 
 
