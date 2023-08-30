@@ -9,7 +9,7 @@ Description: Converts Chinese characters to phonetic transcription of any
              Traditional and Simplified characters.
 Invariant: dialect = `south` for Zhangzhou-leaning pronunciation (set by default)
 		             `north` for Quanzhou-leaning pronunciation
-           system = `Tai-lo` for Tâi-uân Lô-má-jī Phing-im Hong-àn (set by default)
+           system = `Tailo` for Tâi-uân Lô-má-jī Phing-im Hong-àn (set by default)
                     `POJ` for Pe̍h-ōe-jī.
                     `Zhuyin` for Taiwanese Phonetic Symbols
                     `TLPA` for Taiwanese Language Phonetic Alphabet

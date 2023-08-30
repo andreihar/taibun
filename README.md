@@ -7,13 +7,15 @@
 
 # <ruby>台文<rt>Tâi-bûn</rt></ruby>
 
+
+
 <!-- PROJECT SHIELDS -->
 [![Contributors][contributors-badge]][contributors]
 [![Release][release-badge]][release]
 [![Licence][licence-badge]][licence]
 [![LinkedIn][linkedin-badge]][linkedin]
 
-**Taiwanese Hokkien transliterator from Chinese characters**
+**Taiwanese Hokkien Romanisation and Tokenisation**
 
 It has methods that allow to customise transliteration and retrieve any necessary information about Taiwanese Hokkien pronunciation.<br />
 Includes word tokeniser for Taiwanese Hokkien.
@@ -24,7 +26,9 @@ Includes word tokeniser for Taiwanese Hokkien.
 </div>
 
 
+
 ---
+
 
 
 <!-- TABLE OF CONTENTS -->
@@ -56,6 +60,7 @@ Includes word tokeniser for Taiwanese Hokkien.
 </details>
 
 
+
 <!-- INSTALL -->
 ## Install
 
@@ -64,6 +69,7 @@ Taibun can be installed from [pypi][pypi]
 ```bash
 $ pip install taibun
 ```
+
 
 
 <!-- USAGE -->
@@ -99,7 +105,6 @@ c.to_traditional(input)
 |------|---------|---------|-------------|-----------|---------|----------|
 | 臺灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  |
 
-
 #### Dialect
 
 `dialect` String - preferred pronunciation.
@@ -110,7 +115,6 @@ c.to_traditional(input)
 | text   | south         | north         |
 |--------|---------------|---------------|
 | 五月節 | Gōo-gue̍h-tseh | Gōo-ge̍h-tsueh |
-
 
 #### Format
 
@@ -123,7 +127,6 @@ c.to_traditional(input)
 | text | mark    | number    | strip   |
 |------|---------|-----------|---------|
 | 臺灣 | Tâi-uân | Tai5-uan5 | Tai-uan |
-
 
 #### Delimiter
 
@@ -139,7 +142,6 @@ Default value depends on the chosen `system`:
 |------|---------|--------|---------|
 | 臺灣 | Tâi-uân | Tâiuân | Tâi uân |
 
-
 #### Sandhi
 
 `sandhi` Boolean - applies the [sandhi rules of Taiwanese Hokkien][sandhi-wiki] to syllables of a single word.
@@ -151,7 +153,7 @@ Default value depends on the chosen `system`:
 
 | text     | False        | True         |
 |----------|--------------|--------------|
-| 育囡仔歌 | Io-gín-á-kua | Iō-gin-a-kua |
+| 馬來西亞 | Má-lâi-se-a  | Ma-lāi-sē-a  |
 
 Sandhi rules also change depending on the dialect chosen.
 
@@ -161,9 +163,8 @@ Sandhi rules also change depending on the dialect chosen.
 
 Note that the function is different from real sandhi rules, where changes are applied to every single syllable of the sentence, not just single words.
 
-- **Taibun's sandhi rules**: Thái-khong pīng-iú, lín hó! Lín tsià-pá buē?
-- **Actual sandhi rules**: Thái-khōng pīng-iú, lin hó! Lin tsià-pa buē?
-
+- **Taibun's sandhi rules**: Thái-khong pīng-iú, lin-hó! Lín tsià-pá buē?
+- **Actual sandhi rules**: Thái-khōng pīng-iú, lin-hó! Lin tsià-pa buē?
 
 #### Punctuation
 
@@ -189,6 +190,7 @@ t.tokenise(input)
 ```
 
 
+
 <!-- EXAMPLE -->
 ## Example
 
@@ -202,7 +204,7 @@ c.get('先生講，學生恬恬聽。')
 
 c = Converter(system='Zhuyin')
 c.get('先生講，學生恬恬聽。')
->> ㄒㄧㄢ ㄒㆪ ㄍㆲˋ, ㄏㄚㄍ ㄒㄧㄥ ㄉㄧㆰ˫ ㄉㄧㆰ˫ ㄊㄧㆩ.
+>> ㄒㄧㄢ ㄒㆪ ㄍㆲˋ, ㄏㄚㆶ˙ ㄒㄧㄥ ㄉㄧㆰ˫ ㄉㄧㆰ˫ ㄊㄧㆩ.
 
 # Dialect
 c = Converter() # south dialect default
@@ -247,24 +249,34 @@ c.get("南迴鐵路")
 # Punctuation
 c = Converter() # format punctuation default
 c.get("太空朋友，恁好！恁食飽未？")
->> Thài-khong pîng-iú, lín hó! Lín tsia̍h-pá buē?
+>> Thài-khong pîng-iú, lín-hó! Lín tsia̍h-pá buē?
 
 c = Converter(punctuation='none')
 c.get("太空朋友，恁好！恁食飽未？")
->> thài-khong pîng-iú，lín hó！lín tsia̍h-pá buē？
+>> thài-khong pîng-iú，lín-hó！lín tsia̍h-pá buē？
 
 
 # Tokeniser
 t = Tokeniser()
 t.tokenise("太空朋友，恁好！恁食飽未？")
->> ['太空', '朋友', '，', '恁', '好', '！', '恁', '食飽', '未', '？']
+>> ['太空', '朋友', '，', '恁好', '！', '恁', '食飽', '未', '？']
 ```
+
 
 
 <!-- DATA -->
 ## Data
 
-- [Dictionary of Frequently-Used Taiwan Minnan][dictionary] (via [moedict-data-twblg][dictionary-via])
+- [Taiwanese-Chinese Online Dictionary][online-dictionary] (via [ChhoeTaigi][data-via])
+- [iTaigi Chinese-Taiwanese Comparison Dictionary][itaigi-dictionary] (via [ChhoeTaigi][data-via])
+
+
+
+<!-- ACKNOWLEDGEMENTS -->
+## Acknowledgements
+
+- Samuel Jen ([Github][samuel-github] · [LinkedIn][samuel-linkedin]) - Taiwanese and Mandarin translation
+
 
 
 <!-- LICENCE -->
@@ -272,7 +284,7 @@ t.tokenise("太空朋友，恁好！恁食飽未？")
 
 Because Taibun is MIT-licensed, any developer can essentially do whatever they want with it as long as they include the original copyright and licence notice in any copies of the source code. Note, that the data used by the package is licensed under a different copyright.
 
-The data is licensed under [CC BY-ND 3.0 TW][distionary-cc]
+The data is licensed under [CC BY-SA 4.0][data-cc]
 
 
 
@@ -288,9 +300,12 @@ The data is licensed under [CC BY-ND 3.0 TW][distionary-cc]
 
 [pypi]: https://pypi.org/project/taibun
 [bug]: https://github.com/andreihar/taibun/issues
-[dictionary]: https://twblg.dict.edu.tw/holodict_new/
-[dictionary-via]: https://github.com/g0v/moedict-data-twblg
-[distionary-cc]: https://creativecommons.org/licenses/by-nd/3.0/tw/deed.en
+[online-dictionary]: http://ip194097.ntcu.edu.tw/ungian/soannteng/chil/Taihoa.asp
+[itaigi-dictionary]: https://itaigi.tw/
+[data-via]: https://github.com/ChhoeTaigi/ChhoeTaigiDatabase
+[data-cc]: https://creativecommons.org/licenses/by-sa/4.0/deed.en
+[samuel-github]: https://github.com/SSSam
+[samuel-linkedin]: https://www.linkedin.com/in/samuel-jen/
 
 [tailo-wiki]: https://en.wikipedia.org/wiki/T%C3%A2i-u%C3%A2n_L%C3%B4-m%C3%A1-j%C4%AB_Phing-im_Hong-%C3%A0n
 [poj-wiki]: https://en.wikipedia.org/wiki/Pe%CC%8Dh-%C5%8De-j%C4%AB

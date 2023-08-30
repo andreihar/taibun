@@ -7,24 +7,28 @@
 
 # <ruby>台文<rt>Tâi-bûn</rt></ruby>
 
+
+
 <!-- PROJECT SHIELDS -->
 [![Contributors][contributors-badge]][contributors]
 [![Release][release-badge]][release]
 [![Licence][licence-badge]][licence]
 [![LinkedIn][linkedin-badge]][linkedin]
 
-**漢字的台語音譯**
+**台語音譯器佮標記器**
 
-它具有允許自定義音譯和檢索有關台語發音的任何必要信息的方法<br />
+伊有允許自己設定音譯，佮揣出關於台語發音所需要的資料的方法<br />
 包括台語的單詞標記器
 
-[報告軟件缺陷][bug] •
+[回報程式缺點][bug] •
 [PyPI][pypi]
 
 </div>
 
 
+
 ---
+
 
 
 <!-- TABLE OF CONTENTS -->
@@ -49,21 +53,23 @@
         <li><a href="#tokeniser">Tokeniser</a></li>
       </ul>
     </li>
-    <li><a href="#例子">例子</a></li>
+    <li><a href="#例">例</a></li>
     <li><a href="#數據">數據</a></li>
-    <li><a href="#執照">執照</a></li>
+    <li><a href="#牌照">牌照</a></li>
   </ol>
 </details>
+
 
 
 <!-- INSTALL -->
 ## 安裝
 
-Taibun 可以通過 [pypi][pypi] 安裝
+Taibun 會曉通過 [pypi][pypi] 安裝
 
 ```bash
 $ pip install taibun
 ```
+
 
 
 <!-- USAGE -->
@@ -71,16 +77,16 @@ $ pip install taibun
 
 ### Converter
 
-`Converter` 類使用開發人員指定的參數將漢字音譯為所選的音譯系統。適用於繁體和簡體字符。
+`Converter` 類別使用開發人員指定的參數將漢文音譯為所選的音譯系統。繁體佮簡體攏合用。
 
 ```python
-# constructor
+# 建構仔
 c = Converter(system, dialect, format, delimiter, sandhi, punctuation)
 
-# 音譯漢字
+# 音譯漢文
 c.get(input)
 
-# 將簡體中文字符轉換為繁體中文字符
+# 將簡體中文字轉做繁體中文字
 c.to_traditional(input)
 ```
 
@@ -88,7 +94,7 @@ c.to_traditional(input)
 
 `system` String - 音譯系統。
 
-* `Tailo` (default) - [臺灣羅馬字拼音方案][tailo-wiki]
+* `Tailo` (預設) - [臺灣羅馬字拼音方案][tailo-wiki]
 * `POJ` - [白話字][poj-wiki]
 * `Zhuyin` - [臺語方音符號][zhuyin-wiki]
 * `TLPA` - [臺灣語言音標方案][tlpa-wiki]
@@ -99,78 +105,73 @@ c.to_traditional(input)
 |------|---------|---------|-------------|-----------|---------|----------|
 | 臺灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  |
 
-
 #### Dialect
 
-`dialect` String - 首選發音。
+`dialect` String - 頭一範的發音。
 
-* `south` (默認) - 發音更接近英語[漳州話][zhangzhou-wiki]
-* `north` - 發音更接近英語[泉州話][quanzhou-wiki]
+* `south` (預設) - 發音較像[漳州話][zhangzhou-wiki]
+* `north` - 發音較像[泉州話][quanzhou-wiki]
 
 | 文本   | south         | north         |
 |--------|---------------|---------------|
 | 五月節 | Gōo-gue̍h-tseh | Gōo-ge̍h-tsueh |
 
-
 #### Format
 
 `format` String - 轉換後的句子中表示聲調的格式。
 
-* `mark` (默認) - 每個音節都使用變音符號。不支持拼音
-* `number` - 添加一個代表音節末尾聲調的數字
+* `mark` (預設) - 每个音節攏用變音符號。毋支援拼音
+* `number` - 加入一个代表音節尾端聲調的數字
 * `strip` - 刪除任何音調標記
 
 | 文本 | mark    | number    | strip   |
 |------|---------|-----------|---------|
 | 臺灣 | Tâi-uân | Tai5-uan5 | Tai-uan |
 
-
 #### Delimiter
 
-`delimiter` String - 設置將放置在單詞的音節之間的分隔符。
+`delimiter` String - 設定欲放佇詞音節中間的分隔符。
 
-默認值取決於所選的 `system`:
+預設值看所選的 `system` 決定：
 
-* `'-'` - 對於 `Tailo`, `POJ`, `Tongiong`
-* `''` - 對於 `Pingyim`
-* `' '` - 對於 `Zhuyin`, `TLPA`
+* `'-'` - 對著 `Tailo`, `POJ`, `Tongiong`
+* `''` - 對著 `Pingyim`
+* `' '` - 對著 `Zhuyin`, `TLPA`
 
 | 文本 | '-'     | ''     | ' '     |
 |------|---------|--------|---------|
 | 臺灣 | Tâi-uân | Tâiuân | Tâi uân |
 
-
 #### Sandhi
 
-`sandhi` Boolean - 將[台語的變速規則][sandhi-wiki]應用於單個單詞的音節。
+`sandhi` Boolean - 將[台語變調規則][sandhi-wiki]做用佇單詞音節內。
 
-默認值取決於所選的 `system`:
+預設值看所選的 `system` 決定:
 
-* `True` - 對於 `Tongiong`
-* `False` - 對於 `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`
+* `True` - 對著 `Tongiong`
+* `False` - 對著 `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`
 
 | 文本     | False        | True         |
 |----------|--------------|--------------|
-| 育囡仔歌 | Io-gín-á-kua | Iō-gin-a-kua |
+| 馬來西亞 | Má-lâi-se-a  | Ma-lāi-sē-a  |
 
-變速規則也會根據所選擇的方言而變化.
+變調規則也會隨著選的方言而有所改變。
 
 | 文本 | 沒有變速 | south   | north   |
 |------|---------|---------|---------|
 | 臺灣 | Tâi-uân | Tāi-uân | Tài-uân |
 
-請注意，該功能與真正的變速規則不同，真正的中文的變化適用於句子的每個音節，而不僅僅是單個單詞。
+請注意，彼個功能佮真正的變調規則無仝，真正的華文的變化適用佇句子內部的每個音節，毋是只有個詞而已。
 
-- **Taibun 的變速規則**: Thái-khong pīng-iú, lín hó! Lín tsià-pá buē?
-- **實際變速規則**: Thái-khōng pīng-iú, lin hó! Lin tsià-pa buē?
-
+- **Taibun 的變調規則**: Thái-khong pīng-iú, lin-hó! Lín tsià-pá buē?
+- **真正的變調規則**: Thái-khōng pīng-iú, lin-hó! Lin tsià-pa buē?
 
 #### Punctuation
 
 `punctuation` String
 
-* `format` (默認) - 將中文標點符號轉換為英文標點符號，並將每個句子開頭的單詞大寫
-* `none` - 保留中文風格的標點符號，並且新句子開頭的單詞不大寫
+* `format` (預設) - 將中文標點符號轉做英文標點符號，佮將每句頭前的詞大寫
+* `none` - 保留中文風格的標點符號，佮新句開頭的詞毋大寫
 
 | 文本 | format | none |
 |-|-|-|
@@ -178,34 +179,35 @@ c.to_traditional(input)
 
 ### Tokeniser
 
-`Tokeniser` 類對台語句子執行類似 [NLTK wordpunct_tokenize][nltk-tokenize] 的標記化。
+`Tokeniser` 類別佇台語句子做類似 [NLTK wordpunct_tokenize][nltk-tokenize] 的標記化。
 
 ```python
-# constructor
+# 建構仔
 t = Tokeniser()
 
-# tokenise Taiwanese Hokkien sentence
+# 標記台語句
 t.tokenise(input)
 ```
 
 
+
 <!-- EXAMPLE -->
-## 例子
+## 例
 
 ```python
 from taibun import Converter, Tokeniser
 
 # System
-c = Converter() # Tailo system default
+c = Converter() # system 預設值: Tailo
 c.get('先生講，學生恬恬聽。')
 >> Sian-sinn kóng, ha̍k-sing tiām-tiām thiann.
 
 c = Converter(system='Zhuyin')
 c.get('先生講，學生恬恬聽。')
->> ㄒㄧㄢ ㄒㆪ ㄍㆲˋ, ㄏㄚㄍ ㄒㄧㄥ ㄉㄧㆰ˫ ㄉㄧㆰ˫ ㄊㄧㆩ.
+>> ㄒㄧㄢ ㄒㆪ ㄍㆲˋ, ㄏㄚㆶ˙ ㄒㄧㄥ ㄉㄧㆰ˫ ㄉㄧㆰ˫ ㄊㄧㆩ.
 
 # Dialect
-c = Converter() # south dialect default
+c = Converter() # dialect 預設值: south
 c.get("我欲用箸食魚")
 >> Guá beh īng tī tsia̍h hî
 
@@ -214,7 +216,7 @@ c.get("我欲用箸食魚")
 >> Guá bueh īng tū tsia̍h hû
 
 # Format
-c = Converter() # for Tailo, mark by default
+c = Converter() # 佇 Tailo 中，format 預設值: mark
 c.get("生日快樂")
 >> Senn-ji̍t khuài-lo̍k
 
@@ -236,7 +238,7 @@ c.get("先生講，學生恬恬聽。")
 >> Siān-snī gǒng, hág-sīng diâm-diâm tinā.
 
 # Sandhi
-c = Converter() # for Tailo, sandhi False by default
+c = Converter() # 佇 Tailo 中，sandhi 預設值: False
 c.get("南迴鐵路")
 >> Lâm-huê-thih-lōo
 
@@ -245,51 +247,65 @@ c.get("南迴鐵路")
 >> Lām-huē-thí-lōo
 
 # Punctuation
-c = Converter() # format punctuation default
+c = Converter() # punctuation 預設值: foramt
 c.get("太空朋友，恁好！恁食飽未？")
->> Thài-khong pîng-iú, lín hó! Lín tsia̍h-pá buē?
+>> Thài-khong pîng-iú, lín-hó! Lín tsia̍h-pá buē?
 
 c = Converter(punctuation='none')
 c.get("太空朋友，恁好！恁食飽未？")
->> thài-khong pîng-iú，lín hó！lín tsia̍h-pá buē？
+>> thài-khong pîng-iú，lín-hó！lín tsia̍h-pá buē？
 
 
 # Tokeniser
 t = Tokeniser()
 t.tokenise("太空朋友，恁好！恁食飽未？")
->> ['太空', '朋友', '，', '恁', '好', '！', '恁', '食飽', '未', '？']
+>> ['太空', '朋友', '，', '恁好', '！', '恁', '食飽', '未', '？']
 ```
+
 
 
 <!-- DATA -->
 ## 數據
 
-- [臺灣閩南語常用詞辭典][dictionary] (通過 [moedict-data-twblg][dictionary-via])
+- [台華線頂對照典][online-dictionary] (藉著 [ChhoeTaigi][data-via])
+- [iTaigi華台對照典][itaigi-dictionary] (藉著 [ChhoeTaigi][data-via])
+
+
+
+<!-- ACKNOWLEDGEMENTS -->
+## 致謝
+
+- 任全恩 ([Github][samuel-github] · [LinkedIn][samuel-linkedin]) - 台語佮國語通譯
+
 
 
 <!-- LICENCE -->
-## 執照
+## 牌照
 
-因為 Taibun 是 MIT 許可的，所以任何開發人員基本上都可以用它做任何他們想做的事情，只要他們在源代碼的任何副本中包含原始版權和許可聲明。 請注意，該包使用的數據已獲得不同版權的許可。
+因為 Taibun 合和 MIT 許可，所以任何開發人員基本上攏會當用伊做任何𪜶欲做的代誌，只欲𪜶佇源代碼的任何副本中含原始版權佮許可聲明。 請注意，彼包使用的資料已經拿著不同版權的許可。
 
-數據已獲得 [CC BY-ND 3.0 TW][distionary-cc] 許可
+數據已獲得 [CC BY-SA 4.0][data-cc] 許可
+
 
 
 <!-- MARKDOWN LINKS -->
-[contributors-badge]: https://img.shields.io/github/contributors/andreihar/taibun?style=for-the-badge
+[contributors-badge]: https://img.shields.io/github/contributors/andreihar/taibun?style=for-the-badge&label=貢獻者
 [contributors]: #usage
-[release-badge]: https://img.shields.io/github/v/release/andreihar/taibun?color=38618c&style=for-the-badge
+[release-badge]: https://img.shields.io/github/v/release/andreihar/taibun?color=38618c&style=for-the-badge&label=發布
 [release]: https://github.com/andreihar/taibun/releases
-[licence-badge]: https://img.shields.io/github/license/andreihar/taibun.svg?color=000000&style=for-the-badge
+[licence-badge]: https://img.shields.io/github/license/andreihar/taibun.svg?color=000000&style=for-the-badge&label=牌照
 [licence]: LICENSE
 [linkedin-badge]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
 [linkedin]: https://www.linkedin.com/in/andrei-harbachov/
 
 [pypi]: https://pypi.org/project/taibun
 [bug]: https://github.com/andreihar/taibun/issues
-[dictionary]: https://twblg.dict.edu.tw/holodict_new/
-[dictionary-via]: https://github.com/g0v/moedict-data-twblg
-[distionary-cc]: https://creativecommons.org/licenses/by-nd/3.0/tw/deed.zh_TW
+[online-dictionary]: http://ip194097.ntcu.edu.tw/ungian/soannteng/chil/Taihoa.asp
+[itaigi-dictionary]: https://itaigi.tw/
+[data-via]: https://github.com/ChhoeTaigi/ChhoeTaigiDatabase
+[data-cc]: https://creativecommons.org/licenses/by-sa/4.0/deed.zh_TW
+[samuel-github]: https://github.com/SSSam
+[samuel-linkedin]: https://www.linkedin.com/in/samuel-jen/
 
 [tailo-wiki]: https://zh.wikipedia.org/zh-tw/%E8%87%BA%E7%81%A3%E9%96%A9%E5%8D%97%E8%AA%9E%E7%BE%85%E9%A6%AC%E5%AD%97%E6%8B%BC%E9%9F%B3%E6%96%B9%E6%A1%88
 [poj-wiki]: https://zh.wikipedia.org/zh-tw/%E7%99%BD%E8%A9%B1%E5%AD%97
