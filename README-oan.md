@@ -3,9 +3,13 @@
 
 
 <!-- PROJECT LOGO -->
+<br />
 <div align="center">
-
-# <ruby>台文<rt>Tâi-bûn</rt></ruby>
+  <a href="https://github.com/andreihar/taibun">
+    <img src="readme/logo.png" alt="Logo" width="90" height="80">
+  </a>
+  
+# Taibun
 
 
 

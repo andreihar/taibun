@@ -3,9 +3,13 @@
 
 
 <!-- PROJECT LOGO -->
+<br />
 <div align="center">
-
-# <ruby>台文<rt>Tâi-bûn</rt></ruby>
+  <a href="https://github.com/andreihar/taibun">
+    <img src="readme/logo.png" alt="Logo" width="90" height="80">
+  </a>
+  
+# Taibun
 
 
 
@@ -15,7 +19,7 @@
 [![Licence][licence-badge]][licence]
 [![LinkedIn][linkedin-badge]][linkedin]
 
-**漢字的臺灣話音譯**
+**臺灣話音譯器和標記器**
 
 它具有允許自定義音譯，和檢索有關臺灣話發音的任何必要信息的方法<br />
 包括臺灣話的單詞標記器

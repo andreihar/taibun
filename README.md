@@ -3,9 +3,13 @@
 
 
 <!-- PROJECT LOGO -->
+<br />
 <div align="center">
-
-# <ruby>台文<rt>Tâi-bûn</rt></ruby>
+  <a href="https://github.com/andreihar/taibun">
+    <img src="readme/logo.png" alt="Logo" width="90" height="80">
+  </a>
+  
+# Taibun
 
 
 
@@ -15,7 +19,7 @@
 [![Licence][licence-badge]][licence]
 [![LinkedIn][linkedin-badge]][linkedin]
 
-**Taiwanese Hokkien Romanisation and Tokenisation**
+**Taiwanese Hokkien Transliterator and Tokeniser**
 
 It has methods that allow to customise transliteration and retrieve any necessary information about Taiwanese Hokkien pronunciation.<br />
 Includes word tokeniser for Taiwanese Hokkien.
