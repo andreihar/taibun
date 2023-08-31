@@ -14,6 +14,7 @@
 
 
 <!-- PROJECT SHIELDS -->
+[![Tests][tests-badge]][tests]
 [![Contributors][contributors-badge]][contributors]
 [![Release][release-badge]][release]
 [![Licence][licence-badge]][licence]
@@ -293,11 +294,13 @@ The data is licensed under [CC BY-SA 4.0][data-cc]
 
 
 <!-- MARKDOWN LINKS -->
+[tests]: https://github.com/andreihar/taibun/actions
+[tests-badge]: https://img.shields.io/github/actions/workflow/status/andreihar/taibun/ci.yaml?style=for-the-badge
 [contributors-badge]: https://img.shields.io/github/contributors/andreihar/taibun?style=for-the-badge
 [contributors]: #usage
 [release-badge]: https://img.shields.io/github/v/release/andreihar/taibun?color=38618c&style=for-the-badge
 [release]: https://github.com/andreihar/taibun/releases
-[licence-badge]: https://img.shields.io/github/license/andreihar/taibun.svg?color=000000&style=for-the-badge
+[licence-badge]: https://img.shields.io/github/license/andreihar/taibun?color=000000&style=for-the-badge
 [licence]: LICENSE
 [linkedin-badge]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
 [linkedin]: https://www.linkedin.com/in/andrei-harbachov/

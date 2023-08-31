@@ -14,6 +14,7 @@
 
 
 <!-- PROJECT SHIELDS -->
+[![Tests][tests-badge]][tests]
 [![Contributors][contributors-badge]][contributors]
 [![Release][release-badge]][release]
 [![Licence][licence-badge]][licence]
@@ -293,11 +294,13 @@ t.tokenise("太空朋友，恁好！恁食飽未？")
 
 
 <!-- MARKDOWN LINKS -->
+[tests]: https://github.com/andreihar/taibun/actions
+[tests-badge]: https://img.shields.io/github/actions/workflow/status/andreihar/taibun/ci.yaml?style=for-the-badge
 [contributors-badge]: https://img.shields.io/github/contributors/andreihar/taibun?style=for-the-badge&label=貢獻者
 [contributors]: #usage
 [release-badge]: https://img.shields.io/github/v/release/andreihar/taibun?color=38618c&style=for-the-badge&label=發布
 [release]: https://github.com/andreihar/taibun/releases
-[licence-badge]: https://img.shields.io/github/license/andreihar/taibun.svg?color=000000&style=for-the-badge&label=執照
+[licence-badge]: https://img.shields.io/github/license/andreihar/taibun?color=000000&style=for-the-badge&label=執照
 [licence]: LICENSE
 [linkedin-badge]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
 [linkedin]: https://www.linkedin.com/in/andrei-harbachov/
