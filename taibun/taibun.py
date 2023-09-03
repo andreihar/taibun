@@ -243,6 +243,11 @@ class Converter(object):
                 number_tones[i] = self.__tone_sandhi(number_tones[i])
         for nt in number_tones:
             nt = self.__replacement_tool(zhuyin, nt).replace(self.suffix_token, '')
+            if len(nt) > 2:
+                if nt[-2] == 'ㄋ':
+                    nt = list(nt)
+                    nt[-2] = 'ㄣ'
+                    nt = "".join(nt)
             if self.format != 'number':
                 for t in nt:
                     if t.isnumeric(): nt = nt.replace(t, zhuyin_tones[int(t)])
