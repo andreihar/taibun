@@ -232,8 +232,18 @@ class Converter(object):
     # TODO: Make a better ruleset for Zhuyin
     def __tailo_to_zhuyin(self, input):
         input = input.lower()
-        with open(os.path.join(os.path.dirname(__file__), "data/zhuyin.json"),'r', encoding="utf-8") as file:
-            zhuyin = json.load(file)
+        convert_zhuyin = {
+            'p4':'ㆴ4', 'p8':'ㆴ8', 'k4':'ㆶ4', 'k8':'ㆶ8', 't4':'ㆵ4', 't8':'ㆵ8', 'h4':'ㆷ4', 'h8':'ㆷ8',
+            'tshing':'ㄑㄧㄥ', 'tshinn':'ㄑㆪ', 'phinn':'ㄆㆪ', 'phing':'ㄆㄧㄥ', 'tsinn':'ㄐㆪ', 'tsing':'ㄐㄧㄥ',
+            'giok':'ㆣㄧㄜㆶ', 'ngai':'ㄫㄞ', 'ngau':'ㄫㄠ', 'ping':'ㄅㄧㄥ', 'aunn':'ㆯ', 'ngoo':'ㄫㆦ',
+            'tshi':'ㄑㄧ', 'sing':'ㄒㄧㄥ', 'senn':'ㄙㆥ', 'ainn':'ㆮ', 'sinn':'ㄒㆪ', 'pinn':'ㄅㆪ',
+            'mue':'ㄇㄨㆤ', 'mng':'ㄇㆭ', 'onn':'ㆧ', 'moo':'ㄇㆦ', 'ang':'ㄤ', 'tsh':'ㄘ', 'tsi':'ㄐㄧ',
+            'inn':'ㆪ', 'mua':'ㄇㄨㄚ', 'mai':'ㄇㄞ', 'ong':'ㆲ', 'enn':'ㆥ', 'mau':'ㄇㄠ', 'ann':'ㆩ',
+            'nga':'ㄫㄚ', 'ngi':'ㄫㄧ', 'noo':'ㄋㆦ˫', 'ing':'ㄧㄥ', 'unn':'ㆫ', 'nge':'ㄫㆤ', 'mui':'ㄇㄨㄧ',
+            'am':'ㆰ', 'si':'ㄒㄧ', 'me':'ㄇㆤ', 'om':'ㆱ', 'ts':'ㄗ', 'kh':'ㄎ', 'th':'ㄊ', 'ph':'ㄆ',
+            'ji':'ㆢㄧ', 'ai':'ㄞ', 'ma':'ㄇㄚ', 'oo':'ㆦ', 'ok':'ㆦㆶ', 'an':'ㄢ', 'mi':'ㄇㄧ', 'au':'ㄠ',
+            'ng':'ㆭ', 'p':'ㄅ', 'i':'ㄧ', 'o':'ㄜ', 's':'ㄙ', 'a':'ㄚ', 'j':'ㆡ', 'e':'ㆤ', 'h':'ㄏ', 'g':'ㆣ',
+            'b':'ㆠ', 'k':'ㄍ', 'l':'ㄌ', 'n':'ㄋ', 'm':'ㆬ', 't':'ㄉ', 'u':'ㄨ'}
         zhuyin_tones = 	['', '', 'ˋ', '˪', '', 'ˊ', '', '˫', '˙']
         words = self.__preprocess_word(input)
         input = ""
@@ -242,7 +252,7 @@ class Converter(object):
             for i in range(0, len(number_tones)-1):
                 number_tones[i] = self.__tone_sandhi(number_tones[i])
         for nt in number_tones:
-            nt = self.__replacement_tool(zhuyin, nt).replace(self.suffix_token, '')
+            nt = self.__replacement_tool(convert_zhuyin, nt).replace(self.suffix_token, '')
             if len(nt) > 2:
                 if nt[-2] == 'ㄋ':
                     nt = list(nt)
