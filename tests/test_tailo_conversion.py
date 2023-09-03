@@ -1,35 +1,37 @@
 from taibun.taibun import Converter
 from utils import checker
 
-def test_initials():
-    c = Converter(system="Tai-lo", punctuation='none')
-    c_north = Converter(system="Tai-lo", dialect="north", punctuation='none')
+def test_tailo_initials():
+    c = Converter(system="Tailo", punctuation='none')
+    c_north = Converter(system="Tailo", dialect="north", punctuation='none')
 
-    bilabial = ["邊界,pian-kài","波浪,pho-lōng","毛病,môo-pēnn/môo-pīnn","文法,bûn-huat"]
+    bilabial = ["邊,pian","波,pho","毛,môo","文,bûn"]
     checker(bilabial, c, c_north)
-    alveolar = ["地面,tē-bīn/tuē-bīn","通好,thang-hó","棕蓑,tsang-sui","出任,tshut-jīm/tshut-līm","衫仔裾,sann-á-ki/sann-á-ku","耐用,nāi-iōng","熱人,jua̍h-lâng/lua̍h-lâng","柳丁,liú-ting"]
+    alveolar = ["地,tē/tuē","他,thann","曾,tsan","出,tshut","衫,sann","耐,nāi","熱衫,jua̍h-sann/lua̍h-sann","柳,liú"]
     checker(alveolar, c, c_north)
-    alveolo_palatal = ["尖鑽,tsiam-tsǹg","手爪,tshiú-jiáu/tshiú-niáu","寫字,siá-jī/siá-lī","入口,ji̍p-kháu/li̍p-kháu"]
+    alveolo_palatal = ["尖,tsiam","手,tshiú","寫,siá","入,ji̍p/li̍p"]
     checker(alveolo_palatal, c, c_north)
-    velar = ["求情,kiû-tsîng","去倒,khì-tò","雅氣,ngá-khì","台語,Tâi-gí/Tâi-gú","喜酒,hí-tsiú"]
+    velar = ["求,kiû","去,khì","雅,ngá","語,gí/gú","喜,hí"]
     checker(velar, c, c_north)
 
-def test_vowels_and_rhymes():
-    c = Converter(system="Tai-lo", punctuation='none')
-    c_north = Converter(system="Tai-lo", dialect="north", punctuation='none')
+def test_tailo_vowels_and_rhymes():
+    c = Converter(system="Tailo", punctuation='none')
+    c_north = Converter(system="Tailo", dialect="north", punctuation='none')
 
-    front = ["依附,i-hù","禮物,lé-bu̍t","圓環,înn-khuân","生做,senn-tsò/sinn-tsuè"]
+    front = ["衣,i","禮,lé","圓,înn","生死,senn-sí/sinn-sí"]
     checker(front, c, c_north)
-    central = ["高明,ko-bîng","查某,tsa-bóo","衫仔櫥,sann-á-tû"]
+    central = ["高,ko","查問,tsa-būn","衫,sann"]
     checker(central, c, c_north)
-    back = ["有名,ū-miâ","烏暗,oo-àm","張持,tiunn-tî","可惡,khó-ònn"]
+    back = ["污,u","烏,oo","張,tiunn","唔,onn"]
     checker(back, c, c_north)
 
-def test_finals():
-    c = Converter(system="Tai-lo", punctuation='none')
-    c_north = Converter(system="Tai-lo", dialect="north", punctuation='none')
+def test_tailo_finals():
+    c = Converter(system="Tailo", punctuation='none')
+    c_north = Converter(system="Tailo", dialect="north", punctuation='none')
 
-    nasal = ["啉,lim","新鮮,sin-sian","門斗,mn̂g-táu"]
+    nasal = ["啉,lim","新,sin","紅,âng"]
     checker(nasal, c, c_north)
-    stop = ["墨汁,ba̍k-tsiap","木蝨,ba̍k-sat","中國,Tiong-kok","食飯,tsia̍h-pn̄g"]
+    stop = ["汁,tsiap","蝨,sat","國,kok","食,tsia̍h"]
     checker(stop, c, c_north)
+    syllabic = ["姆,ḿ","酸,sng"]
+    checker(syllabic, c, c_north)
