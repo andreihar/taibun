@@ -1,10 +1,10 @@
 from taibun.taibun import Converter
 from utils import checker
 
-def test_tlpa_initials():
-    c = Converter(system="TLPA", punctuation='none')
-    c_north = Converter(system="TLPA", dialect="north", punctuation='none')
+c = Converter(system="TLPA", punctuation='none')
+c_north = Converter(system="TLPA", dialect="north", punctuation='none')
 
+def test_tlpa_initials():
     bilabial = ["邊,pian1","波,pho1","毛,moo5","文,bun5"]
     checker(bilabial, c, c_north)
     alveolar = ["地,te7/tue7","他,thann1","曾,can1","出,chut4","衫,sann1","耐,nai7","熱衫,juah8 sann1/luah8 sann1","柳,liu2"]
@@ -15,9 +15,6 @@ def test_tlpa_initials():
     checker(velar, c, c_north)
 
 def test_tlpa_vowels_and_rhymes():
-    c = Converter(system="TLPA", punctuation='none')
-    c_north = Converter(system="TLPA", dialect="north", punctuation='none')
-
     front = ["衣,i1","禮,le2","圓,inn5","生死,senn1 si2/sinn1 si2"]
     checker(front, c, c_north)
     central = ["高,ko1","查問,ca1 bun7","衫,sann1"]
@@ -26,9 +23,6 @@ def test_tlpa_vowels_and_rhymes():
     checker(back, c, c_north)
 
 def test_tlpa_finals():
-    c = Converter(system="TLPA", punctuation='none')
-    c_north = Converter(system="TLPA", dialect="north", punctuation='none')
-
     nasal = ["啉,lim1","新,sin1","紅,ang5"]
     checker(nasal, c, c_north)
     stop = ["汁,ciap4","蝨,sat4","國,kok4","食,ciah8"]

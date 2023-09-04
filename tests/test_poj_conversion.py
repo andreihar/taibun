@@ -1,10 +1,10 @@
 from taibun.taibun import Converter
 from utils import checker
 
-def test_poj_initials():
-    c = Converter(system="POJ", punctuation='none')
-    c_north = Converter(system="POJ", dialect="north", punctuation='none')
+c = Converter(system="POJ", punctuation='none')
+c_north = Converter(system="POJ", dialect="north", punctuation='none')
 
+def test_poj_initials():
     bilabial = ["邊,pian","波,pho","毛,mô͘","文,bûn"]
     checker(bilabial, c, c_north)
     alveolar = ["地,tē/tōe","他,thaⁿ","曾,chan","出,chhut","衫,saⁿ","耐,nāi","熱衫,joa̍h-saⁿ/loa̍h-saⁿ","柳,liú"]
@@ -15,9 +15,6 @@ def test_poj_initials():
     checker(velar, c, c_north)
 
 def test_poj_vowels_and_rhymes():
-    c = Converter(system="POJ", punctuation='none')
-    c_north = Converter(system="POJ", dialect="north", punctuation='none')
-
     front = ["衣,i","禮,lé","圓,îⁿ","生死,seⁿ-sí/siⁿ-sí"]
     checker(front, c, c_north)
     central = ["高,ko","查問,cha-būn","衫,saⁿ"]
@@ -26,9 +23,6 @@ def test_poj_vowels_and_rhymes():
     checker(back, c, c_north)
 
 def test_poj_finals():
-    c = Converter(system="POJ", punctuation='none')
-    c_north = Converter(system="POJ", dialect="north", punctuation='none')
-
     nasal = ["啉,lim","新,sin","紅,âng"]
     checker(nasal, c, c_north)
     stop = ["汁,chiap","蝨,sat","國,kok","食,chia̍h"]

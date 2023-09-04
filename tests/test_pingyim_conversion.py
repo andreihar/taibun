@@ -1,10 +1,10 @@
 from taibun.taibun import Converter
 from utils import checker
 
-def test_pingyim_initials():
-    c = Converter(system="Pingyim", punctuation='none')
-    c_north = Converter(system="Pingyim", dialect="north", punctuation='none')
+c = Converter(system="Pingyim", punctuation='none')
+c_north = Converter(system="Pingyim", dialect="north", punctuation='none')
 
+def test_pingyim_initials():
     bilabial = ["邊,biān","波,pō","毛,bbnoó","文,bbún"]
     checker(bilabial, c, c_north)
     alveolar = ["地,dê/duê","他,tnā","曾,zān","出,cút","衫,snā","耐,lnâi","熱衫,zzuáh-snā/luáh-snā","柳,liǔ"]
@@ -15,9 +15,6 @@ def test_pingyim_initials():
     checker(velar, c, c_north)
 
 def test_pingyim_vowels_and_rhymes():
-    c = Converter(system="Pingyim", punctuation='none')
-    c_north = Converter(system="Pingyim", dialect="north", punctuation='none')
-
     front = ["衣,yī","禮,lě","圓,ní","生死,snē-sí/snī-sí"]
     checker(front, c, c_north)
     central = ["高,gō","查問,zá-bûn","衫,snā"]
@@ -26,9 +23,6 @@ def test_pingyim_vowels_and_rhymes():
     checker(back, c, c_north)
 
 def test_pingyim_finals():
-    c = Converter(system="Pingyim", punctuation='none')
-    c_north = Converter(system="Pingyim", dialect="north", punctuation='none')
-
     nasal = ["啉,līm","新,sīn","紅,áng"]
     checker(nasal, c, c_north)
     stop = ["汁,ziāp","蝨,sāt","國,gōk","食,ziáh"]
