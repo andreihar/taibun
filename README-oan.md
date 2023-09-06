@@ -295,7 +295,7 @@ t.tokenise("太空朋友，恁好！恁食飽未？")
 
 <!-- MARKDOWN LINKS -->
 [tests]: https://github.com/andreihar/taibun/actions
-[tests-badge]: https://img.shields.io/github/actions/workflow/status/andreihar/taibun/ci.yaml?style=for-the-badge
+[tests-badge]: https://img.shields.io/github/actions/workflow/status/andreihar/taibun/ci.yaml?style=for-the-badge&logo=github&label=構建
 [contributors-badge]: https://img.shields.io/github/contributors/andreihar/taibun?style=for-the-badge&label=貢獻者
 [contributors]: #usage
 [release-badge]: https://img.shields.io/github/v/release/andreihar/taibun?color=38618c&style=for-the-badge&label=發布
