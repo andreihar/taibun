@@ -322,7 +322,7 @@ class Converter(object):
                     'Oo':'O', 'Om':'Om', 'Ong':'Ong', 'Ir':'I', 'Tsh':'C',
                     'Ts':'Z', 'Nng':'Nng', 'Ng':'Ng', 'G':'Gh', 'Kh':'K', 'K':'G',
                     'Ph':'P', 'P':'B', 'B':'Bh', 'Th':'T', 'T':'D', 'J':'R'}
-        tones_ti = ["̊", "", "̀", "̂", "̄", "̌", "", "̄", "", "́"]
+        tones_ti = ["̊", "", "̀", "̂", "̄", "̆", "", "̄", "", "́"]
         words = self.__preprocess_word(input)
         input = ""
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]

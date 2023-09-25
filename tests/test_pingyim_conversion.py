@@ -7,7 +7,7 @@ c_north = Converter(system="Pingyim", dialect="north", punctuation='none')
 def test_pingyim_initials():
     bilabial = ["邊,biān","波,pō","毛,bbnoó","文,bbún"]
     checker(bilabial, c, c_north)
-    alveolar = ["地,dê/duê","他,tnā","曾,zān","出,cūt","衫,snā","耐,nâi","熱衫,zzuáhsnā/luáhsnā","柳,liǔ"]
+    alveolar = ["地,dê/duê","他,tnā","曾,zān","出,cūt","衫,snā","耐,lnâi","熱衫,zzuáhsnā/luáhsnā","柳,liǔ"]
     checker(alveolar, c, c_north)
     alveolo_palatal = ["尖,ziām","手,ciǔ","寫,siǎ","入,zzíp/líp"]
     checker(alveolo_palatal, c, c_north)
