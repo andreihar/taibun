@@ -280,11 +280,11 @@ class Converter(object):
             'p4':'p4', 't4':'t4', 'k4':'k4', 'h4':'h4', 'p8':'p8', 't8':'t8', 'k8':'k8', 'h8':'h8',
             'ainn':'nai', 'iunn':'niu', 'ann':'na', 'onn':'noo', 'enn':'ne',
             'inn':'ni', 'unn':'nu', 'au':'ao', 'ph':'p', 'nng':'lng', 'tsh':'c',
-            'ng':'ng', 'ts':'z', 'th':'t', 'kh':'k', 'ir':'i', 'p':'b', 'b':'bb',
+            'ng':'ggn', 'ts':'z', 'th':'t', 'kh':'k', 'ir':'i', 'p':'b', 'b':'bb',
             't':'d', 'k':'g', 'g':'gg', 'j':'zz', 'n':'ln', 'm':'bbn',
             'Ainn':'Nai', 'Iunn':'Niu', 'Ann':'Na', 'Onn':'Noo', 'Enn':'Ne',
             'Inn':'Ni', 'Unn':'Nu', 'Au':'Ao', 'Ph':'P', 'Nng':'Lng', 'Tsh':'C',
-            'Ng':'Ng', 'Ts':'Z', 'Th':'T', 'Kh':'K', 'Ir':'I', 'P':'B', 'B':'Bb',
+            'Ng':'Ggn', 'Ts':'Z', 'Th':'T', 'Kh':'K', 'Ir':'I', 'P':'B', 'B':'Bb',
             'T':'D', 'K':'G', 'G':'Gg', 'J':'Zz', 'N':'Ln', 'M':'Bbn'}
         tones_pingyim = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
         words = self.__preprocess_word(input)
@@ -307,7 +307,12 @@ class Converter(object):
 
             if nt[0] == 'm' and len(nt) == 2: replaced = 'm' + nt[-1] # Syllabic consonant m
             elif nt[0] == 'm' and nt[1] == 'n': replaced = 'm' + replaced[3:]
+            if nt[0] == 'M' and len(nt) == 2: replaced = 'M' + nt[-1] # upper and lower case
+            elif nt[0] == 'M' and nt[1] == 'n': replaced = 'M' + replaced[3:]
             if replaced[-4:][:3] == 'bbn': replaced = replaced[:-4] + 'm' + replaced[-1] # Final m
+            
+            if nt[-3:][:2] == 'ng': replaced = replaced[:-4] + 'ng' + nt[-1] # Coda ng
+            if nt[-3:][:2] == 'Ng': replaced = replaced[:-4] + 'Ng' + nt[-1] # Coda ng
 
             if replaced[0] == 'u' and len(nt) > 2: replaced = 'w' + replaced[1:] # Initial u, upper and lower case
             elif replaced[0] == 'u' and len(nt) == 2: replaced = 'w' + replaced
