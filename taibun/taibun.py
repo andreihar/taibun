@@ -279,11 +279,11 @@ class Converter(object):
             'ainn':'nai', 'iunn':'niu', 'ann':'na', 'onn':'noo', 'enn':'ne',
             'inn':'ni', 'unn':'nu', 'au':'ao', 'ph':'p', 'nng':'lng', 'tsh':'c',
             'ng':'ng', 'ts':'z', 'th':'t', 'kh':'k', 'ir':'i', 'p':'b', 'b':'bb',
-            't':'d', 'k':'g', 'g':'gg', 'j':'l', 'n':'ln', 'm':'bbn',
+            't':'d', 'k':'g', 'g':'gg', 'j':'zz', 'n':'ln', 'm':'bbn',
             'Ainn':'Nai', 'Iunn':'Niu', 'Ann':'Na', 'Onn':'Noo', 'Enn':'Ne',
             'Inn':'Ni', 'Unn':'Nu', 'Au':'Ao', 'Ph':'P', 'Nng':'Lng', 'Tsh':'C',
             'Ng':'Ng', 'Ts':'Z', 'Th':'T', 'Kh':'K', 'Ir':'I', 'P':'B', 'B':'Bb',
-            'T':'D', 'K':'G', 'G':'Gg', 'J':'L', 'N':'Ln', 'M':'Bbn'}
+            'T':'D', 'K':'G', 'G':'Gg', 'J':'Zz', 'N':'Ln', 'M':'Bbn'}
         tones_pingyim = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
         words = self.__preprocess_word(input)
         input = ""
