@@ -242,12 +242,12 @@ class Converter(object):
             for i in range(0, len(number_tones)-1):
                 number_tones[i] = self.__tone_sandhi(number_tones[i])
         for nt in number_tones:
-            nt = self.__replacement_tool(zhuyin, nt).replace(self.suffix_token, '')
+            nt = self.__replacement_tool(zhuyin, nt)
             if self.format != 'number':
                 for t in nt:
                     if t.isnumeric(): nt = nt.replace(t, zhuyin_tones[int(t)])
             input += '-' + nt
-        return input[1:]
+        return input[1:].replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to TLPA
@@ -261,7 +261,7 @@ class Converter(object):
                 number_tones[i] = self.__tone_sandhi(number_tones[i])
         for nt in number_tones:
             input += '-' + self.__replacement_tool(convert_tlpa, nt)
-        return input[1:].replace(self.suffix_token, '--')
+        return input[1:].replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to Bbanlam pingyim
