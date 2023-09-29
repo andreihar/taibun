@@ -1,7 +1,7 @@
 def checker(array, general_converter, north_converter):
     for word in array:
-        hanji = word.split(',')[0]
-        transl = word.split(',')[1].strip()
+        hanji = word.split(',', 1)[0]
+        transl = word.split(',', 1)[1].strip()
         if '/' in transl: transl = transl.split('/')
         else: transl = [transl]
         if len(transl) == 2:
