@@ -37,7 +37,7 @@ class Converter(object):
 
     def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format'):
         self.system = system.lower()
-        self.dialect = dialect
+        self.dialect = dialect.lower()
         self.format = format
         self.delimiter = delimiter
         self.sandhi = sandhi
@@ -77,7 +77,7 @@ class Converter(object):
         if word in word_dict:
             word = word_dict[word]
             if "/" in word:
-                if self.dialect.lower() == 'north': word = word.split("/")[1]
+                if self.dialect == 'north': word = word.split("/")[1]
                 else: word = word.split("/")[0]
             word = self.__system_conversion(word).replace('---', '--')
             if self.format == 'number' and (self.system == 'tailo' or self.system == 'poj'): word = self.__mark_to_number(word)
@@ -275,16 +275,15 @@ class Converter(object):
             'Oo'+self.tone_token+'', 'Ia'+self.tone_token+'', 'Iu'+self.tone_token+'', 'Io'+self.tone_token+'', 'Ua'+self.tone_token+'', 'Ue'+self.tone_token+'', 'Ui'+self.tone_token+'',
             'A'+self.tone_token+'', 'O'+self.tone_token+'', 'E'+self.tone_token+'', 'I'+self.tone_token+'', 'U'+self.tone_token+'', 'N'+self.tone_token+'g', 'M'+self.tone_token+''
         ]
-        input = input.lower()
         convert_pingyim = {
             'ainn':'nai', 'iunn':'niu', 'ann':'na', 'onn':'noo', 'enn':'ne',
             'inn':'ni', 'unn':'nu', 'au':'ao', 'ph':'p', 'nng':'lng', 'tsh':'c',
             'ng':'ng', 'ts':'z', 'th':'t', 'kh':'k', 'ir':'i', 'p':'b', 'b':'bb',
-            't':'d', 'k':'g', 'g':'gg', 'j':'l',
+            't':'d', 'k':'g', 'g':'gg', 'j':'l', 'n':'ln', 'm':'bbn',
             'Ainn':'Nai', 'Iunn':'Niu', 'Ann':'Na', 'Onn':'Noo', 'Enn':'Ne',
             'Inn':'Ni', 'Unn':'Nu', 'Au':'Ao', 'Ph':'P', 'Nng':'Lng', 'Tsh':'C',
             'Ng':'Ng', 'Ts':'Z', 'Th':'T', 'Kh':'K', 'Ir':'I', 'P':'B', 'B':'Bb',
-            'T':'D', 'K':'G', 'G':'Gg', 'J':'L'}
+            'T':'D', 'K':'G', 'G':'Gg', 'J':'L', 'N':'Ln', 'M':'Bbn'}
         tones_pingyim = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
         words = self.__preprocess_word(input)
         input = ""
@@ -294,10 +293,19 @@ class Converter(object):
                 number_tones[i] = self.__tone_sandhi(number_tones[i])
         for nt in number_tones:
             replaced = self.__replacement_tool(convert_pingyim, nt)
-            if nt[0] == 'i': replaced = 'y' + replaced
-            if nt[0] == 'u' and len(nt) > 2: replaced = 'w' + replaced[1:]
+            if nt[0] == 'i': replaced = 'y' + replaced # Initial i, upper and lower case
+            if nt[0] == 'I': replaced = 'Y' + replaced.lower()
+            
+            if nt[-2] == 'n': replaced = replaced[:-3] + 'n' + nt[-1] # Final n
+
+            if nt[0] == 'm' and len(nt) == 2: replaced = 'm' + nt[-1] # Syllabic consonant m
+            elif nt[0] == 'm' and nt[1] == 'n': replaced = 'm' + replaced[3:]
+
+            if nt[0] == 'u' and len(nt) > 2: replaced = 'w' + replaced[1:] # Initial u, upper and lower case
             elif nt[0] == 'u' and len(nt) == 2: replaced = 'w' + replaced
-            if nt[0] == 'm': replaced = 'bbn' + replaced[1:]
+            if nt[0] == 'U' and len(nt) > 2: replaced = 'W' + replaced[1:]
+            elif nt[0] == 'U' and len(nt) == 2: replaced = 'W' + replaced.lower()
+            
             if self.format != 'number': input += '-' + self.__get_mark_tone(replaced, placement_pingyim, tones_pingyim)
             else: input += '-' + replaced
         return input[1:].replace(self.suffix_token, '')
