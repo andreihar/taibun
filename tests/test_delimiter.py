@@ -60,10 +60,3 @@ def test_nospace():
 	checker(tlpa, Converter(system="TLPA", punctuation='none', delimiter=''), Converter(system="TLPA", dialect="north", punctuation='none', delimiter=''))
 	checker(pingyim, Converter(system="Pingyim", punctuation='none', delimiter=''), Converter(system="Pingyim", dialect="north", punctuation='none', delimiter=''))
 	checker(tongiong, Converter(system="Tongiong", punctuation='none', delimiter=''), Converter(system="Tongiong", dialect="north", punctuation='none', delimiter=''))
-
-	# tailo = []
-	# poj = []
-	# zhuyin = []
-	# tlpa = []
-	# pingyim = []
-	# tongiong = []
