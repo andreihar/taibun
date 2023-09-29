@@ -9,12 +9,12 @@ def test_default():
 	pingyim = ["開始,kāisǐ","巧氣,kǎkì","寄回,giàhué/giàhé","肉包,bbāhbāo","翕甌,hīpāo","彼號,hīthô","確信,kāksìn","南面,lámbbîn","未來,bbîlái","篾蓆,bbíhcióh","業務,ggiápbbû","罰金,huátgīm","學生,háksīng"]
 	tongiong = ["開始,kāi-sì","巧氣,ka-kî","寄回,già-huĕ/già-hĕ","肉包,bhà-bau","翕甌,hip-au","彼號,hit-hōr","確信,kak-sîn","南面,lām-bhīn/lâm-bhīn","未來,bhî-lăi","篾蓆,bhî-cioh","業務,ghiāp-bhū","罰金,huāt-gim","學生,hāk-sing"]
 
-	checker(tailo, Converter(system="Tailo", punctuation='none', sandhi=True), Converter(system="Tailo", dialect="north", punctuation='none', sandhi=True))
-	checker(poj, Converter(system="POJ", punctuation='none', sandhi=True), Converter(system="POJ", dialect="north", punctuation='none', sandhi=True))
-	checker(zhuyin, Converter(system="Zhuyin", punctuation='none', sandhi=True), Converter(system="Zhuyin", dialect="north", punctuation='none', sandhi=True))
-	checker(tlpa, Converter(system="TLPA", punctuation='none', sandhi=True), Converter(system="TLPA", dialect="north", punctuation='none', sandhi=True))
-	checker(pingyim, Converter(system="Pingyim", punctuation='none', sandhi=True), Converter(system="Pingyim", dialect="north", punctuation='none', sandhi=True))
-	checker(tongiong, Converter(system="Tongiong", punctuation='none', sandhi=True), Converter(system="Tongiong", dialect="north", punctuation='none', sandhi=True))
+	checker(tailo, Converter(system="Tailo", punctuation='none'), Converter(system="Tailo", dialect="north", punctuation='none'))
+	checker(poj, Converter(system="POJ", punctuation='none'), Converter(system="POJ", dialect="north", punctuation='none'))
+	checker(zhuyin, Converter(system="Zhuyin", punctuation='none'), Converter(system="Zhuyin", dialect="north", punctuation='none'))
+	checker(tlpa, Converter(system="TLPA", punctuation='none'), Converter(system="TLPA", dialect="north", punctuation='none'))
+	checker(pingyim, Converter(system="Pingyim", punctuation='none'), Converter(system="Pingyim", dialect="north", punctuation='none'))
+	checker(tongiong, Converter(system="Tongiong", punctuation='none'), Converter(system="Tongiong", dialect="north", punctuation='none'))
 
 def test_true():
 	tailo = ["開始,khāi-sí","巧氣,kha-khì","寄回,kiá-huê/kiá-hê","肉包,bá-pau","翕甌,hi̍p-au","彼號,hi̍t-hō","確信,kha̍k-sìn","南面,lām-bīn/làm-bīn","未來,bì-lâi","篾蓆,bì-tshio̍h","業務,giap-bū","罰金,huat-kim","學生,hak-sing"]
@@ -39,9 +39,9 @@ def test_false():
 	pingyim = ["開始,kāisǐ","巧氣,kǎkì","寄回,giàhué/giàhé","肉包,bbāhbāo","翕甌,hīpāo","彼號,hīthô","確信,kāksìn","南面,lámbbîn","未來,bbîlái","篾蓆,bbíhcióh","業務,ggiápbbû","罰金,huátgīm","學生,háksīng"]
 	tongiong = ["開始,kai-sì","巧氣,kà-kî","寄回,giâ-huĕ/giâ-hĕ","肉包,bhāh-bau","翕甌,hīp-au","彼號,hīt-hōr","確信,kāk-sîn","南面,lăm-bhīn","未來,bhī-lăi","篾蓆,bhih-cioh","業務,ghiap-bhū","罰金,huat-gim","學生,hak-sing"]
 
-	checker(tailo, Converter(system="Tailo", punctuation='none', sandhi=True), Converter(system="Tailo", dialect="north", punctuation='none', sandhi=True))
-	checker(poj, Converter(system="POJ", punctuation='none', sandhi=True), Converter(system="POJ", dialect="north", punctuation='none', sandhi=True))
-	checker(zhuyin, Converter(system="Zhuyin", punctuation='none', sandhi=True), Converter(system="Zhuyin", dialect="north", punctuation='none', sandhi=True))
-	checker(tlpa, Converter(system="TLPA", punctuation='none', sandhi=True), Converter(system="TLPA", dialect="north", punctuation='none', sandhi=True))
-	checker(pingyim, Converter(system="Pingyim", punctuation='none', sandhi=True), Converter(system="Pingyim", dialect="north", punctuation='none', sandhi=True))
-	checker(tongiong, Converter(system="Tongiong", punctuation='none', sandhi=True), Converter(system="Tongiong", dialect="north", punctuation='none', sandhi=True))
+	checker(tailo, Converter(system="Tailo", punctuation='none', sandhi=False), Converter(system="Tailo", dialect="north", punctuation='none', sandhi=False))
+	checker(poj, Converter(system="POJ", punctuation='none', sandhi=False), Converter(system="POJ", dialect="north", punctuation='none', sandhi=False))
+	checker(zhuyin, Converter(system="Zhuyin", punctuation='none', sandhi=False), Converter(system="Zhuyin", dialect="north", punctuation='none', sandhi=False))
+	checker(tlpa, Converter(system="TLPA", punctuation='none', sandhi=False), Converter(system="TLPA", dialect="north", punctuation='none', sandhi=False))
+	checker(pingyim, Converter(system="Pingyim", punctuation='none', sandhi=False), Converter(system="Pingyim", dialect="north", punctuation='none', sandhi=False))
+	checker(tongiong, Converter(system="Tongiong", punctuation='none', sandhi=False), Converter(system="Tongiong", dialect="north", punctuation='none', sandhi=False))
