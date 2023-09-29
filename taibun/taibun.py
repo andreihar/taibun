@@ -293,19 +293,24 @@ class Converter(object):
                 number_tones[i] = self.__tone_sandhi(number_tones[i])
         for nt in number_tones:
             replaced = self.__replacement_tool(convert_pingyim, nt)
-            if nt[0] == 'i': replaced = 'y' + replaced # Initial i, upper and lower case
-            if nt[0] == 'I': replaced = 'Y' + replaced.lower()
-            
-            if nt[-2] == 'n': replaced = replaced[:-3] + 'n' + nt[-1] # Final n
+            if replaced[0] == 'i': # Initial i, upper and lower case
+                if replaced[1] in ['a', 'u', 'o']: replaced = 'y' + replaced[1:]
+                else: replaced = 'y' + replaced
+            if replaced[0] == 'I':
+                if replaced[1] in ['a', 'u', 'o']: replaced = 'Y' + replaced[1:]
+                else: replaced = 'Y' + replaced.lower()
+                replaced = 'Y' + replaced.lower()
+
+            if replaced[-3:][:2] == 'ln': replaced = replaced[:-3] + 'n' + replaced[-1] # Final n
 
             if nt[0] == 'm' and len(nt) == 2: replaced = 'm' + nt[-1] # Syllabic consonant m
             elif nt[0] == 'm' and nt[1] == 'n': replaced = 'm' + replaced[3:]
+            if replaced[-4:][:3] == 'bbn': replaced = replaced[:-4] + 'm' + replaced[-1] # Final m
 
-            if nt[0] == 'u' and len(nt) > 2: replaced = 'w' + replaced[1:] # Initial u, upper and lower case
-            elif nt[0] == 'u' and len(nt) == 2: replaced = 'w' + replaced
-            if nt[0] == 'U' and len(nt) > 2: replaced = 'W' + replaced[1:]
-            elif nt[0] == 'U' and len(nt) == 2: replaced = 'W' + replaced.lower()
-            
+            if replaced[0] == 'u' and len(nt) > 2: replaced = 'w' + replaced[1:] # Initial u, upper and lower case
+            elif replaced[0] == 'u' and len(nt) == 2: replaced = 'w' + replaced
+            if replaced[0] == 'U' and len(nt) > 2: replaced = 'W' + replaced[1:]
+            elif replaced[0] == 'U' and len(nt) == 2: replaced = 'W' + replaced.lower()
             if self.format != 'number': input += '-' + self.__get_mark_tone(replaced, placement_pingyim, tones_pingyim)
             else: input += '-' + replaced
         return input[1:].replace(self.suffix_token, '')
