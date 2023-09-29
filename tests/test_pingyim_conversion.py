@@ -17,7 +17,7 @@ def test_pingyim_initials():
 def test_pingyim_vowels_and_rhymes():
     front = ["衣,yī","禮,lě","圓,ní","生死,snēsǐ/snīsǐ"]
     checker(front, c, c_north)
-    central = ["高,gō","查問,zábûn","衫,snā"]
+    central = ["高,gō","查問,zābbûn","衫,snā"]
     checker(central, c, c_north)
     back = ["污,ū","烏,oō","張,dniū","唔,noō"]
     checker(back, c, c_north)
