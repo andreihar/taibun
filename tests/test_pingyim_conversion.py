@@ -19,7 +19,7 @@ def test_pingyim_vowels_and_rhymes():
     checker(front, c, c_north)
     central = ["高,gō","查問,zābbûn","衫,snā"]
     checker(central, c, c_north)
-    back = ["污,ū","烏,oō","張,dniū","唔,noō"]
+    back = ["污,wū","烏,oō","張,dniū","唔,noō"]
     checker(back, c, c_north)
 
 def test_pingyim_finals():
