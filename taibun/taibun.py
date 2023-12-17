@@ -232,8 +232,19 @@ class Converter(object):
     # TODO: Make a better ruleset for Zhuyin
     def __tailo_to_zhuyin(self, input):
         input = input.lower()
-        with open(os.path.join(os.path.dirname(__file__), "data/zhuyin.json"),'r', encoding="utf-8") as file:
-            zhuyin = json.load(file)
+        convert_zhuyin = {
+            'p4':'ㆴ4', 'p8':'ㆴ8', 'k4':'ㆶ4', 'k8':'ㆶ8', 't4':'ㆵ4', 't8':'ㆵ8', 'h4':'ㆷ4', 'h8':'ㆷ8',
+            'tshing':'ㄑㄧㄥ', 'tshinn':'ㄑㆪ', 'phing':'ㄆㄧㄥ', 'phinn':'ㄆㆪ', 'tsing':'ㄐㄧㄥ', 'tsinn':'ㄐㆪ',
+            'ainn':'ㆮ', 'aunn':'ㆯ', 'giok':'ㆣㄧㄜㆶ', 'ngai':'ㄫㄞ', 'ngau':'ㄫㄠ', 'ngoo':'ㄫㆦ', 'ping':'ㄅㄧㄥ',
+            'pinn':'ㄅㆪ', 'senn':'ㄙㆥ', 'sing':'ㄒㄧㄥ', 'sinn':'ㄒㆪ', 'tshi':'ㄑㄧ',
+            'ang':'ㄤ', 'ann':'ㆩ', 'enn':'ㆥ', 'ing':'ㄧㄥ', 'inn':'ㆪ', 'mai':'ㄇㄞ', 'mau':'ㄇㄠ', 'mng':'ㄇㆭ',
+            'moo':'ㄇㆦ', 'mua':'ㄇㄨㄚ', 'mue':'ㄇㄨㆤ', 'mui':'ㄇㄨㄧ', 'nga':'ㄫㄚ', 'nge':'ㄫㆤ', 'ngi':'ㄫㄧ',
+            'ong':'ㆲ', 'onn':'ㆧ', 'tsh':'ㄘ', 'tsi':'ㄐㄧ', 'unn':'ㆫ',
+            'ai':'ㄞ', 'am':'ㆰ', 'an':'ㄢ', 'au':'ㄠ', 'ji':'ㆢㄧ', 'kh':'ㄎ', 'ma':'ㄇㄚ', 'me':'ㄇㆤ', 'mi':'ㄇㄧ',
+            'ng':'ㆭ', 'ok':'ㆦㆶ', 'om':'ㆱ', 'oo':'ㆦ', 'ph':'ㄆ', 'si':'ㄒㄧ', 'th':'ㄊ', 'ts':'ㄗ',
+            'a':'ㄚ', 'b':'ㆠ', 'e':'ㆤ', 'g':'ㆣ', 'h':'ㄏ', 'i':'ㄧ', 'j':'ㆡ', 'k':'ㄍ', 'l':'ㄌ', 'm':'ㆬ',
+            'n':'ㄋ', 'o':'ㄜ', 'p':'ㄅ', 's':'ㄙ', 't':'ㄉ', 'u':'ㄨ'
+        }
         zhuyin_tones = 	['', '', 'ˋ', '˪', '', 'ˊ', '', '˫', '˙']
         words = self.__preprocess_word(input)
         input = ""
@@ -242,7 +253,12 @@ class Converter(object):
             for i in range(0, len(number_tones)-1):
                 number_tones[i] = self.__tone_sandhi(number_tones[i])
         for nt in number_tones:
-            nt = self.__replacement_tool(zhuyin, nt)
+            nt = self.__replacement_tool(convert_zhuyin, nt).replace(self.suffix_token, '')
+            if len(nt) > 2:
+                if nt[-2] == 'ㄋ':
+                    nt = list(nt)
+                    nt[-2] = 'ㄣ'
+                    nt = "".join(nt)
             if self.format != 'number':
                 for t in nt:
                     if t.isnumeric(): nt = nt.replace(t, zhuyin_tones[int(t)])
