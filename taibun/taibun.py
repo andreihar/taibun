@@ -48,8 +48,10 @@ class Converter(object):
 
     # Convert tokenised text into specified transliteration system
     def get(self, input):
-        if self.delimiter == self.DEFAULT_DELIMITER: self.delimiter = self.__set_default_delimiter()
-        if self.sandhi == self.DEFAULT_SANDHI: self.sandhi = self.__set_default_sandhi()
+        if self.delimiter == self.DEFAULT_DELIMITER:
+            self.delimiter = self.__set_default_delimiter()
+        if self.sandhi == self.DEFAULT_SANDHI:
+            self.sandhi = self.__set_default_sandhi()
 
         converted = [self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(Tokeniser().tokenise(self.to_traditional(input)))]
         converted = ' '.join(converted).strip()
@@ -129,7 +131,8 @@ class Converter(object):
         words = input.split('-')
         input = ""
         for w in words:
-            if len(w) > 0: input += '-' + self.__get_number_tone(w)
+            if len(w) > 0:
+                input += '-' + self.__get_number_tone(w)
         return input[1:].replace(self.suffix_token, '--')
 
     # Helper to convert syllable from Tai-lo diacritic tones to number tones
@@ -171,7 +174,8 @@ class Converter(object):
             sandhi.update({'5':'3'})
         indices = range(len(words)-1) if not last else range(len(words))
         sandhi_words = [self.__replacement_tool(sandhi, words[i]) for i in indices]
-        if not last: sandhi_words.append(words[-1])
+        if not last:
+            sandhi_words.append(words[-1])
         return sandhi_words
     
 
@@ -325,30 +329,49 @@ class Converter(object):
         for nt in number_tones:
             replaced = self.__replacement_tool(convert_pingyim, nt)
             if replaced[0] == 'i': # Initial i, upper and lower case
-                if replaced[1] in ['a', 'u', 'o']: replaced = 'y' + replaced[1:]
-                else: replaced = 'y' + replaced
+                if replaced[1] in ['a', 'u', 'o']:
+                    replaced = 'y' + replaced[1:]
+                else:
+                    replaced = 'y' + replaced
             if replaced[0] == 'I':
-                if replaced[1] in ['a', 'u', 'o']: replaced = 'Y' + replaced[1:]
-                else: replaced = 'Y' + replaced.lower()
+                if replaced[1] in ['a', 'u', 'o']:
+                    replaced = 'Y' + replaced[1:]
+                else:
+                    replaced = 'Y' + replaced.lower()
                 replaced = 'Y' + replaced.lower()
 
-            if replaced[-3:][:2] == 'ln': replaced = replaced[:-3] + 'n' + replaced[-1] # Final n
+            if replaced[-3:][:2] == 'ln':
+                replaced = replaced[:-3] + 'n' + replaced[-1] # Final n
 
-            if nt[0] == 'm' and len(nt) == 2: replaced = 'm' + nt[-1] # Syllabic consonant m
-            elif nt[0] == 'm' and nt[1] == 'n': replaced = 'm' + replaced[3:]
-            if nt[0] == 'M' and len(nt) == 2: replaced = 'M' + nt[-1] # upper and lower case
-            elif nt[0] == 'M' and nt[1] == 'n': replaced = 'M' + replaced[3:]
-            if replaced[-4:][:3] == 'bbn': replaced = replaced[:-4] + 'm' + replaced[-1] # Final m
-            
-            if nt[-3:][:2] == 'ng': replaced = replaced[:-4] + 'ng' + nt[-1] # Coda ng
-            if nt[-3:][:2] == 'Ng': replaced = replaced[:-4] + 'Ng' + nt[-1] # Coda ng
+            if nt[0] == 'm' and len(nt) == 2:
+                replaced = 'm' + nt[-1] # Syllabic consonant m
+            elif nt[0] == 'm' and nt[1] == 'n':
+                replaced = 'm' + replaced[3:]
+            if nt[0] == 'M' and len(nt) == 2:
+                replaced = 'M' + nt[-1] # upper and lower case
+            elif nt[0] == 'M' and nt[1] == 'n':
+                replaced = 'M' + replaced[3:]
 
-            if replaced[0] == 'u' and len(nt) > 2: replaced = 'w' + replaced[1:] # Initial u, upper and lower case
-            elif replaced[0] == 'u' and len(nt) == 2: replaced = 'w' + replaced
-            if replaced[0] == 'U' and len(nt) > 2: replaced = 'W' + replaced[1:]
-            elif replaced[0] == 'U' and len(nt) == 2: replaced = 'W' + replaced.lower()
-            if self.format != 'number': input += '-' + self.__get_mark_tone(replaced, placement_pingyim, tones_pingyim)
-            else: input += '-' + replaced
+            if replaced[-4:][:3] == 'bbn':
+                replaced = replaced[:-4] + 'm' + replaced[-1] # Final m
+            if nt[-3:][:2] == 'ng':
+                replaced = replaced[:-4] + 'ng' + nt[-1] # Coda ng
+            if nt[-3:][:2] == 'Ng':
+                replaced = replaced[:-4] + 'Ng' + nt[-1] # Coda ng
+
+            if replaced[0] == 'u' and len(nt) > 2:
+                replaced = 'w' + replaced[1:] # Initial u, upper and lower case
+            elif replaced[0] == 'u' and len(nt) == 2:
+                replaced = 'w' + replaced
+            if replaced[0] == 'U' and len(nt) > 2:
+                replaced = 'W' + replaced[1:]
+            elif replaced[0] == 'U' and len(nt) == 2:
+                replaced = 'W' + replaced.lower()
+
+            if self.format != 'number':
+                input += '-' + self.__get_mark_tone(replaced, placement_pingyim, tones_pingyim)
+            else:
+                input += '-' + replaced
         return input[1:].replace(self.suffix_token, '')
 
 
@@ -379,9 +402,12 @@ class Converter(object):
         if self.sandhi:
             number_tones = self.__tone_sandhi(number_tones, last)
         for nt in number_tones:
-            if nt[-2] == 'o': nt = (nt[:-2] + 'or' + nt[-1])
-            if self.format != 'number': input += '-' + self.__get_mark_tone(self.__replacement_tool(convert_ti, nt), placement_ti, tones_ti)
-            else: input += '-' + self.__replacement_tool(convert_ti, nt)
+            if nt[-2] == 'o':
+                nt = (nt[:-2] + 'or' + nt[-1])
+            if self.format != 'number':
+                input += '-' + self.__get_mark_tone(self.__replacement_tool(convert_ti, nt), placement_ti, tones_ti)
+            else:
+                input += '-' + self.__replacement_tool(convert_ti, nt)
         return input[1:].replace(self.suffix_token, '--')
 
 
@@ -466,7 +492,7 @@ class Tokeniser(object):
     
     # Helper to check if the character is a Chinese character
     def is_cjk(self, text):
-        if len(text) == 1:  # Check if it's a single character
+        if len(text) == 1: # Check if it's a single character
             code_point = ord(text)
             return (
                 0x4E00 <= code_point <= 0x9FFF or  # BASIC
@@ -476,5 +502,5 @@ class Tokeniser(object):
                 0x30000 <= code_point <= 0x323AF or  # Ext G,H
                 0x2EBF0 <= code_point <= 0x2EE5F  # Ext I
             )
-        else:  # Check if all characters in the string are CJK
+        else: # Check if all characters in the string are CJK
             return all(self.is_cjk(char) for char in text)
