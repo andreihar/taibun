@@ -51,15 +51,12 @@ class Converter(object):
         if self.delimiter == self.DEFAULT_DELIMITER: self.delimiter = self.__set_default_delimiter()
         if self.sandhi == self.DEFAULT_SANDHI: self.sandhi = self.__set_default_sandhi()
 
-        tokeniser = Tokeniser()
-        converted = tokeniser.tokenise(self.to_traditional(input))
-        converted = self.__tone_sandhi_position(converted)
-        converted = [self.__convert_tokenised(i).strip() for i in converted]
+        converted = [self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(Tokeniser().tokenise(self.to_traditional(input)))]
         converted = ' '.join(converted).strip()
         if self.punctuation == 'format':
             converted = converted[0].upper() + converted[1:]
-            return self.__format_text(self.__format_punctuation_western(converted.strip()))
-        return self.__format_punctuation_cjk(converted.strip())
+            return self.__format_text(self.__format_punctuation_western(converted))
+        return self.__format_punctuation_cjk(converted)
 
 
     # Convert Simplified to Traditional characters
@@ -76,14 +73,13 @@ class Converter(object):
     # Helper to convert separate words
     def __convert_tokenised(self, word):
         if word[0] in word_dict:
-            if type(word) is str: # certain Chinese characters that are used in Taiwanese are outside of the [\u4e00-\u9FFF] range
-                word = (word, True)
             word = (word_dict[word[0]],) + word[1:]
             if "/" in word[0]:
-                if self.dialect == 'north': word = (word[0].split("/")[1],)+word[1:]
-                else: word = (word[0].split("/")[0],)+word[1:]
+                dialect_part = word[0].split("/")[1] if self.dialect == 'north' else word[0].split("/")[0]
+                word = (dialect_part,) + word[1:]
             word = self.__system_conversion(word).replace('---', '--')
-            if self.format == 'number' and (self.system == 'tailo' or self.system == 'poj'): word = self.__mark_to_number(word)
+            if self.format == 'number' and (self.system == 'tailo' or self.system == 'poj'):
+                word = self.__mark_to_number(word)
             if self.format == 'strip':
                 if self.system == 'tlpa':
                     for tone in ['1', '2', '3', '4', '5', '7', '8']: word = word.replace(tone, '')
@@ -182,9 +178,10 @@ class Converter(object):
     # Helper to define which words should be sandhi'd fully
     def __tone_sandhi_position(self, input):
         result_list = []
+        tokeniser = Tokeniser()
         for i, char in enumerate(input):
-            if bool(re.search("[\u4e00-\u9FFF]", char)):
-                result_list.append((char, (i < len(input) - 1 and bool(re.search("[\u4e00-\u9FFF]", input[i+1])))))
+            if tokeniser.is_cjk(char):
+                result_list.append((char, (i < len(input) - 1 and tokeniser.is_cjk(input[i+1]))))
             else:
                 result_list.append(char)
         return result_list
@@ -452,8 +449,8 @@ class Tokeniser(object):
                         break
                     elif j == 1:
                         if len(tokenised) > 0:
-                            if not re.search("[\u4e00-\u9FFF]", tokenised[-1]) and \
-                            not re.search("[\u4e00-\u9FFF]", input[0:j]):
+                            if not self.is_cjk(tokenised[-1]) and \
+                            not self.is_cjk(input[0:j]):
                                 tokenised[-1] += input[0:j]
                             else:
                                 tokenised.append(input[0:j])
@@ -474,3 +471,15 @@ class Tokeniser(object):
                 tokenised.insert(tokenised.index(word)+1, word[-1])
                 tokenised[tokenised.index(word)] = word[:-1]
         return tokenised
+    
+    # Helper to check if the character is a Chinese character
+    def is_cjk(self, char):
+        code_point = ord(char)
+        return (
+            0x4E00 <= code_point <= 0x9FFF or #BASIC
+            0x3400 <= code_point <= 0x4DBF or #Ext A
+            0x20000 <= code_point <= 0x2A6DF or #Ext B
+            0x2A700 <= code_point <= 0x2EBEF or #Ext C,D,E,F
+            0x30000 <= code_point <= 0x323AF or #Ext G,H
+            0x2EBF0 <= code_point <= 0x2EE5F #Ext I
+        )
