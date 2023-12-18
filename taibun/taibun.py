@@ -396,9 +396,12 @@ class Converter(object):
                                '［':'[', '【':'['}
         left_space = {'.':'.', ',':',','!':'!', '?':'?', ';':';', ':':':',')':')', ']':']', '」':'"','”':'"', '--':'--'}
         right_space = {'(':'(', '[':'[', '「':'"', '“':'"'}
-        for punct_ch, punct_lat in punctiation_mapping.items(): input = input.replace(punct_ch, punct_lat)
-        for left, space in left_space.items(): input = input.replace(' ' + left, space).replace(left, space)
-        for right, space in right_space.items(): input = input.replace(right + ' ', space).replace(right, space)
+        for punct_ch, punct_lat in punctiation_mapping.items():
+            input = input.replace(punct_ch, punct_lat)
+        for left, space in left_space.items():
+            input = input.replace(' ' + left, space).replace(left, space)
+        for right, space in right_space.items():
+            input = input.replace(right + ' ', space).replace(right, space)
         return input
     
 
@@ -406,12 +409,10 @@ class Converter(object):
     def __format_punctuation_cjk(self, input):
         left_space = ['。', '．', '，', '、', '！', '？', '；', '：', '）', '］', '】', '」', '”', '--']
         right_space = ['（', '［', '【', '「', '“']
-        for left in left_space:
-            input = input.replace(' ' + left + ' ', left)
-            input = input.replace(' ' + left, left)
-        for right in right_space:
-            input = input.replace(' ' + right + ' ', right)
-            input = input.replace(right + ' ', right)
+        for punct in left_space:
+            input = input.replace(' ' + punct + ' ', punct).replace(' ' + punct, punct)
+        for punct in right_space:
+            input = input.replace(' ' + punct + ' ', punct).replace(punct + ' ', punct)
         return input
 
 
@@ -419,9 +420,9 @@ class Converter(object):
     def __format_text(self, input):
         punc_filter = re.compile("([.!?]\s*)")
         split_with_punc = punc_filter.split(input)
-        for i in split_with_punc:
-            if len(i) > 1:
-                split_with_punc[split_with_punc.index(i)] = (i[0].upper() + i[1:])
+        for i in range(0, len(split_with_punc), 2):
+            if len(split_with_punc[i]) > 1:
+                split_with_punc[i] = split_with_punc[i].capitalize()
         return "".join(split_with_punc)
     
 
@@ -436,7 +437,7 @@ class Tokeniser(object):
         while input != "":
             for j in reversed(range(1, 5)):
                 if len(input) >= j:
-                    word = input[0:j]
+                    word = input[:j]
                     if word in word_dict:
                         tokenised.append(word)
                         break
@@ -451,14 +452,12 @@ class Tokeniser(object):
                             tokenised.append(input[0:j])
             if len(input) == 1: input = ""
             else: input = input[j:]
-        for word in tokenised:
+        for idx, word in enumerate(tokenised):
             punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
-            tokenised_word = punctuations.split(word)
-            for subword in tokenised_word:
-                tokenised_word[tokenised_word.index(subword)] = subword.split(" ")
-            tokenised[tokenised.index(word)] = sum(tokenised_word, [])
+            tokenised_word = [subword.split(" ") for subword in punctuations.split(word) if subword]
+            tokenised[idx] = sum(tokenised_word, [])
         tokenised = sum(tokenised, [])
-        while "" in tokenised: tokenised.remove("")
+        tokenised = [word for word in tokenised if word]
         for word in tokenised:
             if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1:
                 tokenised.insert(tokenised.index(word)+1, word[-1])
