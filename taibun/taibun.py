@@ -473,13 +473,16 @@ class Tokeniser(object):
         return tokenised
     
     # Helper to check if the character is a Chinese character
-    def is_cjk(self, char):
-        code_point = ord(char)
-        return (
-            0x4E00 <= code_point <= 0x9FFF or #BASIC
-            0x3400 <= code_point <= 0x4DBF or #Ext A
-            0x20000 <= code_point <= 0x2A6DF or #Ext B
-            0x2A700 <= code_point <= 0x2EBEF or #Ext C,D,E,F
-            0x30000 <= code_point <= 0x323AF or #Ext G,H
-            0x2EBF0 <= code_point <= 0x2EE5F #Ext I
-        )
+    def is_cjk(self, text):
+        if len(text) == 1:  # Check if it's a single character
+            code_point = ord(text)
+            return (
+                0x4E00 <= code_point <= 0x9FFF or  # BASIC
+                0x3400 <= code_point <= 0x4DBF or  # Ext A
+                0x20000 <= code_point <= 0x2A6DF or  # Ext B
+                0x2A700 <= code_point <= 0x2EBEF or  # Ext C,D,E,F
+                0x30000 <= code_point <= 0x323AF or  # Ext G,H
+                0x2EBF0 <= code_point <= 0x2EE5F  # Ext I
+            )
+        else:  # Check if all characters in the string are CJK
+            return all(self.is_cjk(char) for char in text)
