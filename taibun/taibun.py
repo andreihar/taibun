@@ -101,7 +101,7 @@ class Converter(object):
         if self.system == 'pingyim': return self.__tailo_to_pingyim(word)
         if self.system == 'tongiong': return self.__tailo_to_ti(word)
         if self.sandhi: return self.__tailo_to_tailo(word)
-        else: return word
+        else: return word[0]
 
 
     # Helper functions to set delimiter according to transliteration system if wasn't explicitly defined by user
