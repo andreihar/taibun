@@ -45,3 +45,18 @@ def test_false():
 	checker(tlpa, Converter(system="TLPA", punctuation='none', sandhi=False), Converter(system="TLPA", dialect="north", punctuation='none', sandhi=False))
 	checker(pingyim, Converter(system="Pingyim", punctuation='none', sandhi=False), Converter(system="Pingyim", dialect="north", punctuation='none', sandhi=False))
 	checker(tongiong, Converter(system="Tongiong", punctuation='none', sandhi=False), Converter(system="Tongiong", dialect="north", punctuation='none', sandhi=False))
+
+def test_sentence():
+	tailo = ["太空朋友，恁好！恁食飽未？,Thái-khōng pīng-iú, lin-hó! Lin tsià-pa buē?/Thái-khōng pìng-iú, lin-hó! Lin tsià-pa bē?"]
+	poj = ["太空朋友，恁好！恁食飽未？,Thái-khōng pēng-iú, lin-hó! Lin chià-pa bōe?/Thái-khōng pèng-iú, lin-hó! Lin chià-pa bē?"]
+	zhuyin = ["太空朋友，恁好！恁食飽未？,ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˫ ㄧㄨˋ, ㄌㄧㄣ ㄏㄜˋ! ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˫?/ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˪ ㄧㄨˋ, ㄌㄧㄣ ㄏㄜˋ! ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㆤ˫?"]
+	tlpa = ["太空朋友，恁好！恁食飽未？,Thai2 khong7 ping7 iu2, lin1 ho2! Lin1 cia3 pa1 bue7?/Thai2 khong7 ping3 iu2, lin1 ho2! Lin1 cia3 pa1 be7?"]
+	pingyim = ["太空朋友，恁好！恁食飽未？,Tǎikông bîngyǔ, līnhǒ! Līn ziàbā bbuê?/Tǎikông bìngyǔ, līnhǒ! Līn ziàbā bbê?"]
+	tongiong = ["太空朋友，恁好！恁食飽未？,Tài-kōng bīng-iù, lin-hòr! Lin ziâ-ba bhuē?/Tài-kōng bîng-iù, lin-hòr! Lin ziâ-ba bhē?"]
+
+	checker(tailo, Converter(system="Tailo", sandhi=True), Converter(system="Tailo", dialect="north", sandhi=True))
+	checker(poj, Converter(system="POJ", sandhi=True), Converter(system="POJ", dialect="north", sandhi=True))
+	checker(zhuyin, Converter(system="Zhuyin", sandhi=True), Converter(system="Zhuyin", dialect="north", sandhi=True))
+	checker(tlpa, Converter(system="TLPA", sandhi=True), Converter(system="TLPA", dialect="north", sandhi=True))
+	checker(pingyim, Converter(system="Pingyim", sandhi=True), Converter(system="Pingyim", dialect="north", sandhi=True))
+	checker(tongiong, Converter(system="Tongiong", sandhi=True), Converter(system="Tongiong", dialect="north", sandhi=True))
