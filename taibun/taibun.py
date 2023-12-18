@@ -390,22 +390,15 @@ class Converter(object):
     # Helper to convert Chinese punctuation to Latin punctuation with appropriate spacing
     # TODO: better punctuation spacing management
     def __format_punctuation_western(self, input):
-        left_space = {'.':'.', ',':',',
-                    '!':'!', '?':'?', ';':';', ':':':',
-                    ')':')', ']':']', '」':'"',
-                    '”':'"', '--':'--'}
+        punctiation_mapping = {'。':'.', '．':' ', '，':',', '、':',',
+                               '！':'!', '？':'?', '；':';', '：':':',
+                               '）':')', '］':']', '】':']', '（':'(',
+                               '［':'[', '【':'['}
+        left_space = {'.':'.', ',':',','!':'!', '?':'?', ';':';', ':':':',')':')', ']':']', '」':'"','”':'"', '--':'--'}
         right_space = {'(':'(', '[':'[', '「':'"', '“':'"'}
-        punctuation_converter = {'。':'.', '．':' ', '，':',', '、':',',
-                                '！':'!', '？':'?', '；':';', '：':':',
-                                '）':')', '］':']', '】':']', '（':'(',
-                                '［':'[', '【':'['}
-        for punctuation in punctuation_converter: input = input.replace(punctuation, punctuation_converter[punctuation])
-        for left in left_space:
-            input = input.replace(' ' + left, left_space[left])
-            input = input.replace(left, left_space[left])
-        for right in right_space:
-            input = input.replace(right + ' ', right_space[right])
-            input = input.replace(right, right_space[right])
+        for punct_ch, punct_lat in punctiation_mapping.items(): input = input.replace(punct_ch, punct_lat)
+        for left, space in left_space.items(): input = input.replace(' ' + left, space).replace(left, space)
+        for right, space in right_space.items(): input = input.replace(right + ' ', space).replace(right, space)
         return input
     
 
