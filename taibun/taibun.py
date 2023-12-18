@@ -76,6 +76,8 @@ class Converter(object):
     # Helper to convert separate words
     def __convert_tokenised(self, word):
         if word[0] in word_dict:
+            if type(word) is str: # certain Chinese characters that are used in Taiwanese are outside of the [\u4e00-\u9FFF] range
+                word = (word, True)
             word = (word_dict[word[0]],) + word[1:]
             if "/" in word[0]:
                 if self.dialect == 'north': word = (word[0].split("/")[1],)+word[1:]
