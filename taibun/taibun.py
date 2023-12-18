@@ -53,9 +53,7 @@ class Converter(object):
 
         tokeniser = Tokeniser()
         converted = tokeniser.tokenise(self.to_traditional(input))
-        print(converted)
         converted = self.__tone_sandhi_position(converted)
-        print(converted)
         converted = [self.__convert_tokenised(i).strip() for i in converted]
         converted = ' '.join(converted).strip()
         if self.punctuation == 'format':
@@ -173,30 +171,20 @@ class Converter(object):
                 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'3'}
         if self.dialect == 'north':
             sandhi.update({'5':'3'})
-        if last:
-            for i in range(0, len(words)-1):
-                words[i] = self.__replacement_tool(sandhi, words[i])
-        else:
-            for i in range(0, len(words)):
-                words[i] = self.__replacement_tool(sandhi, words[i])
-        return words
+        indices = range(len(words)-1) if not last else range(len(words))
+        sandhi_words = [self.__replacement_tool(sandhi, words[i]) for i in indices]
+        if not last: sandhi_words.append(words[-1])
+        return sandhi_words
     
 
     # Helper to define which words should be sandhi'd fully
     def __tone_sandhi_position(self, input):
         result_list = []
-        for i in range(0, len(input)-1):
-            if re.search("[\u4e00-\u9FFF]", input[i]):
-                if re.search("[\u4e00-\u9FFF]", input[i+1]):
-                    result_list.append((input[i], False)) # false = doesn't have last syllable, true = has last syllable
-                else:
-                    result_list.append((input[i], True))
+        for i, char in enumerate(input):
+            if bool(re.search("[\u4e00-\u9FFF]", char)):
+                result_list.append((char, (i < len(input) - 1 and bool(re.search("[\u4e00-\u9FFF]", input[i+1])))))
             else:
-                result_list.append(input[i])
-        if re.search("[\u4e00-\u9FFF]", input[-1]):
-            result_list.append((input[-1], True))
-        else:
-            result_list.append(input[-1])
+                result_list.append(char)
         return result_list
 
 
@@ -476,7 +464,8 @@ class Tokeniser(object):
         tokenised = sum(tokenised, [])
         while "" in tokenised: tokenised.remove("")
         for word in tokenised:
-            if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1:
-                tokenised.insert(tokenised.index(word)+1, word[-1])
-                tokenised[tokenised.index(word)] = word[:-1]
+            if (word[-1] == '的' or word[-1] == '矣') and len(word) >= 3:
+                if word[-3:-1] == '--':
+                    tokenised.insert(tokenised.index(word)+1, word[-1])
+                    tokenised[tokenised.index(word)] = word[:-1]
         return tokenised
