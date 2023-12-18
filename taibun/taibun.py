@@ -53,6 +53,9 @@ class Converter(object):
 
         tokeniser = Tokeniser()
         converted = tokeniser.tokenise(self.to_traditional(input))
+        print(converted)
+        converted = self.__tone_sandhi_position(converted)
+        print(converted)
         converted = [self.__convert_tokenised(i).strip() for i in converted]
         converted = ' '.join(converted).strip()
         if self.punctuation == 'format':
@@ -74,11 +77,11 @@ class Converter(object):
 
     # Helper to convert separate words
     def __convert_tokenised(self, word):
-        if word in word_dict:
-            word = word_dict[word]
-            if "/" in word:
-                if self.dialect == 'north': word = word.split("/")[1]
-                else: word = word.split("/")[0]
+        if word[0] in word_dict:
+            word = (word_dict[word[0]],) + word[1:]
+            if "/" in word[0]:
+                if self.dialect == 'north': word = (word[0].split("/")[1],)+word[1:]
+                else: word = (word[0].split("/")[0],)+word[1:]
             word = self.__system_conversion(word).replace('---', '--')
             if self.format == 'number' and (self.system == 'tailo' or self.system == 'poj'): word = self.__mark_to_number(word)
             if self.format == 'strip':
@@ -164,13 +167,37 @@ class Converter(object):
 
 
     # Helper to apply tone sandhi to a word
-    def __tone_sandhi(self, word):
+    def __tone_sandhi(self, words, last):
         sandhi = {'1':'7', '7':'3', '3':'2', '2':'1', '5':'7',
                 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'2',
                 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'3'}
         if self.dialect == 'north':
             sandhi.update({'5':'3'})
-        return self.__replacement_tool(sandhi, word)
+        if last:
+            for i in range(0, len(words)-1):
+                words[i] = self.__replacement_tool(sandhi, words[i])
+        else:
+            for i in range(0, len(words)):
+                words[i] = self.__replacement_tool(sandhi, words[i])
+        return words
+    
+
+    # Helper to define which words should be sandhi'd fully
+    def __tone_sandhi_position(self, input):
+        result_list = []
+        for i in range(0, len(input)-1):
+            if re.search("[\u4e00-\u9FFF]", input[i]):
+                if re.search("[\u4e00-\u9FFF]", input[i+1]):
+                    result_list.append((input[i], False)) # false = doesn't have last syllable, true = has last syllable
+                else:
+                    result_list.append((input[i], True))
+            else:
+                result_list.append(input[i])
+        if re.search("[\u4e00-\u9FFF]", input[-1]):
+            result_list.append((input[-1], True))
+        else:
+            result_list.append(input[-1])
+        return result_list
 
 
     ### Tai-lo to other transliteration systems converting
@@ -178,6 +205,7 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo to Tai-lo
     # (called only in cases when tone sandhi is applied)
     def __tailo_to_tailo(self, input):
+        last = input[1]
         placement_tl = [
             'ia'+self.tone_token+'u', 'ua'+self.tone_token+'i', 'ua'+self.tone_token+'', 'ue'+self.tone_token+'', 'ui'+self.tone_token+'', 'a'+self.tone_token+'i',
             'a'+self.tone_token+'u', 'o'+self.tone_token+'o','ia'+self.tone_token+'', 'iu'+self.tone_token+'', 'io'+self.tone_token+'', 'o'+self.tone_token+'o', 'a'+self.tone_token+'', 
@@ -187,11 +215,10 @@ class Converter(object):
             'O'+self.tone_token+'', 'E'+self.tone_token+'', 'I'+self.tone_token+'', 'U'+self.tone_token+'', 'N'+self.tone_token+'g', 'M'+self.tone_token+''
         ]
         tones_tl = ["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
-        words = self.__preprocess_word(input)
+        words = self.__preprocess_word(input[0])
         input = ""
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        for i in range(0, len(number_tones)-1):
-            number_tones[i] = self.__tone_sandhi(number_tones[i])
+        number_tones = self.__tone_sandhi(number_tones, last)
         for nt in number_tones:
             input += '-' + self.__get_mark_tone(nt, placement_tl, tones_tl)
         return input[1:].replace(self.suffix_token, '--')
@@ -221,8 +248,7 @@ class Converter(object):
         input = ""
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
-            for i in range(0, len(number_tones)-1):
-                number_tones[i] = self.__tone_sandhi(number_tones[i])
+            number_tones = self.__tone_sandhi(number_tones)
         for nt in number_tones:
             input += '-' + self.__get_mark_tone(self.__replacement_tool(convert_poj, nt), placement_poj, tones_poj)
         return input[1:].replace(self.suffix_token, '--')
@@ -250,8 +276,7 @@ class Converter(object):
         input = ""
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
-            for i in range(0, len(number_tones)-1):
-                number_tones[i] = self.__tone_sandhi(number_tones[i])
+            number_tones = self.__tone_sandhi(number_tones)
         for nt in number_tones:
             nt = self.__replacement_tool(convert_zhuyin, nt).replace(self.suffix_token, '')
             if len(nt) > 2:
@@ -273,8 +298,7 @@ class Converter(object):
         input = ""
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
-            for i in range(0, len(number_tones)-1):
-                number_tones[i] = self.__tone_sandhi(number_tones[i])
+            number_tones = self.__tone_sandhi(number_tones)
         for nt in number_tones:
             input += '-' + self.__replacement_tool(convert_tlpa, nt)
         return input[1:].replace(self.suffix_token, '')
@@ -307,8 +331,7 @@ class Converter(object):
         input = ""
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
-            for i in range(0, len(number_tones)-1):
-                number_tones[i] = self.__tone_sandhi(number_tones[i])
+            number_tones = self.__tone_sandhi(number_tones)
         for nt in number_tones:
             replaced = self.__replacement_tool(convert_pingyim, nt)
             if replaced[0] == 'i': # Initial i, upper and lower case
@@ -363,8 +386,7 @@ class Converter(object):
         input = ""
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
-            for i in range(0, len(number_tones)-1):
-                number_tones[i] = self.__tone_sandhi(number_tones[i])
+            number_tones = self.__tone_sandhi(number_tones)
         for nt in number_tones:
             if nt[-2] == 'o': nt = (nt[:-2] + 'or' + nt[-1])
             if self.format != 'number': input += '-' + self.__get_mark_tone(self.__replacement_tool(convert_ti, nt), placement_ti, tones_ti)
