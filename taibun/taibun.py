@@ -57,6 +57,7 @@ class Converter(object):
         converted = ' '.join(converted).strip()
         if self.punctuation == 'format':
             converted = converted[0].upper() + converted[1:]
+            print(converted)
             return self.__format_text(self.__format_punctuation_western(converted))
         return self.__format_punctuation_cjk(converted)
 
@@ -416,22 +417,18 @@ class Converter(object):
     # Helper to convert Chinese punctuation to Latin punctuation with appropriate spacing
     # TODO: better punctuation spacing management
     def __format_punctuation_western(self, input):
-        left_space = {'.':'.', ',':',',
-                    '!':'!', '?':'?', ';':';', ':':':',
-                    ')':')', ']':']', '」':'"',
-                    '”':'"', '--':'--'}
+        punctiation_mapping = {'。':'.', '．':' ', '，':',', '、':',',
+                               '！':'!', '？':'?', '；':';', '：':':',
+                               '）':')', '］':']', '】':']', '（':'(',
+                               '［':'[', '【':'['}
+        left_space = {'.':'.', ',':',', '!':'!', '?':'?', ';':';', ':':':', ')':')', ']':']', '」':'"', '”':'"', '--':'--'}
         right_space = {'(':'(', '[':'[', '「':'"', '“':'"'}
-        punctuation_converter = {'。':'.', '．':' ', '，':',', '、':',',
-                                '！':'!', '？':'?', '；':';', '：':':',
-                                '）':')', '］':']', '】':']', '（':'(',
-                                '［':'[', '【':'['}
-        for punctuation in punctuation_converter: input = input.replace(punctuation, punctuation_converter[punctuation])
-        for left in left_space:
-            input = input.replace(' ' + left, left_space[left])
-            input = input.replace(left, left_space[left])
-        for right in right_space:
-            input = input.replace(right + ' ', right_space[right])
-            input = input.replace(right, right_space[right])
+        for punct_ch, punct_lat in punctiation_mapping.items():
+            input = input.replace(punct_ch, punct_lat)
+        for left, space in left_space.items():
+            input = input.replace(' ' + left, space).replace(left, space)
+        for right, space in right_space.items():
+            input = input.replace(right + ' ', space).replace(right, space)
         return input
     
 
@@ -450,9 +447,7 @@ class Converter(object):
     def __format_text(self, input):
         punc_filter = re.compile("([.!?]\s*)")
         split_with_punc = punc_filter.split(input)
-        for i in range(0, len(split_with_punc), 2):
-            if len(split_with_punc[i]) > 1:
-                split_with_punc[i] = split_with_punc[i].capitalize()
+        split_with_punc = [i[0].upper() + i[1:] if len(i) > 1 else i for i in split_with_punc]
         return "".join(split_with_punc)
     
 
