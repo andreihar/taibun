@@ -214,18 +214,13 @@ class Converter(object):
             'ia'+self.tone_token+'u', 'oe'+self.tone_token+'h', 'o'+self.tone_token+'e', 'oa'+self.tone_token+'i', 'u'+self.tone_token+'i', 'o'+self.tone_token+'a',
             'a'+self.tone_token+'i', 'a'+self.tone_token+'u', 'ia'+self.tone_token+'', 'iu'+self.tone_token+'', 'io'+self.tone_token+'', 'a'+self.tone_token+'',
             'o'+self.tone_token+'', 'o͘'+self.tone_token+'', 'e'+self.tone_token+'', 'i'+self.tone_token+'', 'u'+self.tone_token+'', 'n'+self.tone_token+'g', 'm'+self.tone_token+'',
-            'Oa'+self.tone_token+'h', 'Oa'+self.tone_token+'n', 'Oa'+self.tone_token+'ng', 'Oa'+self.tone_token+'ⁿ', 'Oa'+self.tone_token+'t',
-            'Ia'+self.tone_token+'u', 'Oe'+self.tone_token+'h', 'O'+self.tone_token+'e', 'Oa'+self.tone_token+'i', 'U'+self.tone_token+'i', 'O'+self.tone_token+'a',
-            'A'+self.tone_token+'i', 'A'+self.tone_token+'u', 'Ia'+self.tone_token+'', 'Iu'+self.tone_token+'', 'Io'+self.tone_token+'', 'A'+self.tone_token+'',
-            'O'+self.tone_token+'', 'O͘'+self.tone_token+'', 'E'+self.tone_token+'', 'I'+self.tone_token+'', 'U'+self.tone_token+'', 'N'+self.tone_token+'g', 'M'+self.tone_token+''
         ]
         convert_poj = {
             'nng':'nng', 'nnh':'hⁿ', 'nn':'ⁿ', 'ts':'ch',
             'ing':'eng', 'uai':'oai', 'uan':'oan',
-            'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘',
-            'Nng':'Nng', 'Nnh':'Hⁿ', 'Nn':'ⁿ', 'Ts':'Ch',
-            'Ing':'Eng', 'Uai':'Oai', 'Uan':'Oan',
-            'Ik':'Ek', 'Ua':'Oa', 'Ue':'Oe', 'Oo':'O͘'}
+            'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘'}
+        placement_poj += [s.capitalize() for s in placement_poj]
+        convert_poj.update({k.capitalize(): v.capitalize() for k, v in convert_poj.items()})
         tones_poj = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
         words = self.__preprocess_word(input[0])
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
