@@ -258,14 +258,10 @@ class Converter(object):
         input = ""
         for nt in number_tones:
             nt = self.__replacement_tool(convert_zhuyin, nt).replace(self.suffix_token, '')
-            if len(nt) > 2:
-                if nt[-2] == 'ㄋ':
-                    nt = list(nt)
-                    nt[-2] = 'ㄣ'
-                    nt = "".join(nt)
+            if len(nt) > 2 and nt[-2] == 'ㄋ':
+                nt = nt[:-2] + 'ㄣ' + nt[-1]
             if self.format != 'number':
-                for t in nt:
-                    if t.isnumeric(): nt = nt.replace(t, zhuyin_tones[int(t)])
+                nt = ''.join(zhuyin_tones[int(t)] if t.isnumeric() else t for t in nt)
             input += '-' + nt
         return input[1:].replace(self.suffix_token, '')
 
@@ -313,29 +309,21 @@ class Converter(object):
         input = ""
         for nt in number_tones:
             replaced = self.__replacement_tool(convert_pingyim, nt)
-            if replaced[0] == 'i': # Initial i, upper and lower case
-                if replaced[1] in ['a', 'u', 'o']:
-                    replaced = 'y' + replaced[1:]
-                else:
-                    replaced = 'y' + replaced
-            if replaced[0] == 'I':
-                if replaced[1] in ['a', 'u', 'o']:
-                    replaced = 'Y' + replaced[1:]
-                else:
-                    replaced = 'Y' + replaced.lower()
-                replaced = 'Y' + replaced.lower()
 
-            if replaced[-3:][:2] == 'ln':
+            replacements = {'i':'y', 'I':'Y'} # Initial i
+            for old, new in replacements.items():
+                if replaced[0] == old:
+                    replaced = new + replaced[1:] if replaced[1] in ['a', 'u', 'o'] else new + replaced.lower()
+
+            if replaced[-3:-1] == 'ln':
                 replaced = replaced[:-3] + 'n' + replaced[-1] # Final n
 
-            if nt[0] == 'm' and len(nt) == 2:
-                replaced = 'm' + nt[-1] # Syllabic consonant m
-            elif nt[0] == 'm' and nt[1] == 'n':
-                replaced = 'm' + replaced[3:]
-            if nt[0] == 'M' and len(nt) == 2:
-                replaced = 'M' + nt[-1] # upper and lower case
-            elif nt[0] == 'M' and nt[1] == 'n':
-                replaced = 'M' + replaced[3:]
+            for char in ['m', 'M']: # Syllabic consonant m
+                if nt[0] == char:
+                    if len(nt) == 2:
+                        replaced = char + nt[-1]
+                    elif nt[1] == 'n':
+                        replaced = char + replaced[3:]
 
             if replaced[-4:][:3] == 'bbn':
                 replaced = replaced[:-4] + 'm' + replaced[-1] # Final m
