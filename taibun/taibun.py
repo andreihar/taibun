@@ -309,35 +309,30 @@ class Converter(object):
         input = ""
         for nt in number_tones:
             replaced = self.__replacement_tool(convert_pingyim, nt)
-            # replacements = {'i':'y', 'I':'Y'} # Initial i
-            # for old, new in replacements.items():
-            #     if replaced[0] == old:
-            #         replaced = new + replaced[1:] if replaced[1] in ['a', 'u', 'o'] else new + replaced.lower()
-            if replaced[0] in ['i', 'I']:
+            if replaced[0] in ['i', 'I']: # Initial i
                 replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower())
-            # replacements = {'u':'w', 'U':'W'} # Initial u
-            # for old, new in replacements.items():
-            #     if replaced[0] == old:
-            #         replaced = new + replaced[1:] if len(nt) > 2 else new + replaced.lower()
-            if replaced[0] in ['u', 'U']:
+            if replaced[0] in ['u', 'U']: # Initial u
                 replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 else replaced.lower())
-
             if replaced[-3:-1] == 'ln': # Final n
                 replaced = replaced[:-3] + 'n' + replaced[-1]
+            if nt[0] in ['m', 'M']: # Syllabic consonant m
+                replaced = nt[0] + (nt[-1] if len(nt) == 2 else replaced[3:])
 
-            for char in ['m', 'M']: # Syllabic consonant m
-                if nt[0] == char:
-                    if len(nt) == 2:
-                        replaced = char + nt[-1]
-                    elif nt[1] == 'n':
-                        replaced = char + replaced[3:]
+            # for char in ['m', 'M']: # Syllabic consonant m
+            #     if nt[0] == char:
+            #         if len(nt) == 2:
+            #             replaced = char + nt[-1]
+            #         elif nt[1] == 'n':
+            #             replaced = char + replaced[3:]
 
-            if replaced[-4:][:3] == 'bbn': # Final m
-                replaced = replaced[:-4] + 'm' + replaced[-1]
+            # if replaced[-4:-1] == 'bbn':
+            #     replaced = replaced[:-4] + 'm' + replaced[-1]
+            replaced = replaced.replace('bbn', 'm', 1) if 'bbn' in replaced[-4:-1] else replaced # Final m
             
-            for char in ['ng', 'Ng']: # Coda ng
-                if nt[-3:][:2] == char:
-                    replaced = replaced[:-4] + char + nt[-1]
+            # for char in ['ng', 'Ng']: # Coda ng
+            #     if nt[-3:-1] == char:
+            #         replaced = replaced[:-4] + char + nt[-1]
+            replaced = replaced[:-4] + nt[-3:-1] + nt[-1] if nt[-3:-1] in ['ng', 'Ng'] else replaced # Coda ng
 
             if self.format != 'number':
                 input += '-' + self.__get_mark_tone(replaced, placement_pingyim, tones_pingyim)
