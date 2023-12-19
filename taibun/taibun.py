@@ -119,6 +119,7 @@ class Converter(object):
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
             number_tones = self.__tone_sandhi(number_tones, input[1])
+        return number_tones
 
 
     # Helper to convert between transliteration systems
