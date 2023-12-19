@@ -449,7 +449,7 @@ class Converter(object):
         split_with_punc = punc_filter.split(input)
         split_with_punc = [i[0].upper() + i[1:] if len(i) > 1 else i for i in split_with_punc]
         return "".join(split_with_punc)
-    
+
 
 class Tokeniser(object):
 
@@ -462,31 +462,26 @@ class Tokeniser(object):
         while input != "":
             for j in reversed(range(1, 5)):
                 if len(input) >= j:
-                    word = input[:j]
+                    word = input[0:j]
                     if word in word_dict:
                         tokenised.append(word)
                         break
                     elif j == 1:
                         if len(tokenised) > 0:
                             if not self.is_cjk(tokenised[-1]) and \
-                            not self.is_cjk(input[0:j]):
-                                tokenised[-1] += input[0:j]
+                            not self.is_cjk(word):
+                                tokenised[-1] += word
                             else:
-                                tokenised.append(input[0:j])
+                                tokenised.append(word)
                         else:
-                            tokenised.append(input[0:j])
+                            tokenised.append(word)
             if len(input) == 1: input = ""
             else: input = input[j:]
-        for idx, word in enumerate(tokenised):
-            punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
-            tokenised_word = [subword.split(" ") for subword in punctuations.split(word) if subword]
-            tokenised[idx] = sum(tokenised_word, [])
+        punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
+        tokenised = [[item for subword in punctuations.split(word) if subword for item in subword.split(" ")] for word in tokenised]
         tokenised = sum(tokenised, [])
         tokenised = [word for word in tokenised if word]
-        for word in tokenised:
-            if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1:
-                tokenised.insert(tokenised.index(word)+1, word[-1])
-                tokenised[tokenised.index(word)] = word[:-1]
+        tokenised = [subword for word in tokenised for subword in ((word[:-1], word[-1]) if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1 else (word,))]
         return tokenised
     
     # Helper to check if the character is a Chinese character
