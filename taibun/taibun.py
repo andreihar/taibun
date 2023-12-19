@@ -309,11 +309,18 @@ class Converter(object):
         input = ""
         for nt in number_tones:
             replaced = self.__replacement_tool(convert_pingyim, nt)
-
-            replacements = {'i':'y', 'I':'Y'} # Initial i
-            for old, new in replacements.items():
-                if replaced[0] == old:
-                    replaced = new + replaced[1:] if replaced[1] in ['a', 'u', 'o'] else new + replaced.lower()
+            # replacements = {'i':'y', 'I':'Y'} # Initial i
+            # for old, new in replacements.items():
+            #     if replaced[0] == old:
+            #         replaced = new + replaced[1:] if replaced[1] in ['a', 'u', 'o'] else new + replaced.lower()
+            if replaced[0] in ['i', 'I']:
+                replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower())
+            # replacements = {'u':'w', 'U':'W'} # Initial u
+            # for old, new in replacements.items():
+            #     if replaced[0] == old:
+            #         replaced = new + replaced[1:] if len(nt) > 2 else new + replaced.lower()
+            if replaced[0] in ['u', 'U']:
+                replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 else replaced.lower())
 
             if replaced[-3:-1] == 'ln': # Final n
                 replaced = replaced[:-3] + 'n' + replaced[-1]
@@ -331,11 +338,6 @@ class Converter(object):
             for char in ['ng', 'Ng']: # Coda ng
                 if nt[-3:][:2] == char:
                     replaced = replaced[:-4] + char + nt[-1]
-            
-            replacements = {'u':'w', 'U':'W'} # Initial u
-            for old, new in replacements.items():
-                if replaced[0] == old:
-                    replaced = new + replaced[1:] if len(nt) > 2 else new + replaced.lower()
 
             if self.format != 'number':
                 input += '-' + self.__get_mark_tone(replaced, placement_pingyim, tones_pingyim)
