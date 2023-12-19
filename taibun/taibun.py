@@ -48,16 +48,13 @@ class Converter(object):
 
     # Convert tokenised text into specified transliteration system
     def get(self, input):
-        if self.delimiter == self.DEFAULT_DELIMITER:
-            self.delimiter = self.__set_default_delimiter()
-        if self.sandhi == self.DEFAULT_SANDHI:
-            self.sandhi = self.__set_default_sandhi()
+        self.delimiter = self.delimiter if self.delimiter != self.DEFAULT_DELIMITER else self.__set_default_delimiter()
+        self.sandhi = self.sandhi if self.sandhi != self.DEFAULT_SANDHI else self.__set_default_sandhi()
 
-        converted = [self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(Tokeniser().tokenise(self.to_traditional(input)))]
-        converted = ' '.join(converted).strip()
+        converted = Tokeniser().tokenise(self.to_traditional(input))
+        converted = ' '.join(self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(converted)).strip()
         if self.punctuation == 'format':
             converted = converted[0].upper() + converted[1:]
-            print(converted)
             return self.__format_text(self.__format_punctuation_western(converted))
         return self.__format_punctuation_cjk(converted)
 
@@ -66,31 +63,29 @@ class Converter(object):
     def to_traditional(self, input):
         with open(os.path.join(os.path.dirname(__file__), "data/simplified.json"),'r', encoding="utf-8") as file:
             trad = json.load(file)
-            for c in trad:
-                input = input.replace(c, trad[c])
-            return input
+        return ''.join(trad.get(c, c) for c in input)
 
 
     ### Input formatting
 
     # Helper to convert separate words
     def __convert_tokenised(self, word):
-        if word[0] in word_dict:
-            word = (word_dict[word[0]],) + word[1:]
-            if "/" in word[0]:
-                dialect_part = word[0].split("/")[1] if self.dialect == 'north' else word[0].split("/")[0]
-                word = (dialect_part,) + word[1:]
-            word = self.__system_conversion(word).replace('---', '--')
-            if self.format == 'number' and (self.system == 'tailo' or self.system == 'poj'):
-                word = self.__mark_to_number(word)
-            if self.format == 'strip':
-                if self.system == 'tlpa':
-                    for tone in ['1', '2', '3', '4', '5', '7', '8']: word = word.replace(tone, '')
-                if self.system == 'zhuyin':
-                    for tone in ['ˋ', '˪', 'ˊ', '˫', '˙']: word = word.replace(tone, '')
-                else: word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
-            word = word.replace('--', self.suffix_token).replace('-', self.delimiter).replace(self.suffix_token, '--')
+        if word[0] not in word_dict:
             return word
+        word = (word_dict[word[0]],) + word[1:]
+        if "/" in word[0]:
+            dialect_part = word[0].split("/")[1] if self.dialect == 'north' else word[0].split("/")[0]
+            word = (dialect_part,) + word[1:]
+        word = self.__system_conversion(word).replace('---', '--')
+        if self.format == 'number' and self.system in ['tailo', 'poj']:
+            word = self.__mark_to_number(word)
+        if self.format == 'strip':
+            if self.system == 'tlpa':
+                for tone in ['1', '2', '3', '4', '5', '7', '8']: word = word.replace(tone, '')
+            if self.system == 'zhuyin':
+                for tone in ['ˋ', '˪', 'ˊ', '˫', '˙']: word = word.replace(tone, '')
+            else: word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
+        word = word.replace('--', self.suffix_token).replace('-', self.delimiter).replace(self.suffix_token, '--')
         return word
 
 
@@ -130,10 +125,7 @@ class Converter(object):
     def __mark_to_number(self, input):
         input = input.replace('--', '-'+self.suffix_token)
         words = input.split('-')
-        input = ""
-        for w in words:
-            if len(w) > 0:
-                input += '-' + self.__get_number_tone(w)
+        input = '-'.join(self.__get_number_tone(w) for w in words if w)
         return input[1:].replace(self.suffix_token, '--')
 
     # Helper to convert syllable from Tai-lo diacritic tones to number tones
@@ -197,7 +189,6 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo to Tai-lo
     # (called only in cases when tone sandhi is applied)
     def __tailo_to_tailo(self, input):
-        last = input[1]
         placement_tl = [
             'ia'+self.tone_token+'u', 'ua'+self.tone_token+'i', 'ua'+self.tone_token+'', 'ue'+self.tone_token+'', 'ui'+self.tone_token+'', 'a'+self.tone_token+'i',
             'a'+self.tone_token+'u', 'o'+self.tone_token+'o','ia'+self.tone_token+'', 'iu'+self.tone_token+'', 'io'+self.tone_token+'', 'o'+self.tone_token+'o', 'a'+self.tone_token+'', 
@@ -208,12 +199,10 @@ class Converter(object):
         ]
         tones_tl = ["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
         words = self.__preprocess_word(input[0])
-        input = ""
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        number_tones = self.__tone_sandhi(number_tones, last)
-        for nt in number_tones:
-            input += '-' + self.__get_mark_tone(nt, placement_tl, tones_tl)
-        return input[1:].replace(self.suffix_token, '--')
+        number_tones = self.__tone_sandhi(number_tones, input[1])
+        input = '-'.join(self.__get_mark_tone(nt, placement_tl, tones_tl) for nt in number_tones)
+        return input.replace(self.suffix_token, '--')
 
 
     # Helper to convert syllable from Tai-lo to POJ
