@@ -263,7 +263,6 @@ class Converter(object):
 
 
     # Helper to convert syllable from Tai-lo to Bbanlam pingyim
-    # TODO: initial i to yi, probably solved
     def __tailo_to_pingyim(self, input):
         placement = [
             'ua'+self.tone_token+'i', 'ia'+self.tone_token+'o', 'a'+self.tone_token+'i', 'a'+self.tone_token+'o', 
@@ -338,7 +337,6 @@ class Converter(object):
     ### Converted output formatting
 
     # Helper to convert Chinese punctuation to Latin punctuation with appropriate spacing
-    # TODO: better punctuation spacing management
     def __format_punctuation_western(self, input):
         punctiation_mapping = {'。':'.', '．':' ', '，':',', '、':',', '！':'!', '？':'?', '；':';', '：':':',
                                '）':')', '］':']', '】':']', '（':'(', '［':'[', '【':'['}
