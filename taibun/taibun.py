@@ -239,15 +239,15 @@ class Converter(object):
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
             number_tones = self.__tone_sandhi(number_tones, input[1])
-        input = ""
+        input = []
         for nt in number_tones:
             nt = self.__replacement_tool(convert, nt).replace(self.suffix_token, '')
             if len(nt) > 2 and nt[-2] == 'ㄋ':
                 nt = nt[:-2] + 'ㄣ' + nt[-1]
             if self.format != 'number':
                 nt = ''.join(tones[int(t)] if t.isnumeric() else t for t in nt)
-            input += '-' + nt
-        return input[1:].replace(self.suffix_token, '')
+            input.append(nt)
+        return '-'.join(input).replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to TLPA
@@ -284,7 +284,7 @@ class Converter(object):
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
             number_tones = self.__tone_sandhi(number_tones, input[1])
-        input = ""
+        input = []
         for nt in number_tones:
             replaced = self.__replacement_tool(convert, nt)
             if replaced[0] in ['i', 'I']: # Initial i
@@ -303,10 +303,10 @@ class Converter(object):
             if replaced[-3:-1] == 'ln': # Final n
                 replaced = replaced[:-3] + 'n' + replaced[-1]
             if self.format != 'number':
-                input += '-' + self.__get_mark_tone(replaced, placement, tones_pingyim)
+                input.append(self.__get_mark_tone(replaced, placement, tones_pingyim))
             else:
-                input += '-' + replaced
-        return input[1:].replace(self.suffix_token, '')
+                input.append(replaced)
+        return '-'.join(input).replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to Tong-iong ping-im
@@ -340,10 +340,8 @@ class Converter(object):
     # Helper to convert Chinese punctuation to Latin punctuation with appropriate spacing
     # TODO: better punctuation spacing management
     def __format_punctuation_western(self, input):
-        punctiation_mapping = {'。':'.', '．':' ', '，':',', '、':',',
-                               '！':'!', '？':'?', '；':';', '：':':',
-                               '）':')', '］':']', '】':']', '（':'(',
-                               '［':'[', '【':'['}
+        punctiation_mapping = {'。':'.', '．':' ', '，':',', '、':',', '！':'!', '？':'?', '；':';', '：':':',
+                               '）':')', '］':']', '】':']', '（':'(', '［':'[', '【':'['}
         left_space = {'.':'.', ',':',', '!':'!', '?':'?', ';':';', ':':':', ')':')', ']':']', '」':'"', '”':'"', '--':'--'}
         right_space = {'(':'(', '[':'[', '「':'"', '“':'"'}
         for punct_ch, punct_lat in punctiation_mapping.items():
