@@ -113,6 +113,14 @@ class Converter(object):
 
     ### Conversion functions
 
+    # Helper to get number tones
+    def __get_number_tones(self, input):
+        words = self.__preprocess_word(input[0])
+        number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
+        if self.sandhi:
+            number_tones = self.__tone_sandhi(number_tones, input[1])
+
+
     # Helper to convert between transliteration systems
     def __replacement_tool(self, dictionary, input):
         pattern = re.compile('|'.join(dictionary.keys()))
@@ -125,6 +133,7 @@ class Converter(object):
         words = input.split('-')
         input = '-'.join(self.__get_number_tone(w) for w in words if len(w) > 0)
         return input.replace(self.suffix_token, '--')
+
 
     # Helper to convert syllable from Tai-lo diacritic tones to number tones
     def __get_number_tone(self, input):
@@ -192,10 +201,7 @@ class Converter(object):
         ]
         tones = ["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
         placement += [s.capitalize() for s in placement]
-        words = self.__preprocess_word(input[0])
-        number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        number_tones = self.__tone_sandhi(number_tones, input[1])
-        input = '-'.join(self.__get_mark_tone(nt, placement, tones) for nt in number_tones)
+        input = '-'.join(self.__get_mark_tone(nt, placement, tones) for nt in self.__get_number_tones(self, input))
         return input.replace(self.suffix_token, '--')
 
 
@@ -208,14 +214,10 @@ class Converter(object):
             'o'+self.tone_token+'', 'o͘'+self.tone_token+'', 'e'+self.tone_token+'', 'i'+self.tone_token+'', 'u'+self.tone_token+'', 'n'+self.tone_token+'g', 'm'+self.tone_token+''
         ]
         convert = {'nng':'nng', 'nnh':'hⁿ', 'nn':'ⁿ', 'ts':'ch', 'ing':'eng', 'uai':'oai', 'uan':'oan', 'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘'}
-        poj = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
+        tones = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
         placement += [s.capitalize() for s in placement]
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
-        words = self.__preprocess_word(input[0])
-        number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        if self.sandhi:
-            number_tones = self.__tone_sandhi(number_tones, input[1])
-        input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, poj) for nt in number_tones)
+        input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) for nt in self.__get_number_tones(self, input))
         return input.replace(self.suffix_token, '--')
 
 
@@ -235,30 +237,22 @@ class Converter(object):
             'n':'ㄋ', 'o':'ㄜ', 'p':'ㄅ', 's':'ㄙ', 't':'ㄉ', 'u':'ㄨ'
         }
         tones = ['', '', 'ˋ', '˪', '', 'ˊ', '', '˫', '˙']
-        words = self.__preprocess_word(input[0].lower())
-        number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        if self.sandhi:
-            number_tones = self.__tone_sandhi(number_tones, input[1])
-        input = []
-        for nt in number_tones:
+        output = []
+        for nt in self.__get_number_tones(self, (input[0].lower(), input[1])):
             nt = self.__replacement_tool(convert, nt).replace(self.suffix_token, '')
             if len(nt) > 2 and nt[-2] == 'ㄋ':
                 nt = nt[:-2] + 'ㄣ' + nt[-1]
             if self.format != 'number':
                 nt = ''.join(tones[int(t)] if t.isnumeric() else t for t in nt)
-            input.append(nt)
-        return '-'.join(input).replace(self.suffix_token, '')
+            output.append(nt)
+        return '-'.join(output).replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to TLPA
     def __tailo_to_tlpa(self, input):
         convert = {'tsh':'ch', 'ts':'c'}
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
-        words = self.__preprocess_word(input[0])
-        number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        if self.sandhi:
-            number_tones = self.__tone_sandhi(number_tones, input[1])
-        input = '-'.join(self.__replacement_tool(convert, nt) for nt in number_tones)
+        input = '-'.join(self.__replacement_tool(convert, nt) for nt in self.__get_number_tones(self, input))
         return input.replace(self.suffix_token, '')
 
 
@@ -276,15 +270,11 @@ class Converter(object):
             'inn':'ni', 'unn':'nu', 'au':'ao', 'ph':'p', 'nng':'lng', 'tsh':'c',
             'ng':'ggn', 'ts':'z', 'th':'t', 'kh':'k', 'ir':'i', 'p':'b', 'b':'bb',
             't':'d', 'k':'g', 'g':'gg', 'j':'zz', 'n':'ln', 'm':'bbn'}
-        tones_pingyim = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
+        tones = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
         placement += [s.capitalize() for s in placement]
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
-        words = self.__preprocess_word(input[0])
-        number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        if self.sandhi:
-            number_tones = self.__tone_sandhi(number_tones, input[1])
-        input = []
-        for nt in number_tones:
+        output = []
+        for nt in self.__get_number_tones(self, input):
             replaced = self.__replacement_tool(convert, nt)
             if replaced[0] in ['i', 'I']: # Initial i
                 replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower())
@@ -302,10 +292,10 @@ class Converter(object):
             if replaced[-3:-1] == 'ln': # Final n
                 replaced = replaced[:-3] + 'n' + replaced[-1]
             if self.format != 'number':
-                input.append(self.__get_mark_tone(replaced, placement, tones_pingyim))
+                output.append(self.__get_mark_tone(replaced, placement, tones))
             else:
-                input.append(replaced)
-        return '-'.join(input).replace(self.suffix_token, '')
+                output.append(replaced)
+        return '-'.join(output).replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to Tong-iong ping-im
@@ -322,15 +312,11 @@ class Converter(object):
             'oo':'o', 'om':'om', 'ong':'ong', 'ir':'i', 'tsh':'c',
             'ts':'z', 'nng':'nng', 'ng':'ng', 'g':'gh', 'kh':'k', 'k':'g',
             'ph':'p', 'p':'b', 'b':'bh', 'th':'t', 't':'d', 'j':'r'}
-        tones_ti = ["̊", "", "̀", "̂", "̄", "̆", "", "̄", "", "́"]
+        tones = ["̊", "", "̀", "̂", "̄", "̆", "", "̄", "", "́"]
         placement += [s.capitalize() for s in placement]
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
-        words = self.__preprocess_word(input[0])
-        number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        if self.sandhi:
-            number_tones = self.__tone_sandhi(number_tones, input[1])
-        number_tones = [nt[:-2] + 'or' + nt[-1] if nt[-2] == 'o' else nt for nt in number_tones]
-        input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones_ti) if self.format != 'number' else self.__replacement_tool(convert, nt) for nt in number_tones)
+        number_tones = [nt[:-2] + 'or' + nt[-1] if nt[-2] == 'o' else nt for nt in self.__get_number_tones(self, input)]
+        input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) if self.format != 'number' else self.__replacement_tool(convert, nt) for nt in number_tones)
         return input.replace(self.suffix_token, '--')
 
 
