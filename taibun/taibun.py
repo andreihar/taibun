@@ -54,8 +54,7 @@ class Converter(object):
         converted = Tokeniser().tokenise(self.to_traditional(input))
         converted = ' '.join(self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(converted)).strip()
         if self.punctuation == 'format':
-            converted = converted[0].upper() + converted[1:]
-            return self.__format_text(self.__format_punctuation_western(converted))
+            return self.__format_text(self.__format_punctuation_western(converted[0].upper() + converted[1:]))
         return self.__format_punctuation_cjk(converted)
 
 
@@ -81,14 +80,11 @@ class Converter(object):
             word = self.__mark_to_number(word)
         if self.format == 'strip':
             if self.system == 'tlpa':
-                for tone in ['1', '2', '3', '4', '5', '7', '8']:
-                    word = word.replace(tone, '')
+                word = word.translate(str.maketrans('', '', ''.join(['1', '2', '3', '4', '5', '7', '8'])))
             if self.system == 'zhuyin':
-                for tone in ['ˋ', '˪', 'ˊ', '˫', '˙']:
-                    word = word.replace(tone, '')
+                word = word.translate(str.maketrans('', '', ''.join(['ˋ', '˪', 'ˊ', '˫', '˙'])))
             else: word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
-        word = word.replace('--', self.suffix_token).replace('-', self.delimiter).replace(self.suffix_token, '--')
-        return word
+        return word.replace('--', self.suffix_token).replace('-', self.delimiter).replace(self.suffix_token, '--')
 
 
     # Helper switch for converting 漢字 based on defined transliteration system
@@ -162,9 +158,7 @@ class Converter(object):
 
     # Helper to apply tone sandhi to a word
     def __tone_sandhi(self, words, last):
-        sandhi = {'1':'7', '7':'3', '3':'2', '2':'1', '5':'7',
-                'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'2',
-                'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'3'}
+        sandhi = {'1':'7', '7':'3', '3':'2', '2':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'2', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'3'}
         if self.dialect == 'north':
             sandhi.update({'5':'3'})
         indices = range(len(words)-1) if not last else range(len(words))
@@ -213,10 +207,7 @@ class Converter(object):
             'a'+self.tone_token+'i', 'a'+self.tone_token+'u', 'ia'+self.tone_token+'', 'iu'+self.tone_token+'', 'io'+self.tone_token+'', 'a'+self.tone_token+'',
             'o'+self.tone_token+'', 'o͘'+self.tone_token+'', 'e'+self.tone_token+'', 'i'+self.tone_token+'', 'u'+self.tone_token+'', 'n'+self.tone_token+'g', 'm'+self.tone_token+''
         ]
-        convert = {
-            'nng':'nng', 'nnh':'hⁿ', 'nn':'ⁿ', 'ts':'ch',
-            'ing':'eng', 'uai':'oai', 'uan':'oan',
-            'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘'}
+        convert = {'nng':'nng', 'nnh':'hⁿ', 'nn':'ⁿ', 'ts':'ch', 'ing':'eng', 'uai':'oai', 'uan':'oan', 'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘'}
         poj = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
         placement += [s.capitalize() for s in placement]
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
@@ -296,16 +287,21 @@ class Converter(object):
         input = ""
         for nt in number_tones:
             replaced = self.__replacement_tool(convert, nt)
-            replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower()) if replaced[0] in ['i', 'I'] else replaced # Initial i
-            replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 else replaced.lower()) if replaced[0] in ['u', 'U'] else replaced # Initial u
+            if replaced[0] in ['i', 'I']: # Initial i
+                replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower())
+            if replaced[0] in ['u', 'U']: # Initial u
+                replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 else replaced.lower())
             if nt[0] in ['m', 'M']: # Syllabic consonant m
                 if len(nt) == 2:
                     replaced = nt[0] + nt[-1]
                 elif nt[1] == 'n':
                     replaced = nt[0] + replaced[3:]
-            replaced = replaced[:-4] + nt[-3:-1] + nt[-1] if nt[-3:-1] in ['ng', 'Ng'] else replaced # Coda ng
-            replaced = replaced.replace('bbn', 'm', 1) if 'bbn' in replaced[-4:-1] else replaced # Final m
-            replaced = replaced[:-3] + 'n' + replaced[-1] if replaced[-3:-1] == 'ln' else replaced # Final n
+            if nt[-3:-1] in ['ng', 'Ng']: # Coda ng
+                replaced = replaced[:-4] + nt[-3:-1] + nt[-1]
+            if 'bbn' in replaced[-4:-1]: # Final m
+                replaced = replaced.replace('bbn', 'm', 1)
+            if replaced[-3:-1] == 'ln': # Final n
+                replaced = replaced[:-3] + 'n' + replaced[-1]
             if self.format != 'number':
                 input += '-' + self.__get_mark_tone(replaced, placement, tones_pingyim)
             else:
