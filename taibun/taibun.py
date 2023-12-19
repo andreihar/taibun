@@ -255,11 +255,15 @@ class Converter(object):
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
             number_tones = self.__tone_sandhi(number_tones, input[1])
-        input = '-'.join([
-            ''.join(zhuyin_tones[int(t)] if t.isnumeric() else t for t in nt) if self.format != 'number' else nt
-            for nt in (self.__replacement_tool(convert_zhuyin, nt).replace(self.suffix_token, '')[:-2] + 'ㄣ' + nt[-1] if len(nt) > 2 and nt[-2] == 'ㄋ' else nt for nt in number_tones)
-        ])
-        return input.replace(self.suffix_token, '')
+        input = ""
+        for nt in number_tones:
+            nt = self.__replacement_tool(convert_zhuyin, nt).replace(self.suffix_token, '')
+            if len(nt) > 2 and nt[-2] == 'ㄋ':
+                nt = nt[:-2] + 'ㄣ' + nt[-1]
+            if self.format != 'number':
+                nt = ''.join(zhuyin_tones[int(t)] if t.isnumeric() else t for t in nt)
+            input += '-' + nt
+        return input[1:].replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to TLPA
