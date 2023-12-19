@@ -8,8 +8,8 @@ def test_mark():
 		(["phiau-kè","án-ne/án-ni","kài-siāu-jîn/kài-siāu-lîn","peh-jī/pueh-lī","sap-sé/sap-sué","hat-khu","Hok-kiàn","niû-kiánn","m̄-bián","Pe̍h-uē-jī/Pe̍h-uē-lī","gia̍p-sán","Pu̍t-tsóo","ba̍k-hiunn","ḿ-pô"], "Tailo"),
 		(["phiau-kè","án-ne/án-ni","kài-siāu-jîn/kài-siāu-lîn","peh-jī/poeh-lī","sap-sé/sap-sóe","hat-khu","Hok-kiàn","niû-kiáⁿ","m̄-bián","Pe̍h-ōe-jī/Pe̍h-ōe-lī","gia̍p-sán","Pu̍t-chó͘","ba̍k-hiuⁿ","ḿ-pô"], "POJ"),
 		(["ㄆㄧㄠ ㄍㆤ˪","ㄢˋ ㄋㆤ/ㄢˋ ㄋㄧ","ㄍㄞ˪ ㄒㄧㄠ˫ ㆢㄧㄣˊ/ㄍㄞ˪ ㄒㄧㄠ˫ ㄌㄧㄣˊ","ㄅㆤㆷ ㆢㄧ˫/ㄅㄨㆤㆷ ㄌㄧ˫","ㄙㄚㆴ ㄙㆤˋ/ㄙㄚㆴ ㄙㄨㆤˋ","ㄏㄚㆵ ㄎㄨ","ㄏㆦㆶ ㄍㄧㄢ˪","ㄋㄧㄨˊ ㄍㄧㆩˋ","ㆬ˫ ㆠㄧㄢˋ","ㄅㆤㆷ˙ ㄨㆤ˫ ㆢㄧ˫/ㄅㆤㆷ˙ ㄨㆤ˫ ㄌㄧ˫","ㆣㄧㄚㆴ˙ ㄙㄢˋ","ㄅㄨㆵ˙ ㄗㆦˋ","ㆠㄚㆶ˙ ㄏㄧㆫ","ㆬˋ ㄅㄜˊ"], "Zhuyin"),
-		(["phiau1 ke3","an2 ne1/an2 ni1","kai3 siau7 jin5/kai3 siau7 lin5","peh4 ji7/pueh4 li7","sap4 se2/sap4 sue2","hat4 khu1","Hok4 kian3","niu5 kiann2","m7 bian2","Peh8 ue7 ji7/Peh8 ue7 li7","giap8 san2","Put8 tsoo2","bak8 hiunn1","m2 po5"], "TLPA"),
-		(["piāogè","ǎnlnē/ǎnlnī","gàisiâozzín/gàisiâolín","piāogè","sāpsě/sāpsuě","hātkū","Hōkgiàn","lniúginǎ","m̂bbiǎn","Béhwêzzî/Béhwêlî","ghiāp-sàn","Bútzoǒ","bbákhniū","m̌bó"], "Pingyim"),
+		(["phiau1 ke3","an2 ne1/an2 ni1","kai3 siau7 jin5/kai3 siau7 lin5","peh4 ji7/pueh4 li7","sap4 se2/sap4 sue2","hat4 khu1","Hok4 kian3","niu5 kiann2","m7 bian2","Peh8 ue7 ji7/Peh8 ue7 li7","giap8 san2","Put8 coo2","bak8 hiunn1","m2 po5"], "TLPA"),
+		(["piāogè","ǎnlnē/ǎnlnī","gàisiâozzín/gàisiâolín","bēhzzî/buēhlî","sāpsě/sāpsuě","hātkū","Hōkgiàn","lniúginǎ","m̂bbiǎn","Béhwêzzî/Béhwêlî","ggiápsǎn","Bútzoǒ","bbákhniū","m̌bó"], "Pingyim"),
 		(["piāu-gê","an-ne/an-ni","gài-siâu-rĭn/gài-siâu-lĭn","bè-rī/buè-lī","sap-sè/sap-suè","hat-ku","Hok-giân","niū-giànn/niû-giànn","m̂-bhiàn","Bê-uê-rī/Bê-uê-lī","ghiāp-sàn","Būt-zòr","bhāk-hiunn","m-bŏr"], "Tongiong")
 	]
 	for transl, system in test_data:
