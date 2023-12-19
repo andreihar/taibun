@@ -461,22 +461,18 @@ class Tokeniser(object):
         tokenised = []
         while input != "":
             for j in reversed(range(1, 5)):
-                if len(input) >= j:
-                    word = input[0:j]
-                    if word in word_dict:
+                if len(input) < j:
+                    continue
+                word = input[:j]
+                if word in word_dict or j == 1:
+                    if j == 1 and tokenised and not (self.is_cjk(tokenised[-1]) or self.is_cjk(word)):
+                        tokenised[-1] += word
+                    else:
                         tokenised.append(word)
-                        break
-                    elif j == 1:
-                        if len(tokenised) > 0:
-                            if not self.is_cjk(tokenised[-1]) and \
-                            not self.is_cjk(word):
-                                tokenised[-1] += word
-                            else:
-                                tokenised.append(word)
-                        else:
-                            tokenised.append(word)
-            if len(input) == 1: input = ""
-            else: input = input[j:]
+                    input = input[j:]
+                    break
+            else:
+                input = ""
         punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
         tokenised = [[item for subword in punctuations.split(word) if subword for item in subword.split(" ")] for word in tokenised]
         tokenised = sum(tokenised, [])
@@ -485,16 +481,13 @@ class Tokeniser(object):
         return tokenised
     
     # Helper to check if the character is a Chinese character
-    def is_cjk(self, text):
-        if len(text) == 1: # Check if it's a single character
-            code_point = ord(text)
-            return (
-                0x4E00 <= code_point <= 0x9FFF or  # BASIC
-                0x3400 <= code_point <= 0x4DBF or  # Ext A
-                0x20000 <= code_point <= 0x2A6DF or  # Ext B
-                0x2A700 <= code_point <= 0x2EBEF or  # Ext C,D,E,F
-                0x30000 <= code_point <= 0x323AF or  # Ext G,H
-                0x2EBF0 <= code_point <= 0x2EE5F  # Ext I
-            )
-        else: # Check if all characters in the string are CJK
-            return all(self.is_cjk(char) for char in text)
+    def is_cjk(self, input):
+        return all(
+            0x4E00 <= ord(char) <= 0x9FFF or  # BASIC
+            0x3400 <= ord(char) <= 0x4DBF or  # Ext A
+            0x20000 <= ord(char) <= 0x2A6DF or  # Ext B
+            0x2A700 <= ord(char) <= 0x2EBEF or  # Ext C,D,E,F
+            0x30000 <= ord(char) <= 0x323AF or  # Ext G,H
+            0x2EBF0 <= ord(char) <= 0x2EE5F  # Ext I
+            for char in input
+        )
