@@ -315,8 +315,8 @@ class Converter(object):
                 if replaced[0] == old:
                     replaced = new + replaced[1:] if replaced[1] in ['a', 'u', 'o'] else new + replaced.lower()
 
-            if replaced[-3:-1] == 'ln':
-                replaced = replaced[:-3] + 'n' + replaced[-1] # Final n
+            if replaced[-3:-1] == 'ln': # Final n
+                replaced = replaced[:-3] + 'n' + replaced[-1]
 
             for char in ['m', 'M']: # Syllabic consonant m
                 if nt[0] == char:
@@ -325,21 +325,17 @@ class Converter(object):
                     elif nt[1] == 'n':
                         replaced = char + replaced[3:]
 
-            if replaced[-4:][:3] == 'bbn':
-                replaced = replaced[:-4] + 'm' + replaced[-1] # Final m
-            if nt[-3:][:2] == 'ng':
-                replaced = replaced[:-4] + 'ng' + nt[-1] # Coda ng
-            if nt[-3:][:2] == 'Ng':
-                replaced = replaced[:-4] + 'Ng' + nt[-1] # Coda ng
-
-            if replaced[0] == 'u' and len(nt) > 2:
-                replaced = 'w' + replaced[1:] # Initial u, upper and lower case
-            elif replaced[0] == 'u' and len(nt) == 2:
-                replaced = 'w' + replaced
-            if replaced[0] == 'U' and len(nt) > 2:
-                replaced = 'W' + replaced[1:]
-            elif replaced[0] == 'U' and len(nt) == 2:
-                replaced = 'W' + replaced.lower()
+            if replaced[-4:][:3] == 'bbn': # Final m
+                replaced = replaced[:-4] + 'm' + replaced[-1]
+            
+            for char in ['ng', 'Ng']: # Coda ng
+                if nt[-3:][:2] == char:
+                    replaced = replaced[:-4] + char + nt[-1]
+            
+            replacements = {'u':'w', 'U':'W'} # Initial u
+            for old, new in replacements.items():
+                if replaced[0] == old:
+                    replaced = new + replaced[1:] if len(nt) > 2 else new + replaced.lower()
 
             if self.format != 'number':
                 input += '-' + self.__get_mark_tone(replaced, placement_pingyim, tones_pingyim)
