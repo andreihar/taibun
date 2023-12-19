@@ -201,7 +201,7 @@ class Converter(object):
         ]
         tones = ["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
         placement += [s.capitalize() for s in placement]
-        input = '-'.join(self.__get_mark_tone(nt, placement, tones) for nt in self.__get_number_tones(self, input))
+        input = '-'.join(self.__get_mark_tone(nt, placement, tones) for nt in self.__get_number_tones(input))
         return input.replace(self.suffix_token, '--')
 
 
@@ -217,7 +217,7 @@ class Converter(object):
         tones = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
         placement += [s.capitalize() for s in placement]
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
-        input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) for nt in self.__get_number_tones(self, input))
+        input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) for nt in self.__get_number_tones(input))
         return input.replace(self.suffix_token, '--')
 
 
@@ -238,7 +238,7 @@ class Converter(object):
         }
         tones = ['', '', 'ˋ', '˪', '', 'ˊ', '', '˫', '˙']
         output = []
-        for nt in self.__get_number_tones(self, (input[0].lower(), input[1])):
+        for nt in self.__get_number_tones((input[0].lower(), input[1])):
             nt = self.__replacement_tool(convert, nt).replace(self.suffix_token, '')
             if len(nt) > 2 and nt[-2] == 'ㄋ':
                 nt = nt[:-2] + 'ㄣ' + nt[-1]
@@ -252,7 +252,7 @@ class Converter(object):
     def __tailo_to_tlpa(self, input):
         convert = {'tsh':'ch', 'ts':'c'}
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
-        input = '-'.join(self.__replacement_tool(convert, nt) for nt in self.__get_number_tones(self, input))
+        input = '-'.join(self.__replacement_tool(convert, nt) for nt in self.__get_number_tones(input))
         return input.replace(self.suffix_token, '')
 
 
@@ -274,7 +274,7 @@ class Converter(object):
         placement += [s.capitalize() for s in placement]
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
         output = []
-        for nt in self.__get_number_tones(self, input):
+        for nt in self.__get_number_tones(input):
             replaced = self.__replacement_tool(convert, nt)
             if replaced[0] in ['i', 'I']: # Initial i
                 replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower())
@@ -315,7 +315,7 @@ class Converter(object):
         tones = ["̊", "", "̀", "̂", "̄", "̆", "", "̄", "", "́"]
         placement += [s.capitalize() for s in placement]
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
-        number_tones = [nt[:-2] + 'or' + nt[-1] if nt[-2] == 'o' else nt for nt in self.__get_number_tones(self, input)]
+        number_tones = [nt[:-2] + 'or' + nt[-1] if nt[-2] == 'o' else nt for nt in self.__get_number_tones(input)]
         input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) if self.format != 'number' else self.__replacement_tool(convert, nt) for nt in number_tones)
         return input.replace(self.suffix_token, '--')
 
