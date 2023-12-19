@@ -384,15 +384,9 @@ class Converter(object):
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
             number_tones = self.__tone_sandhi(number_tones, input[1])
-        input = ""
-        for nt in number_tones:
-            if nt[-2] == 'o':
-                nt = (nt[:-2] + 'or' + nt[-1])
-            if self.format != 'number':
-                input += '-' + self.__get_mark_tone(self.__replacement_tool(convert_ti, nt), placement_ti, tones_ti)
-            else:
-                input += '-' + self.__replacement_tool(convert_ti, nt)
-        return input[1:].replace(self.suffix_token, '--')
+        number_tones = [nt[:-2] + 'or' + nt[-1] if nt[-2] == 'o' else nt for nt in number_tones]
+        input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert_ti, nt), placement_ti, tones_ti) if self.format != 'number' else self.__replacement_tool(convert_ti, nt) for nt in number_tones)
+        return input.replace(self.suffix_token, '--')
 
 
     ### Converted output formatting
