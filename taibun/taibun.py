@@ -255,15 +255,11 @@ class Converter(object):
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
         if self.sandhi:
             number_tones = self.__tone_sandhi(number_tones, input[1])
-        input = ""
-        for nt in number_tones:
-            nt = self.__replacement_tool(convert_zhuyin, nt).replace(self.suffix_token, '')
-            if len(nt) > 2 and nt[-2] == 'ㄋ':
-                nt = nt[:-2] + 'ㄣ' + nt[-1]
-            if self.format != 'number':
-                nt = ''.join(zhuyin_tones[int(t)] if t.isnumeric() else t for t in nt)
-            input += '-' + nt
-        return input[1:].replace(self.suffix_token, '')
+        input = '-'.join([
+            ''.join(zhuyin_tones[int(t)] if t.isnumeric() else t for t in nt) if self.format != 'number' else nt
+            for nt in (self.__replacement_tool(convert_zhuyin, nt).replace(self.suffix_token, '')[:-2] + 'ㄣ' + nt[-1] if len(nt) > 2 and nt[-2] == 'ㄋ' else nt for nt in number_tones)
+        ])
+        return input.replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to TLPA
@@ -309,31 +305,16 @@ class Converter(object):
         input = ""
         for nt in number_tones:
             replaced = self.__replacement_tool(convert_pingyim, nt)
-            if replaced[0] in ['i', 'I']: # Initial i
-                replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower())
-            if replaced[0] in ['u', 'U']: # Initial u
-                replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 else replaced.lower())
-            if replaced[-3:-1] == 'ln': # Final n
-                replaced = replaced[:-3] + 'n' + replaced[-1]
+            replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower()) if replaced[0] in ['i', 'I'] else replaced # Initial i
+            replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 else replaced.lower()) if replaced[0] in ['u', 'U'] else replaced # Initial u
             if nt[0] in ['m', 'M']: # Syllabic consonant m
-                replaced = nt[0] + (nt[-1] if len(nt) == 2 else replaced[3:])
-
-            # for char in ['m', 'M']: # Syllabic consonant m
-            #     if nt[0] == char:
-            #         if len(nt) == 2:
-            #             replaced = char + nt[-1]
-            #         elif nt[1] == 'n':
-            #             replaced = char + replaced[3:]
-
-            # if replaced[-4:-1] == 'bbn':
-            #     replaced = replaced[:-4] + 'm' + replaced[-1]
-            replaced = replaced.replace('bbn', 'm', 1) if 'bbn' in replaced[-4:-1] else replaced # Final m
-            
-            # for char in ['ng', 'Ng']: # Coda ng
-            #     if nt[-3:-1] == char:
-            #         replaced = replaced[:-4] + char + nt[-1]
+                if len(nt) == 2:
+                    replaced = nt[0] + nt[-1]
+                elif nt[1] == 'n':
+                    replaced = nt[0] + replaced[3:]
             replaced = replaced[:-4] + nt[-3:-1] + nt[-1] if nt[-3:-1] in ['ng', 'Ng'] else replaced # Coda ng
-
+            replaced = replaced.replace('bbn', 'm', 1) if 'bbn' in replaced[-4:-1] else replaced # Final m
+            replaced = replaced[:-3] + 'n' + replaced[-1] if replaced[-3:-1] == 'ln' else replaced # Final n
             if self.format != 'number':
                 input += '-' + self.__get_mark_tone(replaced, placement_pingyim, tones_pingyim)
             else:
