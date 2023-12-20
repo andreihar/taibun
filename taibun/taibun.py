@@ -182,10 +182,7 @@ class Converter(object):
     def __tone_sandhi_position(self, input):
         result_list = []
         for i, char in enumerate(input):
-            if is_cjk(char):
-                result_list.append((char, (i < len(input) - 1 and is_cjk(input[i+1]))))
-            else:
-                result_list.append(char)
+            result_list.append((char, (i < len(input) - 1 and is_cjk(input[i+1]))))
         return result_list
 
 

@@ -1,7 +1,8 @@
-from taibun.taibun import Converter, is_cjk, to_traditional
+from taibun.taibun import Converter, Tokeniser, is_cjk, to_traditional
 
 def test_convert_simplified():
-	assert('我爱学语言') == 'Guá ài o̍h gí-giân'
+	c = Converter()
+	assert(c.get('我爱学语言')) == 'Guá ài o̍h gí-giân'
 
 def test_is_cjk():
 	assert is_cjk('漢') == True
