@@ -29,6 +29,12 @@ def is_cjk(input):
         for char in input
     )
 
+# Convert Simplified to Traditional characters
+def to_traditional(input):
+    with open(os.path.join(os.path.dirname(__file__), "data/simplified.json"),'r', encoding="utf-8") as file:
+        trad = json.load(file)
+    return ''.join(trad.get(c, c) for c in input)
+
 class Converter(object):
 
     suffix_token = '[ЅFFX_ТКŊ]'
@@ -52,18 +58,11 @@ class Converter(object):
         self.delimiter = self.delimiter if self.delimiter != self.DEFAULT_DELIMITER else self.__set_default_delimiter()
         self.sandhi = self.sandhi if self.sandhi != self.DEFAULT_SANDHI else self.__set_default_sandhi()
 
-        converted = Tokeniser().tokenise(self.to_traditional(input))
+        converted = Tokeniser().tokenise(to_traditional(input))
         converted = ' '.join(self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(converted)).strip()
         if self.punctuation == 'format':
             return self.__format_text(self.__format_punctuation_western(converted[0].upper() + converted[1:]))
         return self.__format_punctuation_cjk(converted)
-
-
-    # Convert Simplified to Traditional characters
-    def to_traditional(self, input):
-        with open(os.path.join(os.path.dirname(__file__), "data/simplified.json"),'r', encoding="utf-8") as file:
-            trad = json.load(file)
-        return ''.join(trad.get(c, c) for c in input)
 
 
     ### Input formatting
@@ -364,23 +363,23 @@ class Tokeniser(object):
     # Tokenise the text into separate words
     def tokenise(self, input):
         tokenised = []
-        while input != "":
-            for j in reversed(range(1, 5)):
-                if len(input) < j:
+        traditional = to_traditional(input)
+        while traditional:
+            for j in range(4, 0, -1):
+                if len(traditional) < j:
                     continue
-                word = input[:j]
-                if word in word_dict or j == 1:
+                word = traditional[:j]
+                if word_dict.get(word) or j == 1:
                     if j == 1 and tokenised and not (is_cjk(tokenised[-1]) or is_cjk(word)):
                         tokenised[-1] += word
                     else:
                         tokenised.append(word)
-                    input = input[j:]
+                    traditional = traditional[j:]
                     break
             else:
-                input = ""
+                traditional = ""
         punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
-        tokenised = [[item for subword in punctuations.split(word) if subword for item in subword.split(" ")] for word in tokenised]
-        tokenised = sum(tokenised, [])
-        tokenised = [word for word in tokenised if word]
+        tokenised = [item for word in tokenised for subword in punctuations.split(word) if subword for item in subword.split(" ") if item]
         tokenised = [subword for word in tokenised for subword in ((word[:-1], word[-1]) if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1 else (word,))]
-        return tokenised
+        indices = [0] + [len(item) for item in tokenised]
+        return [input[sum(indices[:i+1]):sum(indices[:i+2])] for i in range(len(tokenised))]
