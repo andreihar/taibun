@@ -20,7 +20,7 @@ word_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/words.j
 class Converter(object):
 
     suffix_token = '[ЅFFX_ТКŊ]'
-    tone_token = '[ТŊ_ТКŊ]'
+    tt = '[ТŊ_ТКŊ]'
     DEFAULT_DELIMITER = object()
     DEFAULT_SANDHI = object()
 
@@ -149,10 +149,10 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo number tones to diacritic tones
     def __get_mark_tone(self, input, placement, tones):
         for s in placement:
-            if s.replace(''+self.tone_token+'', '') in input:
+            if s.replace(self.tt, '') in input:
                 part = s
                 break
-        return unicodedata.normalize('NFC', input.replace(part.replace(''+self.tone_token+'',''), part.replace(''+self.tone_token+'', tones[int(input[-1])]))[:-1])
+        return unicodedata.normalize('NFC', input.replace(part.replace(self.tt, ''), part.replace(self.tt, tones[int(input[-1])]))[:-1])
 
 
     # Helper to apply tone sandhi to a word
@@ -185,9 +185,9 @@ class Converter(object):
     # (called only in cases when tone sandhi is applied)
     def __tailo_to_tailo(self, input):
         placement = [
-            'ia'+self.tone_token+'u', 'ua'+self.tone_token+'i', 'ua'+self.tone_token+'', 'ue'+self.tone_token+'', 'ui'+self.tone_token+'', 'a'+self.tone_token+'i',
-            'a'+self.tone_token+'u', 'o'+self.tone_token+'o','ia'+self.tone_token+'', 'iu'+self.tone_token+'', 'io'+self.tone_token+'', 'o'+self.tone_token+'o', 'a'+self.tone_token+'', 
-            'o'+self.tone_token+'', 'e'+self.tone_token+'', 'i'+self.tone_token+'', 'u'+self.tone_token+'', 'n'+self.tone_token+'g', 'm'+self.tone_token+''
+            'ia'+self.tt+'u', 'ua'+self.tt+'i', 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt, 'a'+self.tt+'i',
+            'a'+self.tt+'u', 'o'+self.tt+'o','ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'o'+self.tt+'o', 'a'+self.tt, 
+            'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt
         ]
         tones = ["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
         placement += [s.capitalize() for s in placement]
@@ -198,10 +198,10 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo to POJ
     def __tailo_to_poj(self, input):
         placement = [
-            'oa'+self.tone_token+'h', 'oa'+self.tone_token+'n', 'oa'+self.tone_token+'ng', 'oa'+self.tone_token+'ⁿ', 'oa'+self.tone_token+'t',
-            'ia'+self.tone_token+'u', 'oe'+self.tone_token+'h', 'o'+self.tone_token+'e', 'oa'+self.tone_token+'i', 'u'+self.tone_token+'i', 'o'+self.tone_token+'a',
-            'a'+self.tone_token+'i', 'a'+self.tone_token+'u', 'ia'+self.tone_token+'', 'iu'+self.tone_token+'', 'io'+self.tone_token+'', 'a'+self.tone_token+'',
-            'o'+self.tone_token+'', 'o͘'+self.tone_token+'', 'e'+self.tone_token+'', 'i'+self.tone_token+'', 'u'+self.tone_token+'', 'n'+self.tone_token+'g', 'm'+self.tone_token+''
+            'oa'+self.tt+'h', 'oa'+self.tt+'n', 'oa'+self.tt+'ng', 'oa'+self.tt+'ⁿ', 'oa'+self.tt+'t',
+            'ia'+self.tt+'u', 'oe'+self.tt+'h', 'o'+self.tt+'e', 'oa'+self.tt+'i', 'u'+self.tt+'i', 'o'+self.tt+'a',
+            'a'+self.tt+'i', 'a'+self.tt+'u', 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'a'+self.tt,
+            'o'+self.tt, 'o͘'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt
         ]
         convert = {'nng':'nng', 'nnh':'hⁿ', 'nn':'ⁿ', 'ts':'ch', 'ing':'eng', 'uai':'oai', 'uan':'oan', 'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘'}
         tones = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
@@ -248,9 +248,9 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo to Bbanlam pingyim
     def __tailo_to_pingyim(self, input):
         placement = [
-            'ua'+self.tone_token+'i', 'ia'+self.tone_token+'o', 'a'+self.tone_token+'i', 'a'+self.tone_token+'o', 
-            'oo'+self.tone_token+'', 'ia'+self.tone_token+'', 'iu'+self.tone_token+'', 'io'+self.tone_token+'', 'ua'+self.tone_token+'', 'ue'+self.tone_token+'', 'ui'+self.tone_token+'',
-            'a'+self.tone_token+'', 'o'+self.tone_token+'', 'e'+self.tone_token+'', 'i'+self.tone_token+'', 'u'+self.tone_token+'', 'n'+self.tone_token+'g', 'm'+self.tone_token+''
+            'ua'+self.tt+'i', 'ia'+self.tt+'o', 'a'+self.tt+'i', 'a'+self.tt+'o', 
+            'oo'+self.tt, 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt,
+            'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt
         ]
         # plosives don't change, ptkh 4/8 -> ptkh 4/8
         convert = {
@@ -291,9 +291,9 @@ class Converter(object):
     #       Not enough information on tone mark placement
     def __tailo_to_ti(self, input):
         placement = [
-            'ua'+self.tone_token+'i', 'ia'+self.tone_token+'o', 'a'+self.tone_token+'i', 'a'+self.tone_token+'o', 
-            'oo'+self.tone_token+'', 'ia'+self.tone_token+'', 'iu'+self.tone_token+'', 'io'+self.tone_token+'', 'ua'+self.tone_token+'', 'ue'+self.tone_token+'', 'ui'+self.tone_token+'',
-            'a'+self.tone_token+'', 'o'+self.tone_token+'', 'e'+self.tone_token+'', 'i'+self.tone_token+'', 'u'+self.tone_token+'', 'n'+self.tone_token+'g', 'm'+self.tone_token+''
+            'ua'+self.tt+'i', 'ia'+self.tt+'o', 'a'+self.tt+'i', 'a'+self.tt+'o', 
+            'oo'+self.tt, 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt,
+            'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt
         ]
         # plosives don't change, ptkh 4/8 -> ptkh 4/8
         convert = {
