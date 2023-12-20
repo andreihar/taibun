@@ -379,7 +379,7 @@ class Tokeniser(object):
             else:
                 traditional = ""
         punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
-        tokenised = [item for word in tokenised for subword in punctuations.split(word) if subword for item in subword.split(" ") if item]
-        tokenised = [subword for word in tokenised for subword in ((word[:-1], word[-1]) if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1 else (word,))]
         indices = [0] + [len(item) for item in tokenised]
-        return [input[sum(indices[:i+1]):sum(indices[:i+2])] for i in range(len(tokenised))]
+        tokenised = [input[sum(indices[:i+1]):sum(indices[:i+2])] for i in range(len(tokenised))]
+        tokenised = [item for word in tokenised for subword in punctuations.split(word) if subword for item in subword.split(" ") if item]
+        return [subword for word in tokenised for subword in ((word[:-1], word[-1]) if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1 else (word,))]
