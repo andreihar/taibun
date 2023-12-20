@@ -1,9 +1,20 @@
-from taibun.taibun import Tokeniser
+from taibun.taibun import Converter, is_cjk, to_traditional
 
-def test_general():
-	t = Tokeniser()
-	assert ['太空', '朋友', '，', '恁好', '！', '恁', '食飽', '未', '？'] == t.tokenise("太空朋友，恁好！恁食飽未？")
-	assert ['漢字', '（', '閩南語', '注音', ':', 'ㄏㄢˋ', 'ㆡㄧˉ', '；', '白話字', ':', 'Hàn-jī', '；'] == t.tokenise('漢字（閩南語注音: ㄏㄢˋ ㆡㄧˉ；白話字: Hàn-jī；')
+def test_convert_simplified():
+	assert('我爱学语言') == 'Guá ài o̍h gí-giân'
+
+def test_is_cjk():
+	assert is_cjk('漢') == True
+	assert is_cjk('a') == False
+	assert is_cjk('。') == False
+	assert is_cjk('𠢕') == True
+	assert is_cjk('福建') == True
+	assert is_cjk('𥴊仔賴') == True
+	assert is_cjk('福建a') == False
+
+def test_to_traditional():
+	assert '漢字是用來寫幾若種現代佮古代語文个書寫文字系統' == to_traditional('汉字是用来写幾若种现代佮古代语文个书写文字系统')
+
 
 def test_suffix():
 	t = Tokeniser()

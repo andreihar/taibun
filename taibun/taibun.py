@@ -70,7 +70,7 @@ class Converter(object):
     # Helper to convert separate words
     def __convert_tokenised(self, word):
         if word[0] not in word_dict:
-            return word
+            return word[0]
         word = (word_dict[word[0]],) + word[1:]
         if "/" in word[0]:
             dialect_part = word[0].split("/")[1] if self.dialect == 'north' else word[0].split("/")[0]
