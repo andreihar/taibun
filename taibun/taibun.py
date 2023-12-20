@@ -17,6 +17,18 @@ Invariant: dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-lea
 
 word_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/words.json"),'r', encoding="utf-8"))
 
+# Helper to check if the character is a Chinese character
+def is_cjk(input):
+    return all(
+        0x4E00 <= ord(char) <= 0x9FFF or  # BASIC
+        0x3400 <= ord(char) <= 0x4DBF or  # Ext A
+        0x20000 <= ord(char) <= 0x2A6DF or  # Ext B
+        0x2A700 <= ord(char) <= 0x2EBEF or  # Ext C,D,E,F
+        0x30000 <= ord(char) <= 0x323AF or  # Ext G,H
+        0x2EBF0 <= ord(char) <= 0x2EE5F  # Ext I
+        for char in input
+    )
+
 class Converter(object):
 
     suffix_token = '[ЅFFX_ТКŊ]'
@@ -170,10 +182,9 @@ class Converter(object):
     # Helper to define which words should be sandhi'd fully
     def __tone_sandhi_position(self, input):
         result_list = []
-        tokeniser = Tokeniser()
         for i, char in enumerate(input):
-            if tokeniser.is_cjk(char):
-                result_list.append((char, (i < len(input) - 1 and tokeniser.is_cjk(input[i+1]))))
+            if is_cjk(char):
+                result_list.append((char, (i < len(input) - 1 and is_cjk(input[i+1]))))
             else:
                 result_list.append(char)
         return result_list
@@ -359,7 +370,7 @@ class Tokeniser(object):
                     continue
                 word = input[:j]
                 if word in word_dict or j == 1:
-                    if j == 1 and tokenised and not (self.is_cjk(tokenised[-1]) or self.is_cjk(word)):
+                    if j == 1 and tokenised and not (is_cjk(tokenised[-1]) or is_cjk(word)):
                         tokenised[-1] += word
                     else:
                         tokenised.append(word)
@@ -373,15 +384,3 @@ class Tokeniser(object):
         tokenised = [word for word in tokenised if word]
         tokenised = [subword for word in tokenised for subword in ((word[:-1], word[-1]) if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1 else (word,))]
         return tokenised
-    
-    # Helper to check if the character is a Chinese character
-    def is_cjk(self, input):
-        return all(
-            0x4E00 <= ord(char) <= 0x9FFF or  # BASIC
-            0x3400 <= ord(char) <= 0x4DBF or  # Ext A
-            0x20000 <= ord(char) <= 0x2A6DF or  # Ext B
-            0x2A700 <= ord(char) <= 0x2EBEF or  # Ext C,D,E,F
-            0x30000 <= ord(char) <= 0x323AF or  # Ext G,H
-            0x2EBF0 <= ord(char) <= 0x2EE5F  # Ext I
-            for char in input
-        )
