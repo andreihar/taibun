@@ -7,7 +7,7 @@ import unicodedata
 Description: Converts Chinese characters to Taiwanese Hokkien phonetic transcriptions.
              Supports both Traditional and Simplified characters.
 Invariant: dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-leaning)
-           system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tongiong`
+           system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tongiong`, `IPA`
            format = `mark` (diacritical), `number` (numeric), `strip` (no tones)
            sandhi = True, False
            delimiter = String that replaces the default delimiter
@@ -83,6 +83,8 @@ class Converter(object):
                 word = word.translate(str.maketrans('', '', ''.join(['1', '2', '3', '4', '5', '7', '8'])))
             if self.system == 'zhuyin':
                 word = word.translate(str.maketrans('', '', ''.join(['ˋ', '˪', 'ˊ', '˫', '˙'])))
+            if self.system == 'ipa':
+                word = word.translate(str.maketrans('', '', ''.join(['¹', '²', '³', '⁴', '⁵'])))
             else: word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
         return word.replace('--', self.suffix_token).replace('-', self.delimiter).replace(self.suffix_token, '--')
 
@@ -94,13 +96,14 @@ class Converter(object):
         if self.system == 'tlpa': return self.__tailo_to_tlpa(word)
         if self.system == 'pingyim': return self.__tailo_to_pingyim(word)
         if self.system == 'tongiong': return self.__tailo_to_ti(word)
+        if self.system == 'ipa': return self.__tailo_to_ipa(word)
         if self.sandhi: return self.__tailo_to_tailo(word)
         else: return word[0]
 
 
     # Helper functions to set delimiter according to transliteration system if wasn't explicitly defined by user
     def __set_default_delimiter(self):
-        if self.system == 'tlpa' or self.system == 'zhuyin': return ' '
+        if self.system == 'tlpa' or self.system == 'zhuyin' or self.system == 'ipa': return ' '
         if self.system == 'pingyim': return ''
         return '-'
 
@@ -314,6 +317,35 @@ class Converter(object):
         number_tones = [nt[:-2] + 'or' + nt[-1] if nt[-2] == 'o' else nt for nt in self.__get_number_tones(input)]
         input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) if self.format != 'number' else self.__replacement_tool(convert, nt) for nt in number_tones)
         return input.replace(self.suffix_token, '--')
+    
+
+    # Helper to convert syllable from Tai-lo to International Phonetic Alphabet
+    def __tailo_to_ipa(self, input):
+        convert = {
+            'tshi':'tɕʰi',
+            'ann':'ã', 'enn':'ẽ', 'onn':'ɔ̃', 'inn':'ĩ', 'unn':'ũ',
+            'ing':'iɪŋ', 'tsh':'tsʰ', 'tsi':'tɕi', 'ian':'iɛn', 'iat':'iɛt',
+            'ong':'ɔŋ', 'ik':'iɪk', 'ji':'dʑi', 'kh':'kʰ', 'ng':'ŋ', 'oo':'ɔ',
+            'ph':'pʰ', 'th':'tʰ', 'ok':'ɔk', 'j':'dz', 'o':'ə'}
+        if self.dialect == 'north':
+            convert.update({'o':'ɔ'})
+        convert2 = {
+            'p4':'p̚4', 'p8':'p̚8', 'k4':'k̚4', 'k8':'k̚8', 't4':'t̚4', 't8':'t̚8', 'h4':'ʔ4', 'h8':'ʔ8',
+            'si':'ɕi'
+        }
+        tones = ['', '⁴⁴', '⁵³', '¹¹', '²¹', '²⁵', '', '²²', '⁵'] if self.dialect != 'north' else ['', '⁵⁵', '⁵¹', '²¹', '³²', '²⁴', '', '³³', '⁴']
+        output = []
+        for nt in self.__get_number_tones((input[0].lower(), input[1])):
+            nt = self.__replacement_tool(convert, nt).replace(self.suffix_token, '')
+            if len(nt) == 2 and nt[0] == 'ŋ': # Not necessairly true. tng, mng, png etc.
+                nt = 'ŋ̍' + nt[-1]
+            if len(nt) == 2 and nt[0] == 'm':
+                nt = 'm̩' + nt[-1]
+            nt = self.__replacement_tool(convert2, nt)
+            if self.format != 'number':
+                nt = ''.join(tones[int(t)] if t.isnumeric() else t for t in nt)
+            output.append(nt)
+        return '-'.join(output).replace(self.suffix_token, '')
 
 
     ### Converted output formatting
