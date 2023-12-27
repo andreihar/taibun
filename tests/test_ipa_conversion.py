@@ -31,5 +31,5 @@ def test_ipa_finals():
     checker(syllabic, c, c_north)
 
 def test_ipa_additional():
-    additional = ['聽,tʰiã⁴⁴/tʰiã⁵⁵','歹,pʰãi⁵³/pʰãi⁵¹','山/suã⁴⁴/suã⁵⁵','秧,ŋ̍⁴⁴/ŋ̍⁵⁵','甚物,ɕim²² mĩʔ⁵/ɕim³³ mŋ̍ʔ⁴','吉,kiɛt̚²¹/kiɛt̚³²']
+    additional = ['聽,tʰiã⁴⁴/tʰiã⁵⁵','歹,pʰãi⁵³/pʰãi⁵¹','山/suã⁴⁴/suã⁵⁵','秧,ŋ̍⁴⁴/ŋ̍⁵⁵','甚物,ɕim²² mĩʔ⁵/ɕim³³ mŋ̍ʔ⁴','吉,kiɛt̚²¹/kiɛt̚³²','貓,niãu⁴⁴/niãu⁵⁵','名,miã²⁵/miã²⁴','然,dʑiɛn²⁵/liɛn²⁴','熱目,dʑiɛt̚⁵ bak̚⁵/liɛt̚⁴ bak̚⁴','兩,nŋ̍²²/nŋ̍³³','婸,giaŋ⁴⁴/giaŋ⁵⁵']
     checker(additional, c, c_north)

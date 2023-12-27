@@ -322,30 +322,34 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo to International Phonetic Alphabet
     def __tailo_to_ipa(self, input):
         convert = {
-            'iann':'iã',
-            'tshi':'tɕʰi',
-            'ann':'ã', 'enn':'ẽ', 'onn':'ɔ̃', 'inn':'ĩ', 'unn':'ũ',
-            'ing':'iɪŋ', 'tsh':'tsʰ', 'tsi':'tɕi', 'ian':'iɛn', 'iat':'iɛt',
-            'ong':'ɔŋ', 'ik':'iɪk', 'ji':'dʑi', 'kh':'kʰ', 'ng':'ŋ', 'oo':'ɔ',
-            'ph':'pʰ', 'th':'tʰ', 'ok':'ɔk', 'om':'ɔm', 'j':'dz', 'o':'ə'}
+            'iann':'iã','ainn':'ãi','iang':'iaŋ','jian':'dʑiɛn','jiat':'dʑiɛt','tshi':'tɕʰi','nng':'nŋ',
+            'mia':'miã','mui':'muĩ','mue':'muẽ','mua':'muã','ma':'mã','me':'mẽ','mi':'mĩ','moo':'mɔ̃', # m nasalisation
+            'nia':'niã','nua':'nuã','na':'nã','ne':'nẽ','ni':'nĩ','noo':'nɔ̃', # n nasalisation
+            'ngia':'ŋiã','ngiu':'ŋiũ','nga':'ŋã','nge':'ŋẽ','ngi':'ŋĩ','ngoo':'ŋɔ̃', # ng nasalisation
+            'ing':'iɪŋ','tsh':'tsʰ','tsi':'tɕi','ian':'iɛn','iat':'iɛt',
+            'ong':'ɔŋ','ik':'iɪk','ji':'dʑi','kh':'kʰ','ng':'ŋ','oo':'ɔ','nn':'̃',
+            'hm':'hm̩','ph':'pʰ','th':'tʰ','ok':'ɔk','om':'ɔm','j':'dz','o':'ə'}
         if self.dialect == 'north':
             convert.update({'o':'o'})
         convert2 = {
-            'p4':'p̚4', 'p8':'p̚8', 'k4':'k̚4', 'k8':'k̚8', 't4':'t̚4', 't8':'t̚8', 'h4':'ʔ4', 'h8':'ʔ8',
-            'si':'ɕi'
-        }
+            'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi'}
         tones = ['', '⁴⁴', '⁵³', '¹¹', '²¹', '²⁵', '', '²²', '⁵'] if self.dialect != 'north' else ['', '⁵⁵', '⁵¹', '²¹', '³²', '²⁴', '', '³³', '⁴']
         output = []
         for nt in self.__get_number_tones((input[0].lower(), input[1])):
             nt = self.__replacement_tool(convert, nt).replace(self.suffix_token, '')
-            if len(nt) == 2 and nt[0] == 'ŋ': # Not necessairly true. tng, mng, png etc.
-                nt = 'ŋ̍' + nt[-1]
+            if 'ŋ' in nt:
+                if len(nt) > 2:
+                    index = nt.index('ŋ')
+                    if all(c.lower() not in 'aeiou' for c in nt[:index]) and index != 0:
+                        nt = nt.replace('ŋ', 'ŋ̍')
+                elif len(nt) == 2:
+                    nt = nt.replace('ŋ', 'ŋ̍')
             if len(nt) == 2 and nt[0] == 'm':
                 nt = 'm̩' + nt[-1]
             nt = self.__replacement_tool(convert2, nt)
             if self.format != 'number':
                 nt = ''.join(tones[int(t)] if t.isnumeric() else t for t in nt)
-            output.append(nt)
+            output.append(unicodedata.normalize('NFC', nt))
         return '-'.join(output).replace(self.suffix_token, '')
 
 
