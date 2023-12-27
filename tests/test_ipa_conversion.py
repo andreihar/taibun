@@ -5,7 +5,7 @@ c = Converter(system="IPA", punctuation='none')
 c_north = Converter(system="IPA", dialect="north", punctuation='none')
 
 def test_ipa_initials():
-    bilabial = ["邊,piɛn⁴⁴/piɛn⁵⁵","波,pʰə⁴⁴/pʰɔ⁵⁵","毛,mɔ̃²⁵/mɔ̃²⁴","文,bun²⁵/bun²⁴"]
+    bilabial = ["邊,piɛn⁴⁴/piɛn⁵⁵","波,pʰə⁴⁴/pʰo⁵⁵","毛,mɔ̃²⁵/mɔ̃²⁴","文,bun²⁵/bun²⁴"]
     checker(bilabial, c, c_north)
     alveolar = ["地,te²²/tue³³","他,tʰã⁴⁴/tʰã⁵⁵","曾,tsan⁴⁴/tsan⁵⁵","出,tsʰut̚²¹/tsʰut̚³²","衫,sã⁴⁴/sã⁵⁵","耐,nãi²²/nãi³³","熱衫,dzuaʔ⁵ sã⁴⁴/luaʔ⁴ sã⁵⁵","柳,liu⁵³/liu⁵¹"]
     checker(alveolar, c, c_north)
@@ -31,5 +31,5 @@ def test_ipa_finals():
     checker(syllabic, c, c_north)
 
 def test_ipa_additional():
-    additional = ['聽,tʰiã⁴⁴/tʰiã⁵⁵','歹,pʰãi⁵³/pʰãi⁵¹','山/suã⁴⁴/suã⁵⁵','秧,ŋ̍⁴⁴/ŋ̍⁵⁵','甚物,ɕim²² mĩʔ⁵/ɕim³³ mŋ̍ʔ⁴','吉,kiɛt̚²¹/kiɛt̚³²','貓,niãu⁴⁴/niãu⁵⁵','名,miã²⁵/miã²⁴','然,dʑiɛn²⁵/liɛn²⁴','熱目,dʑiɛt̚⁵ bak̚⁵/liɛt̚⁴ bak̚⁴','兩,nŋ̍²²/nŋ̍³³','婸,giaŋ⁴⁴/giaŋ⁵⁵']
+    additional = ['聽,tʰiã⁴⁴/tʰiã⁵⁵','歹,pʰãi⁵³/pʰãi⁵¹','山,suã⁴⁴/suã⁵⁵','秧,ŋ̍⁴⁴/ŋ̍⁵⁵','甚物,ɕim²² mĩʔ⁵/ɕim³³ mŋ̍ʔ⁴','吉,kiɛt̚²¹/kiɛt̚³²','貓,niãu⁴⁴/niãu⁵⁵','名,miã²⁵/miã²⁴','然,dʑiɛn²⁵/liɛn²⁴','熱目,dʑiɛt̚⁵ bak̚⁵/liɛt̚⁴ bak̚⁴','兩,nŋ̍²²/nŋ̍³³','婸,giaŋ⁴⁴/giaŋ⁵⁵']
     checker(additional, c, c_north)
