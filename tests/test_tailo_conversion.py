@@ -7,7 +7,7 @@ c_north = Converter(system="Tailo", dialect="north", punctuation='none')
 def test_tailo_initials():
     bilabial = ["啡,pi","波,pho","毛,môo","猫,bâ"]
     checker(bilabial, c, c_north)
-    alveolar = ["地,tē/tuē","唾,thò","早,tsá","厝,tshù","衫,su","耐,nāi","如,jû/lû","柳,liú"]
+    alveolar = ["地,tē/tuē","唾,thò","早,tsá","厝,tshù","思,su","耐,nāi","如,jû/lû","柳,liú"]
     checker(alveolar, c, c_north)
     alveolo_palatal = ["遮,tsia","手,tshiú","寫,siá","而,jî/lî"]
     checker(alveolo_palatal, c, c_north)
