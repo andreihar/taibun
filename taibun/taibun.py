@@ -334,13 +334,14 @@ class Converter(object):
         convert2 = {
             'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi'}
         tones = ['', '⁴⁴', '⁵³', '¹¹', '²¹', '²⁵', '', '²²', '⁵'] if self.dialect != 'north' else ['', '⁵⁵', '⁵¹', '²¹', '³²', '²⁴', '', '³³', '⁴']
+        convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
+        convert2.update({k.capitalize(): v.capitalize() for k, v in convert2.items()})
         output = []
-        for nt in self.__get_number_tones((input[0].lower(), input[1])):
+        for nt in self.__get_number_tones((input[0], input[1])):
             nt = self.__replacement_tool(convert, nt).replace(self.suffix_token, '')
             if 'ŋ' in nt:
                 if len(nt) > 2:
-                    index = nt.index('ŋ')
-                    if all(c.lower() not in 'aeiou' for c in nt[:index]) and index != 0:
+                    if all(c.lower() not in 'aeiou' for c in nt[:nt.index('ŋ')]) and nt.index('ŋ') != 0:
                         nt = nt.replace('ŋ', 'ŋ̍')
                 elif len(nt) == 2:
                     nt = nt.replace('ŋ', 'ŋ̍')
