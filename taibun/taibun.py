@@ -278,7 +278,7 @@ class Converter(object):
             if replaced[0] in ['i', 'I']: # Initial i
                 replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower())
             if replaced[0] in ['u', 'U']: # Initial u
-                replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 else replaced.lower())
+                replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 and replaced[1] in ['a', 'i', 'e', 'o'] else replaced.lower())
             if nt[0] in ['m', 'M']: # Syllabic consonant m
                 if len(nt) == 2:
                     replaced = nt[0] + nt[-1]
