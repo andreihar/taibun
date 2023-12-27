@@ -260,7 +260,7 @@ class Converter(object):
         placement = [
             'ua'+self.tt+'i', 'ia'+self.tt+'o', 'a'+self.tt+'i', 'a'+self.tt+'o', 
             'oo'+self.tt, 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt,
-            'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt
+            'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt, 'n'+self.tt
         ]
         # plosives don't change, ptkh 4/8 -> ptkh 4/8
         convert = {
