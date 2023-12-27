@@ -322,13 +322,14 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo to International Phonetic Alphabet
     def __tailo_to_ipa(self, input):
         convert = {
+            'iann':'iã',
             'tshi':'tɕʰi',
             'ann':'ã', 'enn':'ẽ', 'onn':'ɔ̃', 'inn':'ĩ', 'unn':'ũ',
             'ing':'iɪŋ', 'tsh':'tsʰ', 'tsi':'tɕi', 'ian':'iɛn', 'iat':'iɛt',
             'ong':'ɔŋ', 'ik':'iɪk', 'ji':'dʑi', 'kh':'kʰ', 'ng':'ŋ', 'oo':'ɔ',
-            'ph':'pʰ', 'th':'tʰ', 'ok':'ɔk', 'j':'dz', 'o':'ə'}
+            'ph':'pʰ', 'th':'tʰ', 'ok':'ɔk', 'om':'ɔm', 'j':'dz', 'o':'ə'}
         if self.dialect == 'north':
-            convert.update({'o':'ɔ'})
+            convert.update({'o':'o'})
         convert2 = {
             'p4':'p̚4', 'p8':'p̚8', 'k4':'k̚4', 'k8':'k̚8', 't4':'t̚4', 't8':'t̚8', 'h4':'ʔ4', 'h8':'ʔ8',
             'si':'ɕi'
