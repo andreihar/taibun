@@ -322,7 +322,9 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo to International Phonetic Alphabet
     def __tailo_to_ipa(self, input):
         convert = {
-            'iann':'iã','ainn':'ãi','iang':'iaŋ','jian':'dʑiɛn','jiat':'dʑiɛt','tshi':'tɕʰi','nng':'nŋ',
+            'tsing':'tɕiɪŋ','jiang':'dʑiaŋ','tshing':'tɕʰiɪŋ','tsik':'tɕiɪk','tshik':'tɕʰiɪk',
+            'jian':'dʑiɛn','jiat':'dʑiɛt','tshi':'tɕʰi',
+            'iann':'iã','ainn':'ãi','iang':'iaŋ','nng':'nŋ',
             'mia':'miã','mui':'muĩ','mue':'muẽ','mua':'muã','ma':'mã','me':'mẽ','mi':'mĩ','moo':'mɔ̃', # m nasalisation
             'nia':'niã','nua':'nuã','na':'nã','ne':'nẽ','ni':'nĩ','noo':'nɔ̃', # n nasalisation
             'ngia':'ŋiã','ngiu':'ŋiũ','nga':'ŋã','nge':'ŋẽ','ngi':'ŋĩ','ngoo':'ŋɔ̃', # ng nasalisation
@@ -341,7 +343,7 @@ class Converter(object):
             nt = self.__replacement_tool(convert, nt).replace(self.suffix_token, '')
             if 'ŋ' in nt:
                 if len(nt) > 2:
-                    if all(c.lower() not in 'aeiou' for c in nt[:nt.index('ŋ')]) and nt.index('ŋ') != 0:
+                    if all(c.lower() not in 'aeioɔu' for c in nt[:nt.index('ŋ')]) and nt.index('ŋ') != 0:
                         nt = nt.replace('ŋ', 'ŋ̍')
                 elif len(nt) == 2:
                     nt = nt.replace('ŋ', 'ŋ̍')
