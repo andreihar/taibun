@@ -42,13 +42,14 @@ class Converter(object):
     DEFAULT_DELIMITER = object()
     DEFAULT_SANDHI = object()
 
-    def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format'):
+    def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
         self.system = system.lower()
         self.dialect = dialect.lower()
         self.format = format
         self.delimiter = delimiter
         self.sandhi = sandhi
         self.punctuation = punctuation
+        self.convert_non_cjk = convert_non_cjk
 
 
     ### Interface functions
@@ -69,12 +70,13 @@ class Converter(object):
 
     # Helper to convert separate words
     def __convert_tokenised(self, word):
-        if word[0] not in word_dict:
+        if word[0] in word_dict:
+            word = (word_dict[word[0]],) + word[1:]
+            if "/" in word[0]:
+                dialect_part = word[0].split("/")[1] if self.dialect == 'north' else word[0].split("/")[0]
+                word = (dialect_part,) + word[1:]
+        elif not self.convert_non_cjk:
             return word[0]
-        word = (word_dict[word[0]],) + word[1:]
-        if "/" in word[0]:
-            dialect_part = word[0].split("/")[1] if self.dialect == 'north' else word[0].split("/")[0]
-            word = (dialect_part,) + word[1:]
         word = self.__system_conversion(word).replace('---', '--')
         if self.format == 'number' and self.system in ['tailo', 'poj']:
             word = self.__mark_to_number(word)
@@ -120,6 +122,8 @@ class Converter(object):
     def __get_number_tones(self, input):
         words = self.__preprocess_word(input[0])
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
+        replace_with_zero = False
+        number_tones = [s[:-1] + '0' if replace_with_zero or (replace_with_zero := s[-1] == '0') else s for s in number_tones]
         if self.sandhi:
             number_tones = self.__tone_sandhi(number_tones, input[1])
         return number_tones
@@ -149,7 +153,7 @@ class Converter(object):
         elif re.search('̍', input): input += '8'
         elif input[-1] in finals: input += '4'
         else: input += '1'
-        if input[0] == '+' and input[-1] == '4':
+        if input.startswith(self.suffix_token):
             input = input[:-1] + '0'
         input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
         return input
@@ -164,9 +168,9 @@ class Converter(object):
     def __get_mark_tone(self, input, placement, tones):
         for s in placement:
             if s.replace(self.tt, '') in input:
-                part = s
+                input = input.replace(s.replace(self.tt, ''), s.replace(self.tt, tones[int(input[-1])]))
                 break
-        return unicodedata.normalize('NFC', input.replace(part.replace(self.tt, ''), part.replace(self.tt, tones[int(input[-1])]))[:-1])
+        return unicodedata.normalize('NFC', input[:-1])
 
 
     # Helper to apply tone sandhi to a word
