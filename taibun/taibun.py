@@ -122,8 +122,9 @@ class Converter(object):
     def __get_number_tones(self, input):
         words = self.__preprocess_word(input[0])
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        replace_with_zero = False
-        number_tones = [s[:-1] + '0' if replace_with_zero or (replace_with_zero := s[-1] == '0') else s for s in number_tones]
+        if self.sandhi or self.format == 'number':
+            replace_with_zero = False
+            number_tones = [s[:-1] + '0' if replace_with_zero or (replace_with_zero := s[-1] == '0') else s for s in number_tones]
         if self.sandhi:
             number_tones = self.__tone_sandhi(number_tones, input[1])
         return number_tones
@@ -153,7 +154,7 @@ class Converter(object):
         elif re.search('̍', input): input += '8'
         elif input[-1] in finals: input += '4'
         else: input += '1'
-        if input.startswith(self.suffix_token):
+        if input.startswith(self.suffix_token) and (input[-1] == 'h' or self.sandhi or self.format == 'number'):
             input = input[:-1] + '0'
         input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
         return input
@@ -228,7 +229,7 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo to 方音符號 (zhuyin)
     def __tailo_to_zhuyin(self, input):
         convert = {
-            'p4':'ㆴ4', 'p8':'ㆴ8', 'k4':'ㆶ4', 'k8':'ㆶ8', 't4':'ㆵ4', 't8':'ㆵ8', 'h4':'ㆷ4', 'h8':'ㆷ8',
+            'p4':'ㆴ4', 'p8':'ㆴ8', 'k4':'ㆶ4', 'k8':'ㆶ8', 't4':'ㆵ4', 't8':'ㆵ8', 'h4':'ㆷ4', 'h8':'ㆷ8', 'h0': '0',
             'tshing':'ㄑㄧㄥ', 'tshinn':'ㄑㆪ', 'phing':'ㄆㄧㄥ', 'phinn':'ㄆㆪ', 'tsing':'ㄐㄧㄥ', 'tsinn':'ㄐㆪ',
             'ainn':'ㆮ', 'aunn':'ㆯ', 'giok':'ㆣㄧㄜㆶ', 'ngai':'ㄫㄞ', 'ngau':'ㄫㄠ', 'ngoo':'ㄫㆦ', 'ping':'ㄅㄧㄥ',
             'pinn':'ㄅㆪ', 'senn':'ㄙㆥ', 'sing':'ㄒㄧㄥ', 'sinn':'ㄒㆪ', 'tshi':'ㄑㄧ',
@@ -338,7 +339,7 @@ class Converter(object):
         if self.dialect == 'north':
             convert.update({'o':'o'})
         convert2 = {
-            'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi'}
+            'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'ʔ0'}
         tones = ['', '⁴⁴', '⁵³', '¹¹', '²¹', '²⁵', '', '²²', '⁵'] if self.dialect != 'north' else ['', '⁵⁵', '⁵¹', '²¹', '³²', '²⁴', '', '³³', '⁴']
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
         convert2.update({k.capitalize(): v.capitalize() for k, v in convert2.items()})
