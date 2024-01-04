@@ -41,6 +41,7 @@ class Converter(object):
     tt = '[ТŊ_ТКŊ]'
     DEFAULT_DELIMITER = object()
     DEFAULT_SANDHI = object()
+    __suffixes = ['啊','矣','喂','欸','唅','嘿','諾','乎','唷','喔','嘖','的']
 
     def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
         self.system = system.lower()
@@ -122,12 +123,12 @@ class Converter(object):
     def __get_number_tones(self, input):
         words = self.__preprocess_word(input[0])
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        # print(number_tones)
         if self.sandhi or self.format == 'number':
             replace_with_zero = False
             number_tones = [s[:-1] + '0' if replace_with_zero or (replace_with_zero := s[-1] == '0') else s for s in number_tones]
         if self.sandhi:
-            number_tones = self.__tone_sandhi(number_tones, input[1])
+            index = next((i for i, s in enumerate(number_tones) if s.startswith(self.suffix_token)), len(number_tones))
+            number_tones = self.__tone_sandhi(number_tones[:index], False) + number_tones[index:] if len(number_tones) != index and len(number_tones) > 1 else self.__tone_sandhi(number_tones, input[1])
         return number_tones
 
 
@@ -192,6 +193,9 @@ class Converter(object):
         result_list = []
         for i, char in enumerate(input):
             result_list.append((char, (i < len(input) - 1 and is_cjk(input[i+1]))))
+        for i in range(len(result_list) - 2, -1, -1):
+            if result_list[i+1][0] in self.__suffixes:
+                result_list[i] = (result_list[i][0], False)
         return result_list
 
 
