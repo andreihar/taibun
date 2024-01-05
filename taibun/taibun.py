@@ -42,6 +42,7 @@ class Converter(object):
     DEFAULT_DELIMITER = object()
     DEFAULT_SANDHI = object()
     __suffixes = ['啊','矣','喂','欸','唅','嘿','諾','乎','唷','喔','嘖','的']
+    __no_sandhi = ['這','彼','遮','遐']
 
     def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
         self.system = system.lower()
@@ -190,12 +191,10 @@ class Converter(object):
 
     # Helper to define which words should be sandhi'd fully
     def __tone_sandhi_position(self, input):
-        result_list = []
-        for i, char in enumerate(input):
-            result_list.append((char, (i < len(input) - 1 and is_cjk(input[i+1]))))
+        result_list = [(char, False if char in self.__no_sandhi else (i < len(input) - 1 and is_cjk(input[i+1]))) for i, char in enumerate(input)]
         for i in range(len(result_list) - 2, -1, -1):
             if result_list[i+1][0] in self.__suffixes:
-                result_list[i] = (result_list[i][0], False)
+                result_list[i] = (result_list[i][0], False) 
         return result_list
 
 
