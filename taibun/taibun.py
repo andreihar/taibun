@@ -102,7 +102,7 @@ class Converter(object):
         if self.system == 'pingyim': return self.__tailo_to_pingyim(word)
         if self.system == 'tongiong': return self.__tailo_to_ti(word)
         if self.system == 'ipa': return self.__tailo_to_ipa(word)
-        if self.sandhi: return self.__tailo_to_tailo(word)
+        if self.sandhi in ['auto', 'exc_last', 'incl_last']: return self.__tailo_to_tailo(word)
         else: return word[0]
 
 
@@ -125,10 +125,10 @@ class Converter(object):
     def __get_number_tones(self, input):
         words = self.__preprocess_word(input[0])
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        if self.sandhi == 'auto' or self.format == 'number':
+        if self.sandhi in ['auto', 'exc_last', 'incl_last'] or self.format == 'number':
             replace_with_zero = False
             number_tones = [s[:-1] + '0' if replace_with_zero or (replace_with_zero := s[-1] == '0') else s for s in number_tones]
-        if self.sandhi == 'auto':
+        if self.sandhi in ['auto', 'exc_last', 'incl_last']:
             index = next((i for i, s in enumerate(number_tones) if s.startswith(self.suffix_token)), len(number_tones))
             number_tones = self.__tone_sandhi(number_tones[:index], False) + number_tones[index:] if len(number_tones) != index and len(number_tones) > 1 else self.__tone_sandhi(number_tones, input[1])
         return number_tones
@@ -158,7 +158,7 @@ class Converter(object):
         elif re.search('̍', input): input += '8'
         elif input[-1] in finals: input += '4'
         else: input += '1'
-        if input.startswith(self.suffix_token) and (input[-2] == 'h' or self.sandhi == 'auto' or self.format == 'number'):
+        if input.startswith(self.suffix_token) and (input[-2] == 'h' or self.sandhi in ['auto', 'exc_last', 'incl_last'] or self.format == 'number'):
             input = input[:-1] + '0'
         input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
         return input
@@ -192,7 +192,11 @@ class Converter(object):
 
     # Helper to define which words should be sandhi'd fully
     def __tone_sandhi_position(self, input):
-        result_list = [(char, False if char in self.__no_sandhi else (i < len(input) - 1 and is_cjk(input[i+1]))) for i, char in enumerate(input)]
+        sandhi_logic = {
+            'exc_last': [(char, False if i == len(input) - 1 else True) for i, char in enumerate(input)],
+            'incl_last': [(char, True) for char in input],
+        }
+        result_list = sandhi_logic.get(self.sandhi, [(char, False if char in self.__no_sandhi else (i < len(input) - 1 and is_cjk(input[i+1]))) for i, char in enumerate(input)])
         for i in range(len(result_list) - 2, -1, -1):
             if result_list[i+1][0] in self.__suffixes:
                 result_list[i] = (result_list[i][0], False) 
