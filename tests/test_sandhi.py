@@ -40,7 +40,7 @@ def test_false():
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
-        checker(data, Converter(system=system, punctuation='none', sandhi=False), Converter(system=system, dialect="north", punctuation='none', sandhi=False))
+        checker(data, Converter(system=system, punctuation='none', sandhi='none'), Converter(system=system, dialect="north", punctuation='none', sandhi='none'))
 
 def test_sentence():
     hanji_data = ["太空朋友，恁好！恁食飽未？"]
