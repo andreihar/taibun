@@ -6,12 +6,13 @@ import unicodedata
 """
 Description: Converts Chinese characters to Taiwanese Hokkien phonetic transcriptions.
              Supports both Traditional and Simplified characters.
-Invariant: dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-leaning)
-           system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tongiong`, `IPA`
+Invariant: system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tongiong`, `IPA`
+           dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-leaning)
            format = `mark` (diacritical), `number` (numeric), `strip` (no tones)
-           sandhi = True, False
            delimiter = String that replaces the default delimiter
+           sandhi = `auto`, `none`, `exc_last`, `incl_last`
            punctuation = `format` (Latin-style, default), `none` (preserve original)
+           convert_non_cjk = True, False
 """
 
 
@@ -41,14 +42,17 @@ class Converter(object):
     tt = '[ТŊ_ТКŊ]'
     DEFAULT_DELIMITER = object()
     DEFAULT_SANDHI = object()
+    __suffixes = ['啊','矣','喂','欸','唅','嘿','諾','乎','唷','喔','嘖','的']
+    __no_sandhi = ['這','彼','遮','遐']
 
-    def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format'):
+    def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
         self.system = system.lower()
         self.dialect = dialect.lower()
         self.format = format
         self.delimiter = delimiter
         self.sandhi = sandhi
         self.punctuation = punctuation
+        self.convert_non_cjk = convert_non_cjk
 
 
     ### Interface functions
@@ -69,12 +73,13 @@ class Converter(object):
 
     # Helper to convert separate words
     def __convert_tokenised(self, word):
-        if word[0] not in word_dict:
+        if word[0] in word_dict:
+            word = (word_dict[word[0]],) + word[1:]
+            if "/" in word[0]:
+                dialect_part = word[0].split("/")[1] if self.dialect == 'north' else word[0].split("/")[0]
+                word = (dialect_part,) + word[1:]
+        elif not self.convert_non_cjk:
             return word[0]
-        word = (word_dict[word[0]],) + word[1:]
-        if "/" in word[0]:
-            dialect_part = word[0].split("/")[1] if self.dialect == 'north' else word[0].split("/")[0]
-            word = (dialect_part,) + word[1:]
         word = self.__system_conversion(word).replace('---', '--')
         if self.format == 'number' and self.system in ['tailo', 'poj']:
             word = self.__mark_to_number(word)
@@ -97,7 +102,7 @@ class Converter(object):
         if self.system == 'pingyim': return self.__tailo_to_pingyim(word)
         if self.system == 'tongiong': return self.__tailo_to_ti(word)
         if self.system == 'ipa': return self.__tailo_to_ipa(word)
-        if self.sandhi: return self.__tailo_to_tailo(word)
+        if self.sandhi in ['auto', 'exc_last', 'incl_last']: return self.__tailo_to_tailo(word)
         else: return word[0]
 
 
@@ -110,8 +115,8 @@ class Converter(object):
 
     # Helper functions to set sandhi according to transliteration system if wasn't explicitly defined by user
     def __set_default_sandhi(self):
-        if self.system == 'tongiong': return True
-        return False
+        if self.system == 'tongiong': return 'auto'
+        return 'none'
 
 
     ### Conversion functions
@@ -120,8 +125,12 @@ class Converter(object):
     def __get_number_tones(self, input):
         words = self.__preprocess_word(input[0])
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        if self.sandhi:
-            number_tones = self.__tone_sandhi(number_tones, input[1])
+        if self.sandhi in ['auto', 'exc_last', 'incl_last'] or self.format == 'number':
+            replace_with_zero = False
+            number_tones = [s[:-1] + '0' if replace_with_zero or (replace_with_zero := s[-1] == '0') else s for s in number_tones]
+        if self.sandhi in ['auto', 'exc_last', 'incl_last']:
+            index = next((i for i, s in enumerate(number_tones) if s.startswith(self.suffix_token)), len(number_tones))
+            number_tones = self.__tone_sandhi(number_tones[:index], False) + number_tones[index:] if len(number_tones) != index and len(number_tones) > 1 else self.__tone_sandhi(number_tones, input[1])
         return number_tones
 
 
@@ -149,7 +158,7 @@ class Converter(object):
         elif re.search('̍', input): input += '8'
         elif input[-1] in finals: input += '4'
         else: input += '1'
-        if input[0] == '+' and input[-1] == '4':
+        if input.startswith(self.suffix_token) and (input[-2] == 'h' or self.sandhi in ['auto', 'exc_last', 'incl_last'] or self.format == 'number'):
             input = input[:-1] + '0'
         input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
         return input
@@ -164,9 +173,9 @@ class Converter(object):
     def __get_mark_tone(self, input, placement, tones):
         for s in placement:
             if s.replace(self.tt, '') in input:
-                part = s
+                input = input.replace(s.replace(self.tt, ''), s.replace(self.tt, tones[int(input[-1])]))
                 break
-        return unicodedata.normalize('NFC', input.replace(part.replace(self.tt, ''), part.replace(self.tt, tones[int(input[-1])]))[:-1])
+        return unicodedata.normalize('NFC', input[:-1])
 
 
     # Helper to apply tone sandhi to a word
@@ -183,9 +192,14 @@ class Converter(object):
 
     # Helper to define which words should be sandhi'd fully
     def __tone_sandhi_position(self, input):
-        result_list = []
-        for i, char in enumerate(input):
-            result_list.append((char, (i < len(input) - 1 and is_cjk(input[i+1]))))
+        sandhi_logic = {
+            'exc_last': [(char, False if i == len(input) - 1 else True) for i, char in enumerate(input)],
+            'incl_last': [(char, True) for char in input],
+        }
+        result_list = sandhi_logic.get(self.sandhi, [(char, False if char in self.__no_sandhi else (i < len(input) - 1 and is_cjk(input[i+1]))) for i, char in enumerate(input)])
+        for i in range(len(result_list) - 2, -1, -1):
+            if result_list[i+1][0] in self.__suffixes:
+                result_list[i] = (result_list[i][0], False) 
         return result_list
 
 
@@ -224,7 +238,7 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo to 方音符號 (zhuyin)
     def __tailo_to_zhuyin(self, input):
         convert = {
-            'p4':'ㆴ4', 'p8':'ㆴ8', 'k4':'ㆶ4', 'k8':'ㆶ8', 't4':'ㆵ4', 't8':'ㆵ8', 'h4':'ㆷ4', 'h8':'ㆷ8',
+            'p4':'ㆴ4', 'p8':'ㆴ8', 'k4':'ㆶ4', 'k8':'ㆶ8', 't4':'ㆵ4', 't8':'ㆵ8', 'h4':'ㆷ4', 'h8':'ㆷ8', 'h0': '0',
             'tshing':'ㄑㄧㄥ', 'tshinn':'ㄑㆪ', 'phing':'ㄆㄧㄥ', 'phinn':'ㄆㆪ', 'tsing':'ㄐㄧㄥ', 'tsinn':'ㄐㆪ',
             'ainn':'ㆮ', 'aunn':'ㆯ', 'giok':'ㆣㄧㄜㆶ', 'ngai':'ㄫㄞ', 'ngau':'ㄫㄠ', 'ngoo':'ㄫㆦ', 'ping':'ㄅㄧㄥ',
             'pinn':'ㄅㆪ', 'senn':'ㄙㆥ', 'sing':'ㄒㄧㄥ', 'sinn':'ㄒㆪ', 'tshi':'ㄑㄧ',
@@ -334,7 +348,7 @@ class Converter(object):
         if self.dialect == 'north':
             convert.update({'o':'o'})
         convert2 = {
-            'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi'}
+            'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'ʔ0'}
         tones = ['', '⁴⁴', '⁵³', '¹¹', '²¹', '²⁵', '', '²²', '⁵'] if self.dialect != 'north' else ['', '⁵⁵', '⁵¹', '²¹', '³²', '²⁴', '', '³³', '⁴']
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
         convert2.update({k.capitalize(): v.capitalize() for k, v in convert2.items()})
