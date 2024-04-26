@@ -6,12 +6,13 @@ import unicodedata
 """
 Description: Converts Chinese characters to Taiwanese Hokkien phonetic transcriptions.
              Supports both Traditional and Simplified characters.
-Invariant: dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-leaning)
-           system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tongiong`, `IPA`
+Invariant: system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tongiong`, `IPA`
+           dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-leaning)
            format = `mark` (diacritical), `number` (numeric), `strip` (no tones)
-           sandhi = True, False
            delimiter = String that replaces the default delimiter
+           sandhi = `auto`, `none`, `exc_last`, `incl_last`
            punctuation = `format` (Latin-style, default), `none` (preserve original)
+           convert_non_cjk = True, False
 """
 
 
@@ -114,8 +115,8 @@ class Converter(object):
 
     # Helper functions to set sandhi according to transliteration system if wasn't explicitly defined by user
     def __set_default_sandhi(self):
-        if self.system == 'tongiong': return True
-        return False
+        if self.system == 'tongiong': return 'auto'
+        return 'none'
 
 
     ### Conversion functions
@@ -124,10 +125,10 @@ class Converter(object):
     def __get_number_tones(self, input):
         words = self.__preprocess_word(input[0])
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        if self.sandhi or self.format == 'number':
+        if self.sandhi == 'auto' or self.format == 'number':
             replace_with_zero = False
             number_tones = [s[:-1] + '0' if replace_with_zero or (replace_with_zero := s[-1] == '0') else s for s in number_tones]
-        if self.sandhi:
+        if self.sandhi == 'auto':
             index = next((i for i, s in enumerate(number_tones) if s.startswith(self.suffix_token)), len(number_tones))
             number_tones = self.__tone_sandhi(number_tones[:index], False) + number_tones[index:] if len(number_tones) != index and len(number_tones) > 1 else self.__tone_sandhi(number_tones, input[1])
         return number_tones
@@ -157,7 +158,7 @@ class Converter(object):
         elif re.search('̍', input): input += '8'
         elif input[-1] in finals: input += '4'
         else: input += '1'
-        if input.startswith(self.suffix_token) and (input[-2] == 'h' or self.sandhi or self.format == 'number'):
+        if input.startswith(self.suffix_token) and (input[-2] == 'h' or self.sandhi == 'auto' or self.format == 'number'):
             input = input[:-1] + '0'
         input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
         return input

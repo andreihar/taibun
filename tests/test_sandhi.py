@@ -27,7 +27,7 @@ def test_true():
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
-        checker(data, Converter(system=system, punctuation='none', sandhi=True), Converter(system=system, dialect="north", punctuation='none', sandhi=True))
+        checker(data, Converter(system=system, punctuation='none', sandhi='auto'), Converter(system=system, dialect="north", punctuation='none', sandhi='auto'))
 
 def test_false():
     test_data = [
@@ -54,4 +54,4 @@ def test_sentence():
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
-        checker(data, Converter(system=system, sandhi=True), Converter(system=system, dialect="north", sandhi=True))
+        checker(data, Converter(system=system, sandhi='auto'), Converter(system=system, dialect="north", sandhi='auto'))
