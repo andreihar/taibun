@@ -86,7 +86,7 @@ $ pip install taibun
 
 ```python
 # constructor
-c = Converter(system, dialect, format, delimiter, sandhi, punctuation)
+c = Converter(system, dialect, format, delimiter, sandhi, punctuation, convert_non_cjk)
 
 # transliterate Chinese characters
 c.get(input)
@@ -108,7 +108,7 @@ c.to_traditional(input)
 
 | text | Tailo   | POJ     | Zhuyin      | TLPA      | Pingyim | Tongiong |
 | ---- | ------- | ------- | ----------- | --------- | ------- | -------- |
-| 臺灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  |
+| 台灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  |
 
 #### Dialect
 
@@ -131,7 +131,7 @@ c.to_traditional(input)
 
 | text | mark    | number    | strip   |
 | ---- | ------- | --------- | ------- |
-| 臺灣 | Tâi-uân | Tai5-uan5 | Tai-uan |
+| 台灣 | Tâi-uân | Tai5-uan5 | Tai-uan |
 
 #### Delimiter
 
@@ -145,31 +145,33 @@ Default value depends on the chosen `system`:
 
 | text | '-'     | ''     | ' '     |
 | ---- | ------- | ------ | ------- |
-| 臺灣 | Tâi-uân | Tâiuân | Tâi uân |
+| 台灣 | Tâi-uân | Tâiuân | Tâi uân |
 
 #### Sandhi
 
-`sandhi` Boolean - applies the [sandhi rules of Taiwanese Hokkien][sandhi-wiki] to syllables of a single word.
+`sandhi` String - applies the [sandhi rules of Taiwanese Hokkien][sandhi-wiki] to syllables of a single word.
+
+Since it's difficult to encode all sandh rules, Taibun provides multiple modes for sandhi conversion to allow for a customised sandhi handling.
+
+* `none` - doesn't perform any tone sandhi
+* `auto` - closest approximation to full correct tone sandhi of Taiwanese, with proper sandhi of pronouns, suffixes, and words with 仔
+* `exc_last` - changes tone for every syllable except for the last one
+* `incl_last` - changes tone for every syllable including for the last one
 
 Default value depends on the chosen `system`:
 
-* `True` - for `Tongiong`
-* `False` - for `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`
+* `auto` - for `Tongiong`
+* `none` - for `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`
 
-| text     | False       | True        |
-| -------- | ----------- | ----------- |
-| 馬來西亞 | Má-lâi-se-a | Ma-lāi-sē-a |
+| text         | none                 | auto                 | exc_last             | incl_last            |
+| ------------ | -------------------- | -------------------- | -------------------- | -------------------- |
+| 這是台灣囡仔 | Tse sī Tâi-uân gín-á | Tse sì Tāi-uān gin-á | Tsē sì Tāi-uān gin-á | Tsē sì Tāi-uān gin-a |
 
 Sandhi rules also change depending on the dialect chosen.
 
 | text | no sandhi | south   | north   |
 | ---- | --------- | ------- | ------- |
-| 臺灣 | Tâi-uân   | Tāi-uân | Tài-uân |
-
-Note that the function is different from real sandhi rules, where changes are applied to every single syllable of the sentence, not just single words.
-
-- **Taibun's sandhi rules**: Thái-khong pīng-iú, lin-hó! Lín tsià-pá buē?
-- **Actual sandhi rules**: Thái-khōng pīng-iú, lin-hó! Lin tsià-pa buē?
+| 台灣 | Tâi-uân   | Tāi-uân | Tài-uân |
 
 #### Punctuation
 
