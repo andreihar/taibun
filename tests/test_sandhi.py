@@ -97,7 +97,7 @@ def test_sentence_none():
         checker(data, Converter(system=system, sandhi='none'), Converter(system=system, dialect="north", sandhi='none'))
 
 def test_sentence_exc_last():
-    hanji_data = ["太空朋友，恁好！恁食飽未？"]
+    hanji_data = ["太空朋友，恁好！恁食飽未"]
     test_data = [
         (["Thái-khōng pīng-iu, lin-ho! Lin tsià-pa buē/Thái-khōng pìng-iu, lin-ho! Lin tsià-pa bē"], "Tailo"),
         (["Thái-khōng pēng-iu, lin-ho! Lin chià-pa bōe/Thái-khōng pèng-iu, lin-ho! Lin chià-pa bē"], "POJ"),
@@ -111,7 +111,7 @@ def test_sentence_exc_last():
         checker(data, Converter(system=system, sandhi='exc_last'), Converter(system=system, dialect="north", sandhi='exc_last'))
 
 def test_sentence_incl_last():
-    hanji_data = ["太空朋友，恁好！恁食飽未？"]
+    hanji_data = ["太空朋友，恁好！恁食飽未"]
     test_data = [
         (["Thái-khōng pīng-iu, lin-ho! Lin tsià-pa buè/Thái-khōng pìng-iu, lin-ho! Lin tsià-pa bè"], "Tailo"),
         (["Thái-khōng pēng-iu, lin-ho! Lin chià-pa bòe/Thái-khōng pèng-iu, lin-ho! Lin chià-pa bè"], "POJ"),
