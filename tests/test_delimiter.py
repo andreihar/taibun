@@ -10,7 +10,8 @@ def test_default():
 		(["ㄆㄧㄠ ㄍㆤ˪","ㄢˋ ㄋㆤ/ㄢˋ ㄋㄧ","ㄍㄞ˪ ㄒㄧㄠ˫ ㆢㄧㄣˊ/ㄍㄞ˪ ㄒㄧㄠ˫ ㄌㄧㄣˊ","ㄐㄧㆦㆶ ㄌㄧˋ ㄍㄧㄣ ㄚˋ ㆢㄧㆵ˙ ㄐㄧㄣ ㄏㄜˋ ㆤˊ ㆢㄧㆵ˙ ㄐㄧˋ/ㄐㄧㆦㆶ ㄌㄧˋ ㄍㄧㄣ ㄚˋ ㄌㄧㆵ˙ ㄐㄧㄣ ㄏㄜˋ ㆤˊ ㄌㄧㆵ˙ ㄐㄧˋ","ㄌㄢˋ ㆤˊ ㄐㄧㄚㆷ˙ ㄅㆭ˫"], "Zhuyin"),
 		(["phiau1 ke3","an2 ne1/an2 ni1","kai3 siau7 jin5/kai3 siau7 lin5","ciok4 li2 kin1 a2 jit8 cin1 ho2 e5 jit8 ci2/ciok4 li2 kin1 a2 lit8 cin1 ho2 e5 lit8 ci2","lan2 e5 ciah8 png7"], "TLPA"),
 		(["piāogè","ǎnlnē/ǎnlnī","gàisiâozzín/gàisiâolín","ziōk lǐ gīnǎzzít zīnhǒ é zzítzǐ/ziōk lǐ gīnǎlít zīnhǒ é lítzǐ","lǎn é ziáhbn̂g"], "Pingyim"),
-		(["piāu-gê","an-ne/an-ni","gài-siâu-rĭn/gài-siâu-lĭn","ziok li gīn-a-rīt zīn-hòr--e̊ rīt-zì/ziok li gīn-a-līt zīn-hòr--e̊ līt-zì","làn--e̊ ziâ-bn̄g"], "Tongiong")
+		(["piāu-gê","an-ne/an-ni","gài-siâu-rĭn/gài-siâu-lĭn","ziok li gīn-a-rīt zīn-hòr--e̊ rīt-zì/ziok li gīn-a-līt zīn-hòr--e̊ līt-zì","làn--e̊ ziâ-bn̄g"], "Tongiong"),
+		(["pʰiau⁴⁴ ke¹¹/pʰiau⁵⁵ ke²¹","an⁵³ nẽ⁴⁴/an⁵¹ nĩ⁵⁵","kai¹¹ ɕiau²² dʑin²⁵/kai²¹ ɕiau³³ lin²⁴","tɕiɔk̚²¹ li⁵³ kin⁴⁴ a⁵³ dʑit̚⁵ tɕin⁴⁴ hə⁵³ e²⁵ dʑit̚⁵ tɕi⁵³/tɕiɔk̚³² li⁵¹ kin⁵⁵ a⁵¹ lit̚⁴ tɕin⁵⁵ ho⁵¹ e²⁴ lit̚⁴ tɕi⁵¹","lan⁵³ e²⁵ tɕiaʔ⁵ pŋ̍²²/lan⁵¹ e²⁴ tɕiaʔ⁴ pŋ̍³³"], "IPA")
     ]
 	for transl, system in test_data:
 		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
@@ -23,7 +24,7 @@ def test_hyphen():
 		(["ㄆㄧㄠ-ㄍㆤ˪","ㄢˋ-ㄋㆤ/ㄢˋ-ㄋㄧ","ㄍㄞ˪-ㄒㄧㄠ˫-ㆢㄧㄣˊ/ㄍㄞ˪-ㄒㄧㄠ˫-ㄌㄧㄣˊ","ㄐㄧㆦㆶ ㄌㄧˋ ㄍㄧㄣ-ㄚˋ-ㆢㄧㆵ˙ ㄐㄧㄣ-ㄏㄜˋ ㆤˊ ㆢㄧㆵ˙-ㄐㄧˋ/ㄐㄧㆦㆶ ㄌㄧˋ ㄍㄧㄣ-ㄚˋ-ㄌㄧㆵ˙ ㄐㄧㄣ-ㄏㄜˋ ㆤˊ ㄌㄧㆵ˙-ㄐㄧˋ","ㄌㄢˋ ㆤˊ ㄐㄧㄚㆷ˙-ㄅㆭ˫"], "Zhuyin"),
 		(["phiau1-ke3","an2-ne1/an2-ni1","kai3-siau7-jin5/kai3-siau7-lin5","ciok4 li2 kin1-a2-jit8 cin1-ho2 e5 jit8-ci2/ciok4 li2 kin1-a2-lit8 cin1-ho2 e5 lit8-ci2","lan2 e5 ciah8-png7"], "TLPA"),
 		(["piāo-gè","ǎn-lnē/ǎn-lnī","gài-siâo-zzín/gài-siâo-lín","ziōk lǐ gīn-ǎ-zzít zīn-hǒ é zzít-zǐ/ziōk lǐ gīn-ǎ-lít zīn-hǒ é lít-zǐ","lǎn é ziáh-bn̂g"], "Pingyim"),
-		(["piāu-gê","an-ne/an-ni","gài-siâu-rĭn/gài-siâu-lĭn","ziok li gīn-a-rīt zīn-hòr--e̊ rīt-zì/ziok li gīn-a-līt zīn-hòr--e̊ līt-zì","làn--e̊ ziâ-bn̄g"], "Tongiong")
+		(["pʰiau⁴⁴-ke¹¹/pʰiau⁵⁵-ke²¹","an⁵³-nẽ⁴⁴/an⁵¹-nĩ⁵⁵","kai¹¹-ɕiau²²-dʑin²⁵/kai²¹-ɕiau³³-lin²⁴","tɕiɔk̚²¹ li⁵³ kin⁴⁴-a⁵³-dʑit̚⁵ tɕin⁴⁴-hə⁵³ e²⁵ dʑit̚⁵-tɕi⁵³/tɕiɔk̚³² li⁵¹ kin⁵⁵-a⁵¹-lit̚⁴ tɕin⁵⁵-ho⁵¹ e²⁴ lit̚⁴-tɕi⁵¹","lan⁵³ e²⁵ tɕiaʔ⁵-pŋ̍²²/lan⁵¹ e²⁴ tɕiaʔ⁴-pŋ̍³³"], "IPA")
 	]
 	for transl, system in test_data:
 		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
@@ -36,7 +37,8 @@ def test_space():
 		(["ㄆㄧㄠ ㄍㆤ˪","ㄢˋ ㄋㆤ/ㄢˋ ㄋㄧ","ㄍㄞ˪ ㄒㄧㄠ˫ ㆢㄧㄣˊ/ㄍㄞ˪ ㄒㄧㄠ˫ ㄌㄧㄣˊ","ㄐㄧㆦㆶ ㄌㄧˋ ㄍㄧㄣ ㄚˋ ㆢㄧㆵ˙ ㄐㄧㄣ ㄏㄜˋ ㆤˊ ㆢㄧㆵ˙ ㄐㄧˋ/ㄐㄧㆦㆶ ㄌㄧˋ ㄍㄧㄣ ㄚˋ ㄌㄧㆵ˙ ㄐㄧㄣ ㄏㄜˋ ㆤˊ ㄌㄧㆵ˙ ㄐㄧˋ","ㄌㄢˋ ㆤˊ ㄐㄧㄚㆷ˙ ㄅㆭ˫"], "Zhuyin"),
 		(["phiau1 ke3","an2 ne1/an2 ni1","kai3 siau7 jin5/kai3 siau7 lin5","ciok4 li2 kin1 a2 jit8 cin1 ho2 e5 jit8 ci2/ciok4 li2 kin1 a2 lit8 cin1 ho2 e5 lit8 ci2","lan2 e5 ciah8 png7"], "TLPA"),
 		(["piāo gè","ǎn lnē/ǎn lnī","gài siâo zzín/gài siâo lín","ziōk lǐ gīn ǎ zzít zīn hǒ é zzít zǐ/ziōk lǐ gīn ǎ lít zīn hǒ é lít zǐ","lǎn é ziáh bn̂g"], "Pingyim"),
-		(["piāu gê","an ne/an ni","gài siâu rĭn/gài siâu lĭn","ziok li gīn a rīt zīn hòr--e̊ rīt zì/ziok li gīn a līt zīn hòr--e̊ līt zì","làn--e̊ ziâ bn̄g"], "Tongiong")
+		(["piāu gê","an ne/an ni","gài siâu rĭn/gài siâu lĭn","ziok li gīn a rīt zīn hòr--e̊ rīt zì/ziok li gīn a līt zīn hòr--e̊ līt zì","làn--e̊ ziâ bn̄g"], "Tongiong"),
+		(["pʰiau⁴⁴ ke¹¹/pʰiau⁵⁵ ke²¹","an⁵³ nẽ⁴⁴/an⁵¹ nĩ⁵⁵","kai¹¹ ɕiau²² dʑin²⁵/kai²¹ ɕiau³³ lin²⁴","tɕiɔk̚²¹ li⁵³ kin⁴⁴ a⁵³ dʑit̚⁵ tɕin⁴⁴ hə⁵³ e²⁵ dʑit̚⁵ tɕi⁵³/tɕiɔk̚³² li⁵¹ kin⁵⁵ a⁵¹ lit̚⁴ tɕin⁵⁵ ho⁵¹ e²⁴ lit̚⁴ tɕi⁵¹","lan⁵³ e²⁵ tɕiaʔ⁵ pŋ̍²²/lan⁵¹ e²⁴ tɕiaʔ⁴ pŋ̍³³"], "IPA")
 	]
 	for transl, system in test_data:
 		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
@@ -49,7 +51,8 @@ def test_nospace():
 		(["ㄆㄧㄠㄍㆤ˪","ㄢˋㄋㆤ/ㄢˋㄋㄧ","ㄍㄞ˪ㄒㄧㄠ˫ㆢㄧㄣˊ/ㄍㄞ˪ㄒㄧㄠ˫ㄌㄧㄣˊ","ㄐㄧㆦㆶ ㄌㄧˋ ㄍㄧㄣㄚˋㆢㄧㆵ˙ ㄐㄧㄣㄏㄜˋ ㆤˊ ㆢㄧㆵ˙ㄐㄧˋ/ㄐㄧㆦㆶ ㄌㄧˋ ㄍㄧㄣㄚˋㄌㄧㆵ˙ ㄐㄧㄣㄏㄜˋ ㆤˊ ㄌㄧㆵ˙ㄐㄧˋ","ㄌㄢˋ ㆤˊ ㄐㄧㄚㆷ˙ㄅㆭ˫"], "Zhuyin"),
 		(["phiau1ke3","an2ne1/an2ni1","kai3siau7jin5/kai3siau7lin5","ciok4 li2 kin1a2jit8 cin1ho2 e5 jit8ci2/ciok4 li2 kin1a2lit8 cin1ho2 e5 lit8ci2","lan2 e5 ciah8png7"], "TLPA"),
 		(["piāogè","ǎnlnē/ǎnlnī","gàisiâozzín/gàisiâolín","ziōk lǐ gīnǎzzít zīnhǒ é zzítzǐ/ziōk lǐ gīnǎlít zīnhǒ é lítzǐ","lǎn é ziáhbn̂g"], "Pingyim"),
-		(["piāugê","anne/anni","gàisiâurĭn/gàisiâulĭn","ziok li gīnarīt zīnhòr--e̊ rītzì/ziok li gīnalīt zīnhòr--e̊ lītzì","làn--e̊ ziâbn̄g"], "Tongiong")
+		(["piāugê","anne/anni","gàisiâurĭn/gàisiâulĭn","ziok li gīnarīt zīnhòr--e̊ rītzì/ziok li gīnalīt zīnhòr--e̊ lītzì","làn--e̊ ziâbn̄g"], "Tongiong"),
+		(["pʰiau⁴⁴ke¹¹/pʰiau⁵⁵ke²¹","an⁵³nẽ⁴⁴/an⁵¹nĩ⁵⁵","kai¹¹ɕiau²²dʑin²⁵/kai²¹ɕiau³³lin²⁴","tɕiɔk̚²¹ li⁵³ kin⁴⁴a⁵³dʑit̚⁵ tɕin⁴⁴hə⁵³ e²⁵ dʑit̚⁵tɕi⁵³/tɕiɔk̚³² li⁵¹ kin⁵⁵a⁵¹lit̚⁴ tɕin⁵⁵ho⁵¹ e²⁴ lit̚⁴tɕi⁵¹","lan⁵³ e²⁵ tɕiaʔ⁵pŋ̍²²/lan⁵¹ e²⁴ tɕiaʔ⁴pŋ̍³³"], "IPA")
 	]
 	for transl, system in test_data:
 		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]

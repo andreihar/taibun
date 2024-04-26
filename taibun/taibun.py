@@ -188,7 +188,7 @@ class Converter(object):
         sandhi_words = [self.__replacement_tool(sandhi, words[i]) for i in indices]
         if last == 'a suff' and len(words) > 1:
             sandhi_words.append(self.__replacement_tool(a_sandhi, words[-2]))
-        if last == False or last == 'a suff':
+        if not last or last == 'a suff':
             sandhi_words.append(words[-1])
         return sandhi_words
     
