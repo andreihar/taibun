@@ -1,4 +1,4 @@
-[國語](README-cmn.md) | [English](README.md)
+[國語](README-cmn.md) | [English](../README.md)
 
 
 
@@ -6,7 +6,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/andreihar/taibun">
-    <img src="readme/logo.png" alt="Logo" width="90" height="80">
+    <img src="logo.png" alt="Logo" width="90" height="80">
   </a>
   
 # Taibun
@@ -107,7 +107,7 @@ c.to_traditional(input)
 * `Tongiong` - [臺語通用拼音][tongiong-wiki]
 
 | 文本 | Tailo   | POJ     | Zhuyin      | TLPA      | Pingyim | Tongiong |
-|------|---------|---------|-------------|-----------|---------|----------|
+| ---- | ------- | ------- | ----------- | --------- | ------- | -------- |
 | 臺灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  |
 
 #### Dialect
@@ -118,7 +118,7 @@ c.to_traditional(input)
 * `north` - 發音較像[泉州話][quanzhou-wiki]
 
 | 文本   | south         | north         |
-|--------|---------------|---------------|
+| ------ | ------------- | ------------- |
 | 五月節 | Gōo-gue̍h-tseh | Gōo-ge̍h-tsueh |
 
 #### Format
@@ -130,7 +130,7 @@ c.to_traditional(input)
 * `strip` - 刪除任何音調標記
 
 | 文本 | mark    | number    | strip   |
-|------|---------|-----------|---------|
+| ---- | ------- | --------- | ------- |
 | 臺灣 | Tâi-uân | Tai5-uan5 | Tai-uan |
 
 #### Delimiter
@@ -144,7 +144,7 @@ c.to_traditional(input)
 * `' '` - 對著 `Zhuyin`, `TLPA`
 
 | 文本 | '-'     | ''     | ' '     |
-|------|---------|--------|---------|
+| ---- | ------- | ------ | ------- |
 | 臺灣 | Tâi-uân | Tâiuân | Tâi uân |
 
 #### Sandhi
@@ -156,15 +156,15 @@ c.to_traditional(input)
 * `True` - 對著 `Tongiong`
 * `False` - 對著 `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`
 
-| 文本     | False        | True         |
-|----------|--------------|--------------|
-| 馬來西亞 | Má-lâi-se-a  | Ma-lāi-sē-a  |
+| 文本     | False       | True        |
+| -------- | ----------- | ----------- |
+| 馬來西亞 | Má-lâi-se-a | Ma-lāi-sē-a |
 
 變調規則也會隨著選的方言而有所改變。
 
 | 文本 | 沒有變速 | south   | north   |
-|------|---------|---------|---------|
-| 臺灣 | Tâi-uân | Tāi-uân | Tài-uân |
+| ---- | -------- | ------- | ------- |
+| 臺灣 | Tâi-uân  | Tāi-uân | Tài-uân |
 
 請注意，彼個功能佮真正的變調規則無仝，真正的華文的變化適用佇句子內部的每個音節，毋是只有個詞而已。
 
@@ -178,8 +178,8 @@ c.to_traditional(input)
 * `format` (預設) - 將中文標點符號轉做英文標點符號，佮將每句頭前的詞大寫
 * `none` - 保留中文風格的標點符號，佮新句開頭的詞毋大寫
 
-| 文本 | format | none |
-|-|-|-|
+| 文本                                                                           | format                                                                                            | none                                                                                                 |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | 這是臺南，簡稱「南」（白話字：Tâi-lâm；注音符號：ㄊㄞˊ ㄋㄢˊ，國語：Táinán）。 | Tse sī Tâi-lâm, kán-tshing "lâm" (Pe̍h-uē-jī: Tâi-lâm; tsù-im hû-hō: ㄊㄞˊ ㄋㄢˊ, kok-gí: Táinán). | tse sī Tâi-lâm，kán-tshing「lâm」（Pe̍h-uē-jī：Tâi-lâm；tsù-im hû-hō：ㄊㄞˊ ㄋㄢˊ，kok-gí：Táinán）。 |
 
 ### Tokeniser
@@ -301,7 +301,7 @@ t.tokenise("太空朋友，恁好！恁食飽未？")
 [release-badge]: https://img.shields.io/github/v/release/andreihar/taibun?color=38618c&style=for-the-badge&label=發布
 [release]: https://github.com/andreihar/taibun/releases
 [licence-badge]: https://img.shields.io/github/license/andreihar/taibun?color=000000&style=for-the-badge&label=牌照
-[licence]: LICENSE
+[licence]: ../LICENSE
 [linkedin-badge]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
 [linkedin]: https://www.linkedin.com/in/andrei-harbachov/
 
