@@ -184,23 +184,16 @@ class Converter(object):
         a_sandhi = {'1':'7', '2':'1', '3':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'1', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'7'}
         if self.dialect == 'north':
             sandhi.update({'5':'3'})
+        # indices = range(len(words)-2) if last == 'a suff' and len(words) > 1 else range(len(words)-1) if not last else range(len(words))
         if last == 'a suff':
             indices = range(len(words)-2) if len(words) > 1 else range(len(words))
-            sandhi_words = [self.__replacement_tool(sandhi, words[i]) for i in indices]
-            if len(words) > 1:
-                sandhi_words.append(self.__replacement_tool(a_sandhi, words[-2]))
-                sandhi_words.append(words[-1])
-            else:
-                sandhi_words.append(words[-1])
         else:
             indices = range(len(words)-1) if not last else range(len(words))
-            sandhi_words = [self.__replacement_tool(sandhi, words[i]) for i in indices]
-            if not last:
-                sandhi_words.append(words[-1])
-        # indices = range(len(words)-1) if not last else range(len(words))
-        # sandhi_words = [self.__replacement_tool(sandhi, words[i]) for i in indices]
-        # if not last:
-        #     sandhi_words.append(words[-1])
+        sandhi_words = [self.__replacement_tool(sandhi, words[i]) for i in indices]
+        if last == 'a suff' and len(words) > 1:
+            sandhi_words.append(self.__replacement_tool(a_sandhi, words[-2]))
+        if last == False or last == 'a suff':
+            sandhi_words.append(words[-1])
         return sandhi_words
     
 
