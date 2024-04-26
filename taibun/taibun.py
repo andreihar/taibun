@@ -210,11 +210,10 @@ class Converter(object):
             'exc_last': [(char, False if i == len(input) - 1 else True) for i, char in enumerate(input)],
             'incl_last': [(char, True) for char in input],
         }
-        result_list = sandhi_logic.get(self.sandhi, [(char, False if char in self.__no_sandhi else (i < len(input) - 1 and is_cjk(input[i+1]))) for i, char in enumerate(input)])
         result_list = sandhi_logic.get(self.sandhi, [(char, "a suff" if len(char) > 1 and char[-1] == "仔" else (False if char in self.__no_sandhi else (i < len(input) - 1 and is_cjk(input[i+1])))) for i, char in enumerate(input)])
         for i in range(len(result_list) - 2, -1, -1):
             if result_list[i+1][0] in self.__suffixes:
-                result_list[i] = (result_list[i][0], False) 
+                result_list[i] = (result_list[i][0], False)
         return result_list
 
 

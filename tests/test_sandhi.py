@@ -2,6 +2,8 @@ from taibun.taibun import Converter
 from utils import checker
 
 hanji_data = ["開始","巧氣","寄回","肉包","翕甌","彼號","確信","南面","未來","篾蓆","業務","罰金","學生"]
+hanji_sentence = ["太空朋友，恁好！恁食飽未"]
+hanji_a = ["廟尪仔","翁某仔","肉幼仔","花搭仔","微微仔","慢慢仔","尾蝶仔"]
 
 def test_default():
 	test_data = [
@@ -69,7 +71,58 @@ def test_incl_last():
         checker(data, Converter(system=system, punctuation='none', sandhi='incl_last'), Converter(system=system, dialect="north", punctuation='none', sandhi='incl_last'))
 
 def test_sentence_auto():
-    hanji_data = ["太空朋友，恁好！恁食飽未"]
+    test_data = [
+        (["biò-āng-á","āng-boo-á","bá-iu-á","huē-ta-á","bī-bī-á/bì-bī-á","bàn-bān-á","bue-iā-á/be-iā-á"], "Tailo"),
+        (["biò-āng-á","āng-bo͘-á","bá-iu-á","hōe-ta-á","bī-bī-á/bì-bī-á","bàn-bān-á","boe-iā-á/be-iā-á"], "POJ"),
+        (["ㆠㄧㄜ˪ ㄤ˫ ㄚˋ","ㄤ˫ ㆠㆦ ㄚˋ","ㆠㄚˋ ㄧㄨ ㄚˋ","ㄏㄨㆤ˫ ㄉㄚ ㄚˋ","ㆠㄧ˫ ㆠㄧ˫ ㄚˋ/ㆠㄧ˪ ㆠㄧ˫ ㄚˋ","ㆠㄢ˪ ㆠㄢ˫ ㄚˋ","ㆠㄨㆤ ㄧㄚ˫ ㄚˋ/ㆠㆤ ㄧㄚ˫ ㄚˋ"], "Zhuyin"),
+        (["bio3 ang7 a2","ang7 boo1 a2","ba2 iu1 a2","hue7 ta1 a2","bi7 bi7 a2/bi3 bi7 a2","ban3 ban7 a2","bue1 ia7 a2/be1 ia7 a2"], "TLPA"),
+        (["bbiòângǎ","ângbboōǎ","bbǎyūǎ","huêdāǎ","bbîbbîǎ/bbìbbîǎ","bbànbbânǎ","bbuēyâǎ/bbēyâǎ"], "Pingyim"),
+        (["bhiôr-āng-à","āng-bhor-à","bhà-iu-à","huē-da-à","bhī-bhī-à/bhî-bhī-à","bhân-bhān-à","bhue-iā-à/bhe-iā-à"], "Tongiong")
+    ]
+    for transl, system in test_data:
+        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
+        checker(data, Converter(system=system, punctuation='none', sandhi='auto'), Converter(system=system, dialect="north", punctuation='none', sandhi='auto'))
+
+def test_sentence_none():
+    test_data = [
+        (["biō-ang-á","ang-bóo-á","bah-iù-á","hue-tah-á","bî-bî-á","bān-bān-á","bué-ia̍h-á/bé-ia̍h-á"], "Tailo"),
+        (["biō-ang-á","ang-bó͘-á","bah-iù-á","hoe-tah-á","bî-bî-á","bān-bān-á","bóe-ia̍h-á/bé-ia̍h-á"], "POJ"),
+        (["ㆠㄧㄜ˫ ㄤ ㄚˋ","ㄤ ㆠㆦˋ ㄚˋ","ㆠㄚㆷ ㄧㄨ˪ ㄚˋ","ㄏㄨㆤ ㄉㄚㆷ ㄚˋ","ㆠㄧˊ ㆠㄧˊ ㄚˋ","ㆠㄢ˫ ㆠㄢ˫ ㄚˋ","ㆠㄨㆤˋ ㄧㄚㆷ˙ ㄚˋ/ㆠㆤˋ ㄧㄚㆷ˙ ㄚˋ"], "Zhuyin"),
+        (["bio7 ang1 a2","ang1 boo2 a2","bah4 iu3 a2","hue1 tah4 a2","bi5 bi5 a2","ban7 ban7 a2","bue2 iah8 a2/be2 iah8 a2"], "TLPA"),
+        (["bbiôāngǎ","āngbboǒǎ","bbāhyùǎ","huēdāhǎ","bbíbbíǎ","bbânbbânǎ","bbuěyáhǎ/bběyáhǎ"], "Pingyim"),
+        (["bhiōr-ang-à","ang-bhòr-à","bhāh-iû-à","hue-dāh-à","bhĭ-bhĭ-à","bhān-bhān-à","bhuè-iah-à/bhè-iah-à"], "Tongiong")
+    ]
+    for transl, system in test_data:
+        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
+        checker(data, Converter(system=system, punctuation='none', sandhi='none'), Converter(system=system, dialect="north", punctuation='none', sandhi='none'))
+
+def test_sentence_exc_last():
+    test_data = [
+        (["biò-āng-á","āng-boo-á","bá-iú-á","huē-tá-á","bī-bī-á/bì-bì-á","bàn-bàn-á","bue-ià-á/be-ià-á"], "Tailo"),
+        (["biò-āng-á","āng-bo͘-á","bá-iú-á","hōe-tá-á","bī-bī-á/bì-bì-á","bàn-bàn-á","boe-ià-á/be-ià-á"], "POJ"),
+        (["ㆠㄧㄜ˪ ㄤ˫ ㄚˋ","ㄤ˫ ㆠㆦ ㄚˋ","ㆠㄚˋ ㄧㄨˋ ㄚˋ","ㄏㄨㆤ˫ ㄉㄚˋ ㄚˋ","ㆠㄧ˫ ㆠㄧ˫ ㄚˋ/ㆠㄧ˪ ㆠㄧ˪ ㄚˋ","ㆠㄢ˪ ㆠㄢ˪ ㄚˋ","ㆠㄨㆤ ㄧㄚ˪ ㄚˋ/ㆠㆤ ㄧㄚ˪ ㄚˋ"], "Zhuyin"),
+        (["bio3 ang7 a2","ang7 boo1 a2","ba2 iu2 a2","hue7 ta2 a2","bi7 bi7 a2/bi3 bi3 a2","ban3 ban3 a2","bue1 ia3 a2/be1 ia3 a2"], "TLPA"),
+        (["bbiòângǎ","ângbboōǎ","bbǎyǔǎ","huêdǎǎ","bbîbbîǎ/bbìbbìǎ","bbànbbànǎ","bbuēyàǎ/bbēyàǎ"], "Pingyim"),
+        (["bhiôr-āng-à","āng-bhor-à","bhà-iù-à","huē-dà-à","bhī-bhī-à/bhî-bhî-à","bhân-bhân-à","bhue-iâ-à/bhe-iâ-à"], "Tongiong")
+    ]
+    for transl, system in test_data:
+        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
+        checker(data, Converter(system=system, punctuation='none', sandhi='exc_last'), Converter(system=system, dialect="north", punctuation='none', sandhi='exc_last'))
+
+def test_sentence_incl_last():
+    test_data = [
+        (["biò-āng-a","āng-boo-a","bá-iú-a","huē-tá-a","bī-bī-a/bì-bì-a","bàn-bàn-a","bue-ià-a/be-ià-a"], "Tailo"),
+        (["biò-āng-a","āng-bo͘-a","bá-iú-a","hōe-tá-a","bī-bī-a/bì-bì-a","bàn-bàn-a","boe-ià-a/be-ià-a"], "POJ"),
+        (["ㆠㄧㄜ˪ ㄤ˫ ㄚ","ㄤ˫ ㆠㆦ ㄚ","ㆠㄚˋ ㄧㄨˋ ㄚ","ㄏㄨㆤ˫ ㄉㄚˋ ㄚ","ㆠㄧ˫ ㆠㄧ˫ ㄚ/ㆠㄧ˪ ㆠㄧ˪ ㄚ","ㆠㄢ˪ ㆠㄢ˪ ㄚ","ㆠㄨㆤ ㄧㄚ˪ ㄚ/ㆠㆤ ㄧㄚ˪ ㄚ"], "Zhuyin"),
+        (["bio3 ang7 a1","ang7 boo1 a1","ba2 iu2 a1","hue7 ta2 a1","bi7 bi7 a1/bi3 bi3 a1","ban3 ban3 a1","bue1 ia3 a1/be1 ia3 a1"], "TLPA"),
+        (["bbiòângā","ângbboōā","bbǎyǔā","huêdǎā","bbîbbîā/bbìbbìā","bbànbbànā","bbuēyàā/bbēyàā"], "Pingyim"),
+        (["bhiôr-āng-a","āng-bhor-a","bhà-iù-a","huē-dà-a","bhī-bhī-a/bhî-bhî-a","bhân-bhân-a","bhue-iâ-a/bhe-iâ-a"], "Tongiong")
+    ]
+    for transl, system in test_data:
+        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
+        checker(data, Converter(system=system, punctuation='none', sandhi='incl_last'), Converter(system=system, dialect="north", punctuation='none', sandhi='incl_last'))
+
+def test_sentence_auto():
     test_data = [
         (["Thái-khōng pīng-iú, lin-hó! Lin tsià-pa buē/Thái-khōng pìng-iú, lin-hó! Lin tsià-pa bē"], "Tailo"),
         (["Thái-khōng pēng-iú, lin-hó! Lin chià-pa bōe/Thái-khōng pèng-iú, lin-hó! Lin chià-pa bē"], "POJ"),
@@ -79,11 +132,10 @@ def test_sentence_auto():
         (["Tài-kōng bīng-iù, lin-hòr! Lin ziâ-ba bhuē/Tài-kōng bîng-iù, lin-hòr! Lin ziâ-ba bhē"], "Tongiong")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
         checker(data, Converter(system=system, sandhi='auto'), Converter(system=system, dialect="north", sandhi='auto'))
 
 def test_sentence_none():
-    hanji_data = ["太空朋友，恁好！恁食飽未"]
     test_data = [
         (["Thài-khong pîng-iú, lín-hó! Lín tsia̍h-pá buē/Thài-khong pîng-iú, lín-hó! Lín tsia̍h-pá bē"], "Tailo"),
         (["Thài-khong pêng-iú, lín-hó! Lín chia̍h-pá bōe/Thài-khong pêng-iú, lín-hó! Lín chia̍h-pá bē"], "POJ"),
@@ -93,11 +145,10 @@ def test_sentence_none():
         (["Tâi-kong bĭng-iù, lìn-hòr! Lìn ziah-bà bhuē/Tâi-kong bĭng-iù, lìn-hòr! Lìn ziah-bà bhē"], "Tongiong")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
         checker(data, Converter(system=system, sandhi='none'), Converter(system=system, dialect="north", sandhi='none'))
 
 def test_sentence_exc_last():
-    hanji_data = ["太空朋友，恁好！恁食飽未"]
     test_data = [
         (["Thái-khōng pīng-iu, lin-ho! Lin tsià-pa buē/Thái-khōng pìng-iu, lin-ho! Lin tsià-pa bē"], "Tailo"),
         (["Thái-khōng pēng-iu, lin-ho! Lin chià-pa bōe/Thái-khōng pèng-iu, lin-ho! Lin chià-pa bē"], "POJ"),
@@ -107,11 +158,10 @@ def test_sentence_exc_last():
         (["Tài-kōng bīng-iu, lin-hor! Lin ziâ-ba bhuē/Tài-kōng bîng-iu, lin-hor! Lin ziâ-ba bhē"], "Tongiong")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
         checker(data, Converter(system=system, sandhi='exc_last'), Converter(system=system, dialect="north", sandhi='exc_last'))
 
 def test_sentence_incl_last():
-    hanji_data = ["太空朋友，恁好！恁食飽未"]
     test_data = [
         (["Thái-khōng pīng-iu, lin-ho! Lin tsià-pa buè/Thái-khōng pìng-iu, lin-ho! Lin tsià-pa bè"], "Tailo"),
         (["Thái-khōng pēng-iu, lin-ho! Lin chià-pa bòe/Thái-khōng pèng-iu, lin-ho! Lin chià-pa bè"], "POJ"),
@@ -121,5 +171,5 @@ def test_sentence_incl_last():
         (["Tài-kōng bīng-iu, lin-hor! Lin ziâ-ba bhuê/Tài-kōng bîng-iu, lin-hor! Lin ziâ-ba bhê"], "Tongiong")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
         checker(data, Converter(system=system, sandhi='incl_last'), Converter(system=system, dialect="north", sandhi='incl_last'))
