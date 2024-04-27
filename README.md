@@ -153,12 +153,12 @@ Default value depends on the chosen `system`:
 
 `sandhi` String - applies the [sandhi rules of Taiwanese Hokkien][sandhi-wiki] to syllables of a single word.
 
-Since it's difficult to encode all sandh rules, Taibun provides multiple modes for sandhi conversion to allow for a customised sandhi handling.
+Since it's difficult to encode all sandhi rules, Taibun provides multiple modes for sandhi conversion to allow for customised sandhi handling.
 
 * `none` - doesn't perform any tone sandhi
 * `auto` - closest approximation to full correct tone sandhi of Taiwanese, with proper sandhi of pronouns, suffixes, and words with 仔
 * `exc_last` - changes tone for every syllable except for the last one
-* `incl_last` - changes tone for every syllable including for the last one
+* `incl_last` - changes tone for every syllable including the last one
 
 Default value depends on the chosen `system`:
 
@@ -259,7 +259,7 @@ c.get("先生講，學生恬恬聽。")
 >> Siān-snī gǒng, hág-sīng diâm-diâm tinā.
 
 ## Sandhi
-c = Converter() # for Tailo, sandhi False by default
+c = Converter() # for Tailo, sandhi none by default
 c.get("這是台灣囡仔")
 >> Tse sī Tâi-uân gín-á
 
@@ -310,7 +310,6 @@ is_cjk('我食麭')
 
 is_cjk('我食pháng')
 >> False
-
 ```
 
 
