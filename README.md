@@ -215,9 +215,10 @@ t.tokenise(input)
 ## Example
 
 ```python
-from taibun import Converter, Tokeniser
+# Converter
+from taibun import Converter
 
-# System
+## System
 c = Converter() # Tailo system default
 c.get('先生講，學生恬恬聽。')
 >> Sian-sinn kóng, ha̍k-sing tiām-tiām thiann.
@@ -226,7 +227,7 @@ c = Converter(system='Zhuyin')
 c.get('先生講，學生恬恬聽。')
 >> ㄒㄧㄢ ㄒㆪ ㄍㆲˋ, ㄏㄚㆶ˙ ㄒㄧㄥ ㄉㄧㆰ˫ ㄉㄧㆰ˫ ㄊㄧㆩ.
 
-# Dialect
+## Dialect
 c = Converter() # south dialect default
 c.get("我欲用箸食魚")
 >> Guá beh īng tī tsia̍h hî
@@ -235,7 +236,7 @@ c = Converter(dialect='north')
 c.get("我欲用箸食魚")
 >> Guá bueh īng tū tsia̍h hû
 
-# Format
+## Format
 c = Converter() # for Tailo, mark by default
 c.get("生日快樂")
 >> Senn-ji̍t khuài-lo̍k
@@ -248,7 +249,7 @@ c = Converter(format='strip')
 c.get("生日快樂")
 >> Senn-jit khuai-lok
 
-# Delimiter
+## Delimiter
 c = Converter(delimiter='')
 c.get("先生講，學生恬恬聽。")
 >> Siansinn kóng, ha̍ksing tiāmtiām thiann.
@@ -257,16 +258,24 @@ c = Converter(system='Pingyim', delimiter='-')
 c.get("先生講，學生恬恬聽。")
 >> Siān-snī gǒng, hág-sīng diâm-diâm tinā.
 
-# Sandhi
+## Sandhi
 c = Converter() # for Tailo, sandhi False by default
-c.get("南迴鐵路")
->> Lâm-huê-thih-lōo
+c.get("這是台灣囡仔")
+>> Tse sī Tâi-uân gín-á
 
 c = Converter(sandhi='auto')
-c.get("南迴鐵路")
->> Lām-huē-thí-lōo
+c.get("這是台灣囡仔")
+>> Tse sì Tāi-uān gin-á
 
-# Punctuation
+c = Converter(sandhi='exc_last')
+c.get("這是台灣囡仔")
+>> Tsē sì Tāi-uān gin-á
+
+c = Converter(sandhi='incl_last')
+c.get("這是台灣囡仔")
+>> Tsē sì Tāi-uān gin-a
+
+## Punctuation
 c = Converter() # format punctuation default
 c.get("太空朋友，恁好！恁食飽未？")
 >> Thài-khong pîng-iú, lín-hó! Lín tsia̍h-pá buē?
@@ -277,9 +286,31 @@ c.get("太空朋友，恁好！恁食飽未？")
 
 
 # Tokeniser
+from taibun import Tokeniser
+
 t = Tokeniser()
 t.tokenise("太空朋友，恁好！恁食飽未？")
 >> ['太空', '朋友', '，', '恁好', '！', '恁', '食飽', '未', '？']
+
+
+# Other Functions
+from taibun import to_traditional, to_simplified, is_cjk
+
+## Convert to Traditional
+to_traditional("我听无台湾话")
+>> 我聽無台灣話
+
+## Convert to Simplified
+to_simplified("我聽無臺灣話")
+>> 我听无台湾话
+
+## Check if the string is fully composed of Chinese characters
+is_cjk('我食麭')
+>> True
+
+is_cjk('我食pháng')
+>> False
+
 ```
 
 
