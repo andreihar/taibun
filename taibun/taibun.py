@@ -49,6 +49,7 @@ class Converter(object):
     DEFAULT_SANDHI = object()
     __suffixes = ['啊','矣','喂','欸','唅','嘿','諾','乎','唷','喔','嘖','的']
     __no_sandhi = ['這','彼','遮','遐']
+    __location = ['頂','跤','外','內','前']
 
     def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
         self.system = system.lower()
@@ -204,7 +205,18 @@ class Converter(object):
             'exc_last': [(char, False if i == len(input) - 1 else True) for i, char in enumerate(input)],
             'incl_last': [(char, True) for char in input],
         }
-        result_list = sandhi_logic.get(self.sandhi, [(char, "a suff" if len(char) > 1 and char[-1] == "仔" else (False if char in self.__no_sandhi else (i < len(input) - 1 and is_cjk(input[i+1])))) for i, char in enumerate(input)])
+        result_list = []
+        for i, word in enumerate(input):
+            if i < len(input) - 1 and input[i+1] in self.__location:
+                result = False
+            elif word in self.__location or word in self.__no_sandhi:
+                result = False
+            elif len(word) > 1 and word[-1] == "仔":
+                result = "a suff"
+            else:
+                result = i < len(input) - 1 and is_cjk(input[i+1])
+            result_list.append((word, result))
+        result_list = sandhi_logic.get(self.sandhi, result_list)
         for i in range(len(result_list) - 2, -1, -1):
             if result_list[i+1][0] in self.__suffixes:
                 result_list[i] = (result_list[i][0], False)
