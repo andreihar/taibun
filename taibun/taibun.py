@@ -17,6 +17,9 @@ Invariant: system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tong
 
 
 word_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/words.json"),'r', encoding="utf-8"))
+trad_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/simplified.json"),'r', encoding="utf-8"))
+simplified_dict = {v: k for k, v in trad_dict.items()}
+simplified_dict['臺'] = '台'
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
@@ -32,9 +35,11 @@ def is_cjk(input):
 
 # Convert Simplified to Traditional characters
 def to_traditional(input):
-    with open(os.path.join(os.path.dirname(__file__), "data/simplified.json"),'r', encoding="utf-8") as file:
-        trad = json.load(file)
-    return ''.join(trad.get(c, c) for c in input)
+    return ''.join(trad_dict.get(c, c) for c in input)
+
+# Convert Traditional to Simplified characters
+def to_simplified(input):
+    return ''.join(simplified_dict.get(c, c) for c in input)
 
 class Converter(object):
 
