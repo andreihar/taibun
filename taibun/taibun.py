@@ -181,11 +181,14 @@ class Converter(object):
     # Helper to apply tone sandhi to a word
     def __tone_sandhi(self, words, last):
         sandhi = {'1':'7', '7':'3', '3':'2', '2':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'2', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'3'}
+        a_sandhi = {'1':'7', '2':'1', '3':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'1', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'7'}
         if self.dialect == 'north':
             sandhi.update({'5':'3'})
-        indices = range(len(words)-1) if not last else range(len(words))
+        indices = range(len(words)-2) if last == 'a suff' and len(words) > 1 else range(len(words)-1) if not last else range(len(words))
         sandhi_words = [self.__replacement_tool(sandhi, words[i]) for i in indices]
-        if not last:
+        if last == 'a suff' and len(words) > 1:
+            sandhi_words.append(self.__replacement_tool(a_sandhi, words[-2]))
+        if not last or last == 'a suff':
             sandhi_words.append(words[-1])
         return sandhi_words
     
@@ -196,10 +199,10 @@ class Converter(object):
             'exc_last': [(char, False if i == len(input) - 1 else True) for i, char in enumerate(input)],
             'incl_last': [(char, True) for char in input],
         }
-        result_list = sandhi_logic.get(self.sandhi, [(char, False if char in self.__no_sandhi else (i < len(input) - 1 and is_cjk(input[i+1]))) for i, char in enumerate(input)])
+        result_list = sandhi_logic.get(self.sandhi, [(char, "a suff" if len(char) > 1 and char[-1] == "仔" else (False if char in self.__no_sandhi else (i < len(input) - 1 and is_cjk(input[i+1])))) for i, char in enumerate(input)])
         for i in range(len(result_list) - 2, -1, -1):
             if result_list[i+1][0] in self.__suffixes:
-                result_list[i] = (result_list[i][0], False) 
+                result_list[i] = (result_list[i][0], False)
         return result_list
 
 

@@ -1,4 +1,4 @@
-[台語](README-oan.md) | [國語](README-cmn.md)
+[台語](readme/README-oan.md) | [國語](readme/README-cmn.md)
 
 
 
@@ -86,7 +86,7 @@ $ pip install taibun
 
 ```python
 # constructor
-c = Converter(system, dialect, format, delimiter, sandhi, punctuation)
+c = Converter(system, dialect, format, delimiter, sandhi, punctuation, convert_non_cjk)
 
 # transliterate Chinese characters
 c.get(input)
@@ -107,8 +107,8 @@ c.to_traditional(input)
 * `Tongiong` - [Daī-ghî Tōng-iōng Pīng-im][tongiong-wiki]
 
 | text | Tailo   | POJ     | Zhuyin      | TLPA      | Pingyim | Tongiong |
-|------|---------|---------|-------------|-----------|---------|----------|
-| 臺灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  |
+| ---- | ------- | ------- | ----------- | --------- | ------- | -------- |
+| 台灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  |
 
 #### Dialect
 
@@ -118,7 +118,7 @@ c.to_traditional(input)
 * `north` - [Quanzhou][quanzhou-wiki]-leaning pronunciation
 
 | text   | south         | north         |
-|--------|---------------|---------------|
+| ------ | ------------- | ------------- |
 | 五月節 | Gōo-gue̍h-tseh | Gōo-ge̍h-tsueh |
 
 #### Format
@@ -130,8 +130,8 @@ c.to_traditional(input)
 * `strip` - removes any tone marking
 
 | text | mark    | number    | strip   |
-|------|---------|-----------|---------|
-| 臺灣 | Tâi-uân | Tai5-uan5 | Tai-uan |
+| ---- | ------- | --------- | ------- |
+| 台灣 | Tâi-uân | Tai5-uan5 | Tai-uan |
 
 #### Delimiter
 
@@ -144,32 +144,34 @@ Default value depends on the chosen `system`:
 * `' '` - for `Zhuyin`, `TLPA`
 
 | text | '-'     | ''     | ' '     |
-|------|---------|--------|---------|
-| 臺灣 | Tâi-uân | Tâiuân | Tâi uân |
+| ---- | ------- | ------ | ------- |
+| 台灣 | Tâi-uân | Tâiuân | Tâi uân |
 
 #### Sandhi
 
-`sandhi` Boolean - applies the [sandhi rules of Taiwanese Hokkien][sandhi-wiki] to syllables of a single word.
+`sandhi` String - applies the [sandhi rules of Taiwanese Hokkien][sandhi-wiki] to syllables of a single word.
+
+Since it's difficult to encode all sandh rules, Taibun provides multiple modes for sandhi conversion to allow for a customised sandhi handling.
+
+* `none` - doesn't perform any tone sandhi
+* `auto` - closest approximation to full correct tone sandhi of Taiwanese, with proper sandhi of pronouns, suffixes, and words with 仔
+* `exc_last` - changes tone for every syllable except for the last one
+* `incl_last` - changes tone for every syllable including for the last one
 
 Default value depends on the chosen `system`:
 
-* `True` - for `Tongiong`
-* `False` - for `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`
+* `auto` - for `Tongiong`
+* `none` - for `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`
 
-| text     | False        | True         |
-|----------|--------------|--------------|
-| 馬來西亞 | Má-lâi-se-a  | Ma-lāi-sē-a  |
+| text         | none                 | auto                 | exc_last             | incl_last            |
+| ------------ | -------------------- | -------------------- | -------------------- | -------------------- |
+| 這是台灣囡仔 | Tse sī Tâi-uân gín-á | Tse sì Tāi-uān gin-á | Tsē sì Tāi-uān gin-á | Tsē sì Tāi-uān gin-a |
 
 Sandhi rules also change depending on the dialect chosen.
 
 | text | no sandhi | south   | north   |
-|------|-----------|---------|---------|
-| 臺灣 | Tâi-uân   | Tāi-uân | Tài-uân |
-
-Note that the function is different from real sandhi rules, where changes are applied to every single syllable of the sentence, not just single words.
-
-- **Taibun's sandhi rules**: Thái-khong pīng-iú, lin-hó! Lín tsià-pá buē?
-- **Actual sandhi rules**: Thái-khōng pīng-iú, lin-hó! Lin tsià-pa buē?
+| ---- | --------- | ------- | ------- |
+| 台灣 | Tâi-uân   | Tāi-uân | Tài-uân |
 
 #### Punctuation
 
@@ -178,8 +180,8 @@ Note that the function is different from real sandhi rules, where changes are ap
 * `format` (default) - converts Chinese-style punctuation to Latin-style punctuation and capitalises words at the beginning of each sentence.
 * `none` - preserves Chinese-style punctuation and doesn't capitalise words at the beginning of new sentences.
 
-| text | format | none |
-|-|-|-|
+| text                                                                           | format                                                                                            | none                                                                                                 |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | 這是臺南，簡稱「南」（白話字：Tâi-lâm；注音符號：ㄊㄞˊ ㄋㄢˊ，國語：Táinán）。 | Tse sī Tâi-lâm, kán-tshing "lâm" (Pe̍h-uē-jī: Tâi-lâm; tsù-im hû-hō: ㄊㄞˊ ㄋㄢˊ, kok-gí: Táinán). | tse sī Tâi-lâm，kán-tshing「lâm」（Pe̍h-uē-jī：Tâi-lâm；tsù-im hû-hō：ㄊㄞˊ ㄋㄢˊ，kok-gí：Táinán）。 |
 
 ### Tokeniser
