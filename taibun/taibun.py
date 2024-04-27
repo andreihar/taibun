@@ -12,7 +12,7 @@ Invariant: system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tong
            delimiter = String that replaces the default delimiter
            sandhi = `auto`, `none`, `exc_last`, `incl_last`
            punctuation = `format` (Latin-style, default), `none` (preserve original)
-           convert_non_cjk = True, False
+           convert_non_cjk = True, False (default)
 """
 
 

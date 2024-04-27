@@ -53,6 +53,7 @@ Includes word tokeniser for Taiwanese Hokkien.
             <li><a href="#delimiter">Delimiter</a></li>
             <li><a href="#sandhi">Sandhi</a></li>
             <li><a href="#punctuation">Punctuation</a></li>
+            <li><a href="#convert-non-cjk">Convert non-CJK</a></li>
           </ul>
         </li>
         <li><a href="#tokeniser">Tokeniser</a></li>
@@ -105,10 +106,11 @@ c.to_traditional(input)
 * `TLPA` - [Taiwanese Language Phonetic Alphabet][tlpa-wiki]
 * `Pingyim` - [Bbánlám Uē Pìngyīm Hōng'àn][pingyim-wiki]
 * `Tongiong` - [Daī-ghî Tōng-iōng Pīng-im][tongiong-wiki]
+* `IPA` - [International Phonetic Alphabet][ipa-wiki]
 
-| text | Tailo   | POJ     | Zhuyin      | TLPA      | Pingyim | Tongiong |
-| ---- | ------- | ------- | ----------- | --------- | ------- | -------- |
-| 台灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  |
+| text | Tailo   | POJ     | Zhuyin      | TLPA      | Pingyim | Tongiong | IPA         |
+| ---- | ------- | ------- | ----------- | --------- | ------- | -------- | ----------- |
+| 台灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  | Tai²⁵ uan²⁵ |
 
 #### Dialect
 
@@ -141,7 +143,7 @@ Default value depends on the chosen `system`:
 
 * `'-'` - for `Tailo`, `POJ`, `Tongiong`
 * `''` - for `Pingyim`
-* `' '` - for `Zhuyin`, `TLPA`
+* `' '` - for `Zhuyin`, `TLPA`, `IPA`
 
 | text | '-'     | ''     | ' '     |
 | ---- | ------- | ------ | ------- |
@@ -161,7 +163,7 @@ Since it's difficult to encode all sandh rules, Taibun provides multiple modes f
 Default value depends on the chosen `system`:
 
 * `auto` - for `Tongiong`
-* `none` - for `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`
+* `none` - for `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `IPA`
 
 | text         | none                 | auto                 | exc_last             | incl_last            |
 | ------------ | -------------------- | -------------------- | -------------------- | -------------------- |
@@ -183,6 +185,17 @@ Sandhi rules also change depending on the dialect chosen.
 | text                                                                           | format                                                                                            | none                                                                                                 |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | 這是臺南，簡稱「南」（白話字：Tâi-lâm；注音符號：ㄊㄞˊ ㄋㄢˊ，國語：Táinán）。 | Tse sī Tâi-lâm, kán-tshing "lâm" (Pe̍h-uē-jī: Tâi-lâm; tsù-im hû-hō: ㄊㄞˊ ㄋㄢˊ, kok-gí: Táinán). | tse sī Tâi-lâm，kán-tshing「lâm」（Pe̍h-uē-jī：Tâi-lâm；tsù-im hû-hō：ㄊㄞˊ ㄋㄢˊ，kok-gí：Táinán）。 |
+
+#### Convert non-CJK
+
+`convert_non_cjk` Boolean - defines whether or not to convert non-Chinese words. Can be used to convert Tailo to another romanisation system.
+
+* `True` - convert non-Chinese character words
+* `False` (default) - convert only Chinese character words
+
+| text      | False                   | True                    |
+| --------- | ----------------------- | ----------------------- |
+| 我食pháng | ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ pháng | ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ ㄆㄤˋ |
 
 ### Tokeniser
 
@@ -249,7 +262,7 @@ c = Converter() # for Tailo, sandhi False by default
 c.get("南迴鐵路")
 >> Lâm-huê-thih-lōo
 
-c = Converter(sandhi=True)
+c = Converter(sandhi='auto')
 c.get("南迴鐵路")
 >> Lām-huē-thí-lōo
 
@@ -322,6 +335,7 @@ The data is licensed under [CC BY-SA 4.0][data-cc]
 [tlpa-wiki]: https://en.wikipedia.org/wiki/Taiwanese_Language_Phonetic_Alphabet
 [pingyim-wiki]: https://en.wikipedia.org/wiki/Bb%C3%A1nl%C3%A1m_p%C3%ACngy%C4%ABm
 [tongiong-wiki]: https://en.wikipedia.org/wiki/Da%C4%AB-gh%C3%AE_t%C5%8Dng-i%C5%8Dng_p%C4%ABng-im
+[ipa-wiki]: https://en.wikipedia.org/wiki/International_Phonetic_Alphabet
 [zhangzhou-wiki]: https://en.wikipedia.org/wiki/Zhangzhou_dialects
 [quanzhou-wiki]: https://en.wikipedia.org/wiki/Quanzhou_dialects
 [nltk-tokenize]: https://nltk.org/api/nltk.tokenize.html
