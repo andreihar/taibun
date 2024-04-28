@@ -49,7 +49,7 @@ class Converter(object):
     DEFAULT_SANDHI = object()
     __suffixes = ['啊','矣','喂','欸','唅','嘿','諾','乎','唷','喔','嘖','的']
     __no_sandhi = ['這','彼','遮','遐']
-    __location = ['頂','跤','外','內','前']
+    __location = ['頂','跤','外','內']
 
     def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
         self.system = system.lower()

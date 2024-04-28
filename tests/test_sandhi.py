@@ -3,7 +3,7 @@ from utils import checker
 
 hanji_data = ["開始","巧氣","寄回","肉包","翕甌","彼號","確信","南面","未來","篾蓆","業務","罰金","學生"]
 hanji_sentence = ["太空朋友，恁好！恁食飽未"]
-hanji_a = ["廟尪仔","翁某仔","肉幼仔","花搭仔","微微仔","慢慢仔","尾蝶仔"]
+hanji_a = ["廟尪仔","翁某仔","肉幼仔","花搭仔","微微仔","慢慢仔","尾蝶仔","佇厝仔頂我咧行","塗跤清氣矣","阮佇厝外攏講台語","佇公園內睏"]
 
 def test_default():
 	test_data = [
@@ -75,57 +75,57 @@ def test_incl_last():
         data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
         checker(data, Converter(system=system, punctuation='none', sandhi='incl_last'), Converter(system=system, dialect="north", punctuation='none', sandhi='incl_last'))
 
-def test_a_auto():
+def test_add_auto():
     test_data = [
-        (["biò-āng-á","āng-boo-á","bá-iu-á","huē-ta-á","bī-bī-á/bì-bī-á","bàn-bān-á","bue-iā-á/be-iā-á"], "Tailo"),
-        (["biò-āng-á","āng-bo͘-á","bá-iu-á","hōe-ta-á","bī-bī-á/bì-bī-á","bàn-bān-á","boe-iā-á/be-iā-á"], "POJ"),
-        (["ㆠㄧㄜ˪ ㄤ˫ ㄚˋ","ㄤ˫ ㆠㆦ ㄚˋ","ㆠㄚˋ ㄧㄨ ㄚˋ","ㄏㄨㆤ˫ ㄉㄚ ㄚˋ","ㆠㄧ˫ ㆠㄧ˫ ㄚˋ/ㆠㄧ˪ ㆠㄧ˫ ㄚˋ","ㆠㄢ˪ ㆠㄢ˫ ㄚˋ","ㆠㄨㆤ ㄧㄚ˫ ㄚˋ/ㆠㆤ ㄧㄚ˫ ㄚˋ"], "Zhuyin"),
-        (["bio3 ang7 a2","ang7 boo1 a2","ba2 iu1 a2","hue7 ta1 a2","bi7 bi7 a2/bi3 bi7 a2","ban3 ban7 a2","bue1 ia7 a2/be1 ia7 a2"], "TLPA"),
-        (["bbiòângǎ","ângbboōǎ","bbǎyūǎ","huêdāǎ","bbîbbîǎ/bbìbbîǎ","bbànbbânǎ","bbuēyâǎ/bbēyâǎ"], "Pingyim"),
-        (["bhiôr-āng-à","āng-bhor-à","bhà-iu-à","huē-da-à","bhī-bhī-à/bhî-bhī-à","bhân-bhān-à","bhue-iā-à/bhe-iā-à"], "Tongiong"),
-        (["biə¹¹ aŋ²² a⁵³/bio²¹ aŋ³³ a⁵¹","aŋ²² bɔ⁴⁴ a⁵³/aŋ³³ bɔ⁵⁵ a⁵¹","ba⁵³ iu⁴⁴ a⁵³/ba⁵¹ iu⁵⁵ a⁵¹","hue²² ta⁴⁴ a⁵³/hue³³ ta⁵⁵ a⁵¹","bi²² bi²² a⁵³/bi²¹ bi³³ a⁵¹","ban¹¹ ban²² a⁵³/ban²¹ ban³³ a⁵¹","bue⁴⁴ ia²² a⁵³/be⁵⁵ ia³³ a⁵¹"], "IPA")
+        (["biò-āng-á","āng-boo-á","bá-iu-á","huē-ta-á","bī-bī-á/bì-bī-á","bàn-bān-á","bue-iā-á/be-iā-á","tì tshú á tíng gua lé kiânn","thôo kha tshīng-khì--ah","guan tì tshù guā lang kang-tāi gí/guan tì tshù guā lang kang-tài gú","tì kōng-hn̂g lāi khùn"], "Tailo"),
+        (["biò-āng-á","āng-bo͘-á","bá-iu-á","hōe-ta-á","bī-bī-á/bì-bī-á","bàn-bān-á","boe-iā-á/be-iā-á","tì chhú á téng goa lé kiâⁿ","thô͘ kha chhēng-khì--ah","goan tì chhù gōa lang kang-tāi gí/goan tì chhù gōa lang kang-tài gú","tì kōng-hn̂g lāi khùn"], "POJ"),
+        (["ㆠㄧㄜ˪ ㄤ˫ ㄚˋ","ㄤ˫ ㆠㆦ ㄚˋ","ㆠㄚˋ ㄧㄨ ㄚˋ","ㄏㄨㆤ˫ ㄉㄚ ㄚˋ","ㆠㄧ˫ ㆠㄧ˫ ㄚˋ/ㆠㄧ˪ ㆠㄧ˫ ㄚˋ","ㆠㄢ˪ ㆠㄢ˫ ㄚˋ","ㆠㄨㆤ ㄧㄚ˫ ㄚˋ/ㆠㆤ ㄧㄚ˫ ㄚˋ","ㄉㄧ˪ ㄘㄨˋ ㄚˋ ㄉㄧㄥˋ ㆣㄨㄚ ㄌㆤˋ ㄍㄧㆩˊ","ㄊㆦˊ ㄎㄚ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ","ㆣㄨㄢ ㄉㄧ˪ ㄘㄨ˪ ㆣㄨㄚ˫ ㄌㄤ ㄍㄤ ㄉㄞ˫ ㆣㄧˋ/ㆣㄨㄢ ㄉㄧ˪ ㄘㄨ˪ ㆣㄨㄚ˫ ㄌㄤ ㄍㄤ ㄉㄞ˪ ㆣㄨˋ","ㄉㄧ˪ ㄍㆲ˫ ㄏㆭˊ ㄌㄞ˫ ㄎㄨㄣ˪"], "Zhuyin"),
+        (["bio3 ang7 a2","ang7 boo1 a2","ba2 iu1 a2","hue7 ta1 a2","bi7 bi7 a2/bi3 bi7 a2","ban3 ban7 a2","bue1 ia7 a2/be1 ia7 a2","ti3 chu2 a2 ting2 gua1 le2 kiann5","thoo5 kha1 ching7 khi3 ah0","guan1 ti3 chu3 gua7 lang1 kang1 tai7 gi2/guan1 ti3 chu3 gua7 lang1 kang1 tai3 gu2","ti3 kong7 hng5 lai7 khun3"], "TLPA"),
+        (["bbiòângǎ","ângbboōǎ","bbǎyūǎ","huêdāǎ","bbîbbîǎ/bbìbbîǎ","bbànbbânǎ","bbuēyâǎ/bbēyâǎ","dì cǔ ǎ dǐng gguā lě giná","toó kā cîngkì ah","gguān dì cù gguâ lāng gāngdâi ggǐ/gguān dì cù gguâ lāng gāngdài ggǔ","dì gônghńg lâi kùn"], "Pingyim"),
+        (["bhiôr-āng-à","āng-bhor-à","bhà-iu-à","huē-da-à","bhī-bhī-à/bhî-bhī-à","bhân-bhān-à","bhue-iā-à/bhe-iā-à","dî cù à dìng ghua lè giănn","tŏr ka cīng-kî--åh","ghuan dî cû ghuā lang gang-dāi ghì/ghuan dî cû ghuā lang gang-dâi ghù","dî gōng-hn̆g lāi kûn"], "Tongiong"),
+        (["biə¹¹ aŋ²² a⁵³/bio²¹ aŋ³³ a⁵¹","aŋ²² bɔ⁴⁴ a⁵³/aŋ³³ bɔ⁵⁵ a⁵¹","ba⁵³ iu⁴⁴ a⁵³/ba⁵¹ iu⁵⁵ a⁵¹","hue²² ta⁴⁴ a⁵³/hue³³ ta⁵⁵ a⁵¹","bi²² bi²² a⁵³/bi²¹ bi³³ a⁵¹","ban¹¹ ban²² a⁵³/ban²¹ ban³³ a⁵¹","bue⁴⁴ ia²² a⁵³/be⁵⁵ ia³³ a⁵¹","ti¹¹ tsʰu⁵³ a⁵³ tiɪŋ⁵³ gua⁴⁴ le⁵³ kiã²⁵/ti²¹ tsʰu⁵¹ a⁵¹ tiɪŋ⁵¹ gua⁵⁵ le⁵¹ kiã²⁴","tʰɔ²⁵ kʰa⁴⁴ tɕʰiɪŋ²² kʰi¹¹ aʔ/tʰɔ²⁴ kʰa⁵⁵ tɕʰiɪŋ³³ kʰi²¹ aʔ","guan⁴⁴ ti¹¹ tsʰu¹¹ gua²² laŋ⁴⁴ kaŋ⁴⁴ tai²² gi⁵³/guan⁵⁵ ti²¹ tsʰu²¹ gua³³ laŋ⁵⁵ kaŋ⁵⁵ tai²¹ gu⁵¹","ti¹¹ kɔŋ²² hŋ̍²⁵ lai²² kʰun¹¹/ti²¹ kɔŋ³³ hŋ̍²⁴ lai³³ kʰun²¹"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_a, transl)]
         checker(data, Converter(system=system, punctuation='none', sandhi='auto'), Converter(system=system, dialect="north", punctuation='none', sandhi='auto'))
 
-def test_a_none():
+def test_add_none():
     test_data = [
-        (["biō-ang-á","ang-bóo-á","bah-iù-á","hue-tah-á","bî-bî-á","bān-bān-á","bué-ia̍h-á/bé-ia̍h-á"], "Tailo"),
-        (["biō-ang-á","ang-bó͘-á","bah-iù-á","hoe-tah-á","bî-bî-á","bān-bān-á","bóe-ia̍h-á/bé-ia̍h-á"], "POJ"),
-        (["ㆠㄧㄜ˫ ㄤ ㄚˋ","ㄤ ㆠㆦˋ ㄚˋ","ㆠㄚㆷ ㄧㄨ˪ ㄚˋ","ㄏㄨㆤ ㄉㄚㆷ ㄚˋ","ㆠㄧˊ ㆠㄧˊ ㄚˋ","ㆠㄢ˫ ㆠㄢ˫ ㄚˋ","ㆠㄨㆤˋ ㄧㄚㆷ˙ ㄚˋ/ㆠㆤˋ ㄧㄚㆷ˙ ㄚˋ"], "Zhuyin"),
-        (["bio7 ang1 a2","ang1 boo2 a2","bah4 iu3 a2","hue1 tah4 a2","bi5 bi5 a2","ban7 ban7 a2","bue2 iah8 a2/be2 iah8 a2"], "TLPA"),
-        (["bbiôāngǎ","āngbboǒǎ","bbāhyùǎ","huēdāhǎ","bbíbbíǎ","bbânbbânǎ","bbuěyáhǎ/bběyáhǎ"], "Pingyim"),
-        (["bhiōr-ang-à","ang-bhòr-à","bhāh-iû-à","hue-dāh-à","bhĭ-bhĭ-à","bhān-bhān-à","bhuè-iah-à/bhè-iah-à"], "Tongiong"),
-        (["biə²² aŋ⁴⁴ a⁵³/bio³³ aŋ⁵⁵ a⁵¹","aŋ⁴⁴ bɔ⁵³ a⁵³/aŋ⁵⁵ bɔ⁵¹ a⁵¹","baʔ²¹ iu¹¹ a⁵³/baʔ³² iu²¹ a⁵¹","hue⁴⁴ taʔ²¹ a⁵³/hue⁵⁵ taʔ³² a⁵¹","bi²⁵ bi²⁵ a⁵³/bi²⁴ bi²⁴ a⁵¹","ban²² ban²² a⁵³/ban³³ ban³³ a⁵¹","bue⁵³ iaʔ⁵ a⁵³/be⁵¹ iaʔ⁴ a⁵¹"], "IPA")
+        (["biō-ang-á","ang-bóo-á","bah-iù-á","hue-tah-á","bî-bî-á","bān-bān-á","bué-ia̍h-á/bé-ia̍h-á","tī tshù á tíng guá leh kiânn","thôo kha tshing-khì--ah","guán tī tshù guā láng káng-tâi gí/guán tī tshù guā láng káng-tâi gú","tī kong-hn̂g lāi khùn"], "Tailo"),
+        (["biō-ang-á","ang-bó͘-á","bah-iù-á","hoe-tah-á","bî-bî-á","bān-bān-á","bóe-ia̍h-á/bé-ia̍h-á","tī chhù á téng góa leh kiâⁿ","thô͘ kha chheng-khì--ah","goán tī chhù gōa láng káng-tâi gí/goán tī chhù gōa láng káng-tâi gú","tī kong-hn̂g lāi khùn"], "POJ"),
+        (["ㆠㄧㄜ˫ ㄤ ㄚˋ","ㄤ ㆠㆦˋ ㄚˋ","ㆠㄚㆷ ㄧㄨ˪ ㄚˋ","ㄏㄨㆤ ㄉㄚㆷ ㄚˋ","ㆠㄧˊ ㆠㄧˊ ㄚˋ","ㆠㄢ˫ ㆠㄢ˫ ㄚˋ","ㆠㄨㆤˋ ㄧㄚㆷ˙ ㄚˋ/ㆠㆤˋ ㄧㄚㆷ˙ ㄚˋ","ㄉㄧ˫ ㄘㄨ˪ ㄚˋ ㄉㄧㄥˋ ㆣㄨㄚˋ ㄌㆤㆷ ㄍㄧㆩˊ","ㄊㆦˊ ㄎㄚ ㄑㄧㄥ ㄎㄧ˪ ㄚ","ㆣㄨㄢˋ ㄉㄧ˫ ㄘㄨ˪ ㆣㄨㄚ˫ ㄌㄤˋ ㄍㄤˋ ㄉㄞˊ ㆣㄧˋ/ㆣㄨㄢˋ ㄉㄧ˫ ㄘㄨ˪ ㆣㄨㄚ˫ ㄌㄤˋ ㄍㄤˋ ㄉㄞˊ ㆣㄨˋ","ㄉㄧ˫ ㄍㆲ ㄏㆭˊ ㄌㄞ˫ ㄎㄨㄣ˪"], "Zhuyin"),
+        (["bio7 ang1 a2","ang1 boo2 a2","bah4 iu3 a2","hue1 tah4 a2","bi5 bi5 a2","ban7 ban7 a2","bue2 iah8 a2/be2 iah8 a2","ti7 chu3 a2 ting2 gua2 leh4 kiann5","thoo5 kha1 ching1 khi3 ah0","guan2 ti7 chu3 gua7 lang2 kang2 tai5 gi2/guan2 ti7 chu3 gua7 lang2 kang2 tai5 gu2","ti7 kong1 hng5 lai7 khun3"], "TLPA"),
+        (["bbiôāngǎ","āngbboǒǎ","bbāhyùǎ","huēdāhǎ","bbíbbíǎ","bbânbbânǎ","bbuěyáhǎ/bběyáhǎ","dî cù ǎ dǐng gguǎ lēh giná","toó kā cīngkì ah","gguǎn dî cù gguâ lǎng gǎngdái ggǐ/gguǎn dî cù gguâ lǎng gǎngdái ggǔ","dî gōnghńg lâi kùn"], "Pingyim"),
+        (["bhiōr-ang-à","ang-bhòr-à","bhāh-iû-à","hue-dāh-à","bhĭ-bhĭ-à","bhān-bhān-à","bhuè-iah-à/bhè-iah-à","dī cû à dìng ghuà lēh giănn","tŏr ka cing-kî--åh","ghuàn dī cû ghuā làng gàng-dăi ghì/ghuàn dī cû ghuā làng gàng-dăi ghù","dī gong-hn̆g lāi kûn"], "Tongiong"),
+        (["biə²² aŋ⁴⁴ a⁵³/bio³³ aŋ⁵⁵ a⁵¹","aŋ⁴⁴ bɔ⁵³ a⁵³/aŋ⁵⁵ bɔ⁵¹ a⁵¹","baʔ²¹ iu¹¹ a⁵³/baʔ³² iu²¹ a⁵¹","hue⁴⁴ taʔ²¹ a⁵³/hue⁵⁵ taʔ³² a⁵¹","bi²⁵ bi²⁵ a⁵³/bi²⁴ bi²⁴ a⁵¹","ban²² ban²² a⁵³/ban³³ ban³³ a⁵¹","bue⁵³ iaʔ⁵ a⁵³/be⁵¹ iaʔ⁴ a⁵¹","ti²² tsʰu¹¹ a⁵³ tiɪŋ⁵³ gua⁵³ leʔ²¹ kiã²⁵/ti³³ tsʰu²¹ a⁵¹ tiɪŋ⁵¹ gua⁵¹ leʔ³² kiã²⁴","tʰɔ²⁵ kʰa⁴⁴ tɕʰiɪŋ⁴⁴ kʰi¹¹ aʔ/tʰɔ²⁴ kʰa⁵⁵ tɕʰiɪŋ⁵⁵ kʰi²¹ aʔ","guan⁵³ ti²² tsʰu¹¹ gua²² laŋ⁵³ kaŋ⁵³ tai²⁵ gi⁵³/guan⁵¹ ti³³ tsʰu²¹ gua³³ laŋ⁵¹ kaŋ⁵¹ tai²⁴ gu⁵¹","ti²² kɔŋ⁴⁴ hŋ̍²⁵ lai²² kʰun¹¹/ti³³ kɔŋ⁵⁵ hŋ̍²⁴ lai³³ kʰun²¹"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_a, transl)]
         checker(data, Converter(system=system, punctuation='none', sandhi='none'), Converter(system=system, dialect="north", punctuation='none', sandhi='none'))
 
-def test_a_exc_last():
+def test_add_exc_last():
     test_data = [
-        (["biò-āng-á","āng-boo-á","bá-iú-á","huē-tá-á","bī-bī-á/bì-bì-á","bàn-bàn-á","bue-ià-á/be-ià-á"], "Tailo"),
-        (["biò-āng-á","āng-bo͘-á","bá-iú-á","hōe-tá-á","bī-bī-á/bì-bì-á","bàn-bàn-á","boe-ià-á/be-ià-á"], "POJ"),
-        (["ㆠㄧㄜ˪ ㄤ˫ ㄚˋ","ㄤ˫ ㆠㆦ ㄚˋ","ㆠㄚˋ ㄧㄨˋ ㄚˋ","ㄏㄨㆤ˫ ㄉㄚˋ ㄚˋ","ㆠㄧ˫ ㆠㄧ˫ ㄚˋ/ㆠㄧ˪ ㆠㄧ˪ ㄚˋ","ㆠㄢ˪ ㆠㄢ˪ ㄚˋ","ㆠㄨㆤ ㄧㄚ˪ ㄚˋ/ㆠㆤ ㄧㄚ˪ ㄚˋ"], "Zhuyin"),
-        (["bio3 ang7 a2","ang7 boo1 a2","ba2 iu2 a2","hue7 ta2 a2","bi7 bi7 a2/bi3 bi3 a2","ban3 ban3 a2","bue1 ia3 a2/be1 ia3 a2"], "TLPA"),
-        (["bbiòângǎ","ângbboōǎ","bbǎyǔǎ","huêdǎǎ","bbîbbîǎ/bbìbbìǎ","bbànbbànǎ","bbuēyàǎ/bbēyàǎ"], "Pingyim"),
-        (["bhiôr-āng-à","āng-bhor-à","bhà-iù-à","huē-dà-à","bhī-bhī-à/bhî-bhî-à","bhân-bhân-à","bhue-iâ-à/bhe-iâ-à"], "Tongiong"),
-        (["biə¹¹ aŋ²² a⁵³/bio²¹ aŋ³³ a⁵¹","aŋ²² bɔ⁴⁴ a⁵³/aŋ³³ bɔ⁵⁵ a⁵¹","ba⁵³ iu⁵³ a⁵³/ba⁵¹ iu⁵¹ a⁵¹","hue²² ta⁵³ a⁵³/hue³³ ta⁵¹ a⁵¹","bi²² bi²² a⁵³/bi²¹ bi²¹ a⁵¹","ban¹¹ ban¹¹ a⁵³/ban²¹ ban²¹ a⁵¹","bue⁴⁴ ia¹¹ a⁵³/be⁵⁵ ia²¹ a⁵¹"], "IPA")
+        (["biò-āng-á","āng-boo-á","bá-iú-á","huē-tá-á","bī-bī-á/bì-bì-á","bàn-bàn-á","bue-ià-á/be-ià-á","tì tshú a ting gua lé kiânn","thōo khā tshīng-khì--ah/thòo khā tshīng-khì--ah","guan tì tshú guà lang kang-tāi gí/guan tì tshú guà lang kang-tài gú","tì kōng-hn̄g lài khùn/tì kōng-hǹg lài khùn"], "Tailo"),
+        (["biò-āng-á","āng-bo͘-á","bá-iú-á","hōe-tá-á","bī-bī-á/bì-bì-á","bàn-bàn-á","boe-ià-á/be-ià-á","tì chhú a teng goa lé kiâⁿ","thō͘ khā chhēng-khì--ah/thò͘ khā chhēng-khì--ah","goan tì chhú gòa lang kang-tāi gí/goan tì chhú gòa lang kang-tài gú","tì kōng-hn̄g lài khùn/tì kōng-hǹg lài khùn"], "POJ"),
+        (["ㆠㄧㄜ˪ ㄤ˫ ㄚˋ","ㄤ˫ ㆠㆦ ㄚˋ","ㆠㄚˋ ㄧㄨˋ ㄚˋ","ㄏㄨㆤ˫ ㄉㄚˋ ㄚˋ","ㆠㄧ˫ ㆠㄧ˫ ㄚˋ/ㆠㄧ˪ ㆠㄧ˪ ㄚˋ","ㆠㄢ˪ ㆠㄢ˪ ㄚˋ","ㆠㄨㆤ ㄧㄚ˪ ㄚˋ/ㆠㆤ ㄧㄚ˪ ㄚˋ","ㄉㄧ˪ ㄘㄨˋ ㄚ ㄉㄧㄥ ㆣㄨㄚ ㄌㆤˋ ㄍㄧㆩˊ","ㄊㆦ˫ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ/ㄊㆦ˪ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ","ㆣㄨㄢ ㄉㄧ˪ ㄘㄨˋ ㆣㄨㄚ˪ ㄌㄤ ㄍㄤ ㄉㄞ˫ ㆣㄧˋ/ㆣㄨㄢ ㄉㄧ˪ ㄘㄨˋ ㆣㄨㄚ˪ ㄌㄤ ㄍㄤ ㄉㄞ˪ ㆣㄨˋ","ㄉㄧ˪ ㄍㆲ˫ ㄏㆭ˫ ㄌㄞ˪ ㄎㄨㄣ˪/ㄉㄧ˪ ㄍㆲ˫ ㄏㆭ˪ ㄌㄞ˪ ㄎㄨㄣ˪"], "Zhuyin"),
+        (["bio3 ang7 a2","ang7 boo1 a2","ba2 iu2 a2","hue7 ta2 a2","bi7 bi7 a2/bi3 bi3 a2","ban3 ban3 a2","bue1 ia3 a2/be1 ia3 a2","ti3 chu2 a1 ting1 gua1 le2 kiann5","thoo7 kha7 ching7 khi3 ah0/thoo3 kha7 ching7 khi3 ah0","guan1 ti3 chu2 gua3 lang1 kang1 tai7 gi2/guan1 ti3 chu2 gua3 lang1 kang1 tai3 gu2","ti3 kong7 hng7 lai3 khun3/ti3 kong7 hng3 lai3 khun3"], "TLPA"),
+        (["bbiòângǎ","ângbboōǎ","bbǎyǔǎ","huêdǎǎ","bbîbbîǎ/bbìbbìǎ","bbànbbànǎ","bbuēyàǎ/bbēyàǎ","dì cǔ ā dīng gguā lě giná","toô kâ cîngkì ah/toò kâ cîngkì ah","gguān dì cǔ gguà lāng gāngdâi ggǐ/gguān dì cǔ gguà lāng gāngdài ggǔ","dì gônghn̂g lài kùn/dì gônghǹg lài kùn"], "Pingyim"),
+        (["bhiôr-āng-à","āng-bhor-à","bhà-iù-à","huē-dà-à","bhī-bhī-à/bhî-bhî-à","bhân-bhân-à","bhue-iâ-à/bhe-iâ-à","dî cù a ding ghua lè giănn","tōr kā cīng-kî--åh/tôr kā cīng-kî--åh","ghuan dî cù ghuâ lang gang-dāi ghì/ghuan dî cù ghuâ lang gang-dâi ghù","dî gōng-hn̄g lâi kûn/dî gōng-hn̂g lâi kûn"], "Tongiong"),
+        (["biə¹¹ aŋ²² a⁵³/bio²¹ aŋ³³ a⁵¹","aŋ²² bɔ⁴⁴ a⁵³/aŋ³³ bɔ⁵⁵ a⁵¹","ba⁵³ iu⁵³ a⁵³/ba⁵¹ iu⁵¹ a⁵¹","hue²² ta⁵³ a⁵³/hue³³ ta⁵¹ a⁵¹","bi²² bi²² a⁵³/bi²¹ bi²¹ a⁵¹","ban¹¹ ban¹¹ a⁵³/ban²¹ ban²¹ a⁵¹","bue⁴⁴ ia¹¹ a⁵³/be⁵⁵ ia²¹ a⁵¹","ti¹¹ tsʰu⁵³ a⁴⁴ tiɪŋ⁴⁴ gua⁴⁴ le⁵³ kiã²⁵/ti²¹ tsʰu⁵¹ a⁵⁵ tiɪŋ⁵⁵ gua⁵⁵ le⁵¹ kiã²⁴","tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ","guan⁴⁴ ti¹¹ tsʰu⁵³ gua¹¹ laŋ⁴⁴ kaŋ⁴⁴ tai²² gi⁵³/guan⁵⁵ ti²¹ tsʰu⁵¹ gua²¹ laŋ⁵⁵ kaŋ⁵⁵ tai²¹ gu⁵¹","ti¹¹ kɔŋ²² hŋ̍²² lai¹¹ kʰun¹¹/ti²¹ kɔŋ³³ hŋ̍²¹ lai²¹ kʰun²¹"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_a, transl)]
         checker(data, Converter(system=system, punctuation='none', sandhi='exc_last'), Converter(system=system, dialect="north", punctuation='none', sandhi='exc_last'))
 
-def test_a_incl_last():
+def test_add_incl_last():
     test_data = [
-        (["biò-āng-a","āng-boo-a","bá-iú-a","huē-tá-a","bī-bī-a/bì-bì-a","bàn-bàn-a","bue-ià-a/be-ià-a"], "Tailo"),
-        (["biò-āng-a","āng-bo͘-a","bá-iú-a","hōe-tá-a","bī-bī-a/bì-bì-a","bàn-bàn-a","boe-ià-a/be-ià-a"], "POJ"),
-        (["ㆠㄧㄜ˪ ㄤ˫ ㄚ","ㄤ˫ ㆠㆦ ㄚ","ㆠㄚˋ ㄧㄨˋ ㄚ","ㄏㄨㆤ˫ ㄉㄚˋ ㄚ","ㆠㄧ˫ ㆠㄧ˫ ㄚ/ㆠㄧ˪ ㆠㄧ˪ ㄚ","ㆠㄢ˪ ㆠㄢ˪ ㄚ","ㆠㄨㆤ ㄧㄚ˪ ㄚ/ㆠㆤ ㄧㄚ˪ ㄚ"], "Zhuyin"),
-        (["bio3 ang7 a1","ang7 boo1 a1","ba2 iu2 a1","hue7 ta2 a1","bi7 bi7 a1/bi3 bi3 a1","ban3 ban3 a1","bue1 ia3 a1/be1 ia3 a1"], "TLPA"),
-        (["bbiòângā","ângbboōā","bbǎyǔā","huêdǎā","bbîbbîā/bbìbbìā","bbànbbànā","bbuēyàā/bbēyàā"], "Pingyim"),
-        (["bhiôr-āng-a","āng-bhor-a","bhà-iù-a","huē-dà-a","bhī-bhī-a/bhî-bhî-a","bhân-bhân-a","bhue-iâ-a/bhe-iâ-a"], "Tongiong"),
-        (["biə¹¹ aŋ²² a⁴⁴/bio²¹ aŋ³³ a⁵⁵","aŋ²² bɔ⁴⁴ a⁴⁴/aŋ³³ bɔ⁵⁵ a⁵⁵","ba⁵³ iu⁵³ a⁴⁴/ba⁵¹ iu⁵¹ a⁵⁵","hue²² ta⁵³ a⁴⁴/hue³³ ta⁵¹ a⁵⁵","bi²² bi²² a⁴⁴/bi²¹ bi²¹ a⁵⁵","ban¹¹ ban¹¹ a⁴⁴/ban²¹ ban²¹ a⁵⁵","bue⁴⁴ ia¹¹ a⁴⁴/be⁵⁵ ia²¹ a⁵⁵"], "IPA")
+        (["biò-āng-a","āng-boo-a","bá-iú-a","huē-tá-a","bī-bī-a/bì-bì-a","bàn-bàn-a","bue-ià-a/be-ià-a","tì tshú a ting gua lé kiānn/tì tshú a ting gua lé kiànn","thōo khā tshīng-khì--ah/thòo khā tshīng-khì--ah","guan tì tshú guà lang kang-tāi gi/guan tì tshú guà lang kang-tài gu","tì kōng-hn̄g lài khún/tì kōng-hǹg lài khún"], "Tailo"),
+        (["biò-āng-a","āng-bo͘-a","bá-iú-a","hōe-tá-a","bī-bī-a/bì-bì-a","bàn-bàn-a","boe-ià-a/be-ià-a","tì chhú a teng goa lé kiāⁿ/tì chhú a teng goa lé kiàⁿ","thō͘ khā chhēng-khì--ah/thò͘ khā chhēng-khì--ah","goan tì chhú gòa lang kang-tāi gi/goan tì chhú gòa lang kang-tài gu","tì kōng-hn̄g lài khún/tì kōng-hǹg lài khún"], "POJ"),
+        (["ㆠㄧㄜ˪ ㄤ˫ ㄚ","ㄤ˫ ㆠㆦ ㄚ","ㆠㄚˋ ㄧㄨˋ ㄚ","ㄏㄨㆤ˫ ㄉㄚˋ ㄚ","ㆠㄧ˫ ㆠㄧ˫ ㄚ/ㆠㄧ˪ ㆠㄧ˪ ㄚ","ㆠㄢ˪ ㆠㄢ˪ ㄚ","ㆠㄨㆤ ㄧㄚ˪ ㄚ/ㆠㆤ ㄧㄚ˪ ㄚ","ㄉㄧ˪ ㄘㄨˋ ㄚ ㄉㄧㄥ ㆣㄨㄚ ㄌㆤˋ ㄍㄧㆩ˫/ㄉㄧ˪ ㄘㄨˋ ㄚ ㄉㄧㄥ ㆣㄨㄚ ㄌㆤˋ ㄍㄧㆩ˪","ㄊㆦ˫ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ/ㄊㆦ˪ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ","ㆣㄨㄢ ㄉㄧ˪ ㄘㄨˋ ㆣㄨㄚ˪ ㄌㄤ ㄍㄤ ㄉㄞ˫ ㆣㄧ/ㆣㄨㄢ ㄉㄧ˪ ㄘㄨˋ ㆣㄨㄚ˪ ㄌㄤ ㄍㄤ ㄉㄞ˪ ㆣㄨ","ㄉㄧ˪ ㄍㆲ˫ ㄏㆭ˫ ㄌㄞ˪ ㄎㄨㄣˋ/ㄉㄧ˪ ㄍㆲ˫ ㄏㆭ˪ ㄌㄞ˪ ㄎㄨㄣˋ"], "Zhuyin"),
+        (["bio3 ang7 a1","ang7 boo1 a1","ba2 iu2 a1","hue7 ta2 a1","bi7 bi7 a1/bi3 bi3 a1","ban3 ban3 a1","bue1 ia3 a1/be1 ia3 a1","ti3 chu2 a1 ting1 gua1 le2 kiann7/ti3 chu2 a1 ting1 gua1 le2 kiann3","thoo7 kha7 ching7 khi3 ah0/thoo3 kha7 ching7 khi3 ah0","guan1 ti3 chu2 gua3 lang1 kang1 tai7 gi1/guan1 ti3 chu2 gua3 lang1 kang1 tai3 gu1","ti3 kong7 hng7 lai3 khun2/ti3 kong7 hng3 lai3 khun2"], "TLPA"),
+        (["bbiòângā","ângbboōā","bbǎyǔā","huêdǎā","bbîbbîā/bbìbbìā","bbànbbànā","bbuēyàā/bbēyàā"], "Pingyim","dì cǔ ā dīng gguā lě ginâ/dì cǔ ā dīng gguā lě ginà","toô kâ cîngkì ah/toò kâ cîngkì ah","gguān dì cǔ gguà lāng gāngdâi ggī/gguān dì cǔ gguà lāng gāngdài ggū","dì gônghn̂g lài kǔn/dì gônghǹg lài kǔn"),
+        (["bhiôr-āng-a","āng-bhor-a","bhà-iù-a","huē-dà-a","bhī-bhī-a/bhî-bhî-a","bhân-bhân-a","bhue-iâ-a/bhe-iâ-a","dî cù a ding ghua lè giānn/dî cù a ding ghua lè giânn","tōr kā cīng-kî--åh/tôr kā cīng-kî--åh","ghuan dî cù ghuâ lang gang-dāi ghi/ghuan dî cù ghuâ lang gang-dâi ghu","dî gōng-hn̄g lâi kùn/dî gōng-hn̂g lâi kùn"], "Tongiong"),
+        (["biə¹¹ aŋ²² a⁴⁴/bio²¹ aŋ³³ a⁵⁵","aŋ²² bɔ⁴⁴ a⁴⁴/aŋ³³ bɔ⁵⁵ a⁵⁵","ba⁵³ iu⁵³ a⁴⁴/ba⁵¹ iu⁵¹ a⁵⁵","hue²² ta⁵³ a⁴⁴/hue³³ ta⁵¹ a⁵⁵","bi²² bi²² a⁴⁴/bi²¹ bi²¹ a⁵⁵","ban¹¹ ban¹¹ a⁴⁴/ban²¹ ban²¹ a⁵⁵","bue⁴⁴ ia¹¹ a⁴⁴/be⁵⁵ ia²¹ a⁵⁵","ti¹¹ tsʰu⁵³ a⁴⁴ tiɪŋ⁴⁴ gua⁴⁴ le⁵³ kiã²²/ti²¹ tsʰu⁵¹ a⁵⁵ tiɪŋ⁵⁵ gua⁵⁵ le⁵¹ kiã²¹","tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ","guan⁴⁴ ti¹¹ tsʰu⁵³ gua¹¹ laŋ⁴⁴ kaŋ⁴⁴ tai²² gi⁴⁴/guan⁵⁵ ti²¹ tsʰu⁵¹ gua²¹ laŋ⁵⁵ kaŋ⁵⁵ tai²¹ gu⁵⁵","ti¹¹ kɔŋ²² hŋ̍²² lai¹¹ kʰun⁵³/ti²¹ kɔŋ³³ hŋ̍²¹ lai²¹ kʰun⁵¹"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_a, transl)]
