@@ -55,8 +55,8 @@ class Converter(object):
         self.system = system.lower()
         self.dialect = dialect.lower()
         self.format = format
-        self.delimiter = delimiter
-        self.sandhi = sandhi
+        self.delimiter = delimiter if delimiter != self.DEFAULT_DELIMITER else self.__set_default_delimiter()
+        self.sandhi = sandhi if sandhi != self.DEFAULT_SANDHI else self.__set_default_sandhi()
         self.punctuation = punctuation
         self.convert_non_cjk = convert_non_cjk
 
@@ -65,9 +65,6 @@ class Converter(object):
 
     # Convert tokenised text into specified transliteration system
     def get(self, input):
-        self.delimiter = self.delimiter if self.delimiter != self.DEFAULT_DELIMITER else self.__set_default_delimiter()
-        self.sandhi = self.sandhi if self.sandhi != self.DEFAULT_SANDHI else self.__set_default_sandhi()
-
         converted = Tokeniser().tokenise(to_traditional(input))
         converted = ' '.join(self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(converted)).strip()
         if self.punctuation == 'format':
