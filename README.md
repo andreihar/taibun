@@ -284,6 +284,15 @@ c = Converter(punctuation='none')
 c.get("太空朋友，恁好！恁食飽未？")
 >> thài-khong pîng-iú，lín-hó！lín tsia̍h-pá buē？
 
+## Convert non-CJK
+c = Convert(system='Zhuyin') # False convert_non_cjk default
+c.get("我食pháng")
+>> ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ pháng
+
+c = Convert(system='Zhuyin', convert_non_cjk=True)
+c.get("我食pháng")
+>> ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ ㄆㄤˋ
+
 
 # Tokeniser
 from taibun import Tokeniser

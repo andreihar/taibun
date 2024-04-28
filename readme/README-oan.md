@@ -53,6 +53,7 @@
             <li><a href="#delimiter">Delimiter</a></li>
             <li><a href="#sandhi">Sandhi</a></li>
             <li><a href="#punctuation">Punctuation</a></li>
+            <li><a href="#convert-non-cjk">Convert non-CJK</a></li>
           </ul>
         </li>
         <li><a href="#tokeniser">Tokeniser</a></li>
@@ -86,7 +87,7 @@ $ pip install taibun
 
 ```python
 # 建構仔
-c = Converter(system, dialect, format, delimiter, sandhi, punctuation)
+c = Converter(system, dialect, format, delimiter, sandhi, punctuation, convert_non_cjk)
 
 # 音譯漢文
 c.get(input)
@@ -105,10 +106,11 @@ c.to_traditional(input)
 * `TLPA` - [臺灣語言音標方案][tlpa-wiki]
 * `Pingyim` - [閩南話拼音方案][pingyim-wiki]
 * `Tongiong` - [臺語通用拼音][tongiong-wiki]
+* `IPA` - [國際音標][ipa-wiki]
 
-| 文本 | Tailo   | POJ     | Zhuyin      | TLPA      | Pingyim | Tongiong |
-| ---- | ------- | ------- | ----------- | --------- | ------- | -------- |
-| 臺灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  |
+| 文本 | Tailo   | POJ     | Zhuyin      | TLPA      | Pingyim | Tongiong | IPA         |
+| ---- | ------- | ------- | ----------- | --------- | ------- | -------- | ----------- |
+| 台灣 | Tâi-uân | Tâi-oân | ㄉㄞˊ ㄨㄢˊ | Tai5 uan5 | Dáiwán  | Tāi-uǎn  | Tai²⁵ uan²⁵ |
 
 #### Dialect
 
@@ -131,7 +133,7 @@ c.to_traditional(input)
 
 | 文本 | mark    | number    | strip   |
 | ---- | ------- | --------- | ------- |
-| 臺灣 | Tâi-uân | Tai5-uan5 | Tai-uan |
+| 台灣 | Tâi-uân | Tai5-uan5 | Tai-uan |
 
 #### Delimiter
 
@@ -145,31 +147,33 @@ c.to_traditional(input)
 
 | 文本 | '-'     | ''     | ' '     |
 | ---- | ------- | ------ | ------- |
-| 臺灣 | Tâi-uân | Tâiuân | Tâi uân |
+| 台灣 | Tâi-uân | Tâiuân | Tâi uân |
 
 #### Sandhi
 
-`sandhi` Boolean - 將[台語變調規則][sandhi-wiki]做用佇單詞音節內。
+`sandhi` String - 將[台語變調規則][sandhi-wiki]做用佇單詞音節內。
+
+因為編碼所有變調法度困難，Taibun 提供濟種模式變調改換以支援自訂變調處理。
+
+* `none` - 無執行任何變調
+* `auto` - 上接近台語的正確音調變音，包括代詞、後娗佮帶有「仔」詞的音調變音
+* `exc_last` - 除了最後一个音節以外，每一个音節攏變調
+* `incl_last` - 包括上尾一个音節在內，每一个音節攏變調
 
 預設值看所選的 `system` 決定:
 
 * `True` - 對著 `Tongiong`
-* `False` - 對著 `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`
+* `False` - 對著 `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `IPA`
 
-| 文本     | False       | True        |
-| -------- | ----------- | ----------- |
-| 馬來西亞 | Má-lâi-se-a | Ma-lāi-sē-a |
+| 文本         | none                 | auto                 | exc_last             | incl_last            |
+| ------------ | -------------------- | -------------------- | -------------------- | -------------------- |
+| 這是台灣囡仔 | Tse sī Tâi-uân gín-á | Tse sì Tāi-uān gin-á | Tsē sì Tāi-uān gin-á | Tsē sì Tāi-uān gin-a |
 
 變調規則也會隨著選的方言而有所改變。
 
 | 文本 | 沒有變速 | south   | north   |
 | ---- | -------- | ------- | ------- |
-| 臺灣 | Tâi-uân  | Tāi-uân | Tài-uân |
-
-請注意，彼個功能佮真正的變調規則無仝，真正的華文的變化適用佇句子內部的每個音節，毋是只有個詞而已。
-
-- **Taibun 的變調規則**: Thái-khong pīng-iú, lin-hó! Lín tsià-pá buē?
-- **真正的變調規則**: Thái-khōng pīng-iú, lin-hó! Lin tsià-pa buē?
+| 台灣 | Tâi-uân  | Tāi-uân | Tài-uân |
 
 #### Punctuation
 
@@ -181,6 +185,17 @@ c.to_traditional(input)
 | 文本                                                                           | format                                                                                            | none                                                                                                 |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | 這是臺南，簡稱「南」（白話字：Tâi-lâm；注音符號：ㄊㄞˊ ㄋㄢˊ，國語：Táinán）。 | Tse sī Tâi-lâm, kán-tshing "lâm" (Pe̍h-uē-jī: Tâi-lâm; tsù-im hû-hō: ㄊㄞˊ ㄋㄢˊ, kok-gí: Táinán). | tse sī Tâi-lâm，kán-tshing「lâm」（Pe̍h-uē-jī：Tâi-lâm；tsù-im hû-hō：ㄊㄞˊ ㄋㄢˊ，kok-gí：Táinán）。 |
+
+#### Convert non-CJK
+
+`convert_non_cjk` Boolean - 定義轉換非中文單詞。會當用台羅來做其他羅馬拼音系統。
+
+* `True` - 轉換非中文字詞
+* `False` (預設) - 干焦轉換中文字詞
+
+| 文本      | False                   | True                    |
+| --------- | ----------------------- | ----------------------- |
+| 我食pháng | ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ pháng | ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ ㄆㄤˋ |
 
 ### Tokeniser
 
@@ -200,9 +215,10 @@ t.tokenise(input)
 ## 例
 
 ```python
-from taibun import Converter, Tokeniser
+# Converter
+from taibun import Converter
 
-# System
+## System
 c = Converter() # system 預設值: Tailo
 c.get('先生講，學生恬恬聽。')
 >> Sian-sinn kóng, ha̍k-sing tiām-tiām thiann.
@@ -211,7 +227,7 @@ c = Converter(system='Zhuyin')
 c.get('先生講，學生恬恬聽。')
 >> ㄒㄧㄢ ㄒㆪ ㄍㆲˋ, ㄏㄚㆶ˙ ㄒㄧㄥ ㄉㄧㆰ˫ ㄉㄧㆰ˫ ㄊㄧㆩ.
 
-# Dialect
+## Dialect
 c = Converter() # dialect 預設值: south
 c.get("我欲用箸食魚")
 >> Guá beh īng tī tsia̍h hî
@@ -220,7 +236,7 @@ c = Converter(dialect='north')
 c.get("我欲用箸食魚")
 >> Guá bueh īng tū tsia̍h hû
 
-# Format
+## Format
 c = Converter() # 佇 Tailo 中，format 預設值: mark
 c.get("生日快樂")
 >> Senn-ji̍t khuài-lo̍k
@@ -233,7 +249,7 @@ c = Converter(format='strip')
 c.get("生日快樂")
 >> Senn-jit khuai-lok
 
-# Delimiter
+## Delimiter
 c = Converter(delimiter='')
 c.get("先生講，學生恬恬聽。")
 >> Siansinn kóng, ha̍ksing tiāmtiām thiann.
@@ -242,17 +258,25 @@ c = Converter(system='Pingyim', delimiter='-')
 c.get("先生講，學生恬恬聽。")
 >> Siān-snī gǒng, hág-sīng diâm-diâm tinā.
 
-# Sandhi
-c = Converter() # 佇 Tailo 中，sandhi 預設值: False
-c.get("南迴鐵路")
->> Lâm-huê-thih-lōo
+## Sandhi
+c = Converter() # 佇 Tailo 中，sandhi 預設值: none
+c.get("這是台灣囡仔")
+>> Tse sī Tâi-uân gín-á
 
-c = Converter(sandhi=True)
-c.get("南迴鐵路")
->> Lām-huē-thí-lōo
+c = Converter(sandhi='auto')
+c.get("這是台灣囡仔")
+>> Tse sì Tāi-uān gin-á
 
-# Punctuation
-c = Converter() # punctuation 預設值: foramt
+c = Converter(sandhi='exc_last')
+c.get("這是台灣囡仔")
+>> Tsē sì Tāi-uān gin-á
+
+c = Converter(sandhi='incl_last')
+c.get("這是台灣囡仔")
+>> Tsē sì Tāi-uān gin-a
+
+## Punctuation
+c = Converter() # punctuation 預設值: format
 c.get("太空朋友，恁好！恁食飽未？")
 >> Thài-khong pîng-iú, lín-hó! Lín tsia̍h-pá buē?
 
@@ -260,11 +284,41 @@ c = Converter(punctuation='none')
 c.get("太空朋友，恁好！恁食飽未？")
 >> thài-khong pîng-iú，lín-hó！lín tsia̍h-pá buē？
 
+## Convert non-CJK
+c = Convert(system='Zhuyin') # convert_non_cjk 預設值: False
+c.get("我食pháng")
+>> ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ pháng
+
+c = Convert(system='Zhuyin', convert_non_cjk=True)
+c.get("我食pháng")
+>> ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ ㄆㄤˋ
+
 
 # Tokeniser
+from taibun import Tokeniser
+
 t = Tokeniser()
 t.tokenise("太空朋友，恁好！恁食飽未？")
 >> ['太空', '朋友', '，', '恁好', '！', '恁', '食飽', '未', '？']
+
+
+# 其他的功能
+from taibun import to_traditional, to_simplified, is_cjk
+
+## 轉換做繁體
+to_traditional("我听无台湾话")
+>> 我聽無台灣話
+
+## 轉換做簡體
+to_simplified("我聽無臺灣話")
+>> 我听无台湾话
+
+## 檢查字串是毋是完全由中文字符組成
+is_cjk('我食麭')
+>> True
+
+is_cjk('我食pháng')
+>> False
 ```
 
 
@@ -320,6 +374,7 @@ t.tokenise("太空朋友，恁好！恁食飽未？")
 [tlpa-wiki]: https://zh.wikipedia.org/zh-tw/%E8%87%BA%E7%81%A3%E8%AA%9E%E8%A8%80%E9%9F%B3%E6%A8%99%E6%96%B9%E6%A1%88
 [pingyim-wiki]: https://zh.wikipedia.org/zh-tw/%E9%96%A9%E5%8D%97%E8%A9%B1%E6%8B%BC%E9%9F%B3%E6%96%B9%E6%A1%88
 [tongiong-wiki]: https://zh.wikipedia.org/zh-tw/%E8%87%BA%E8%AA%9E%E9%80%9A%E7%94%A8%E6%8B%BC%E9%9F%B3
+[ipa-wiki]: https://zh.wikipedia.org/zh-tw/%E5%9C%8B%E9%9A%9B%E9%9F%B3%E6%A8%99
 [zhangzhou-wiki]: https://zh.wikipedia.org/zh-tw/%E6%BC%B3%E5%B7%9E%E8%AF%9D
 [quanzhou-wiki]: https://zh.wikipedia.org/zh-tw/%E6%B3%89%E5%B7%9E%E8%AF%9D
 [nltk-tokenize]: https://nltk.org/api/nltk.tokenize.html
