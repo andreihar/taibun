@@ -57,6 +57,7 @@
           </ul>
         </li>
         <li><a href="#tokeniser">Tokeniser</a></li>
+        <li><a href="#其他功能">其他功能</a></li>
       </ul>
     </li>
     <li><a href="#例子">例子</a></li>
@@ -91,9 +92,6 @@ c = Converter(system, dialect, format, delimiter, sandhi, punctuation, convert_n
 
 # 音譯漢字
 c.get(input)
-
-# 將簡體中文字符轉換為繁體中文字符
-c.to_traditional(input)
 ```
 
 #### System
@@ -209,6 +207,19 @@ t = Tokeniser()
 t.tokenise(input)
 ```
 
+### 其他功能
+
+```python
+# 轉換為繁體
+to_traditional(input)
+
+# 轉換為簡體
+to_simplified(input)
+
+# 檢查字串是否完全由中文字符組成
+is_cjk(input)
+```
+
 
 
 <!-- EXAMPLE -->
@@ -305,15 +316,12 @@ t.tokenise("太空朋友，恁好！恁食飽未？")
 # 其他功能
 from taibun import to_traditional, to_simplified, is_cjk
 
-## 轉換為繁體
 to_traditional("我听无台湾话")
 >> 我聽無台灣話
 
-## 轉換為簡體
 to_simplified("我聽無臺灣話")
 >> 我听无台湾话
 
-## 檢查字串是否完全由中文字符組成
 is_cjk('我食麭')
 >> True
 

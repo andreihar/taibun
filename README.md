@@ -57,6 +57,7 @@ Includes word tokeniser for Taiwanese Hokkien.
           </ul>
         </li>
         <li><a href="#tokeniser">Tokeniser</a></li>
+        <li><a href="#other-functions">Other Functions</a></li>
       </ul>
     </li>
     <li><a href="#example">Example</a></li>
@@ -91,9 +92,6 @@ c = Converter(system, dialect, format, delimiter, sandhi, punctuation, convert_n
 
 # transliterate Chinese characters
 c.get(input)
-
-# convert Simplified Chinese characters to Traditional Chinese Characters
-c.to_traditional(input)
 ```
 
 #### System
@@ -209,6 +207,19 @@ t = Tokeniser()
 t.tokenise(input)
 ```
 
+### Other Functions
+
+```python
+# Convert to Traditional
+to_traditional(input)
+
+# Convert to Simplified
+to_simplified(input)
+
+# Check if the string is fully composed of Chinese characters
+is_cjk(input)
+```
+
 
 
 <!-- EXAMPLE -->
@@ -305,15 +316,12 @@ t.tokenise("太空朋友，恁好！恁食飽未？")
 # Other Functions
 from taibun import to_traditional, to_simplified, is_cjk
 
-## Convert to Traditional
 to_traditional("我听无台湾话")
 >> 我聽無台灣話
 
-## Convert to Simplified
 to_simplified("我聽無臺灣話")
 >> 我听无台湾话
 
-## Check if the string is fully composed of Chinese characters
 is_cjk('我食麭')
 >> True
 
