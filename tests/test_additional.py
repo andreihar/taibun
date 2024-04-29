@@ -6,7 +6,6 @@ def test_convert_simplified():
 
 def test_to_traditional():
 	assert '漢字是台灣用來寫幾若種現代佮古代語文个書寫文字系統' == to_traditional('汉字是台湾用来写几若种现代佮古代语文个书写文字系统')
-
 def test_to_simplified():
 	assert '汉字是台湾用来写几若种现代佮古代语文个书写文字系统' == to_simplified('漢字是臺灣用來寫幾若種現代佮古代語文个書寫文字系統')
 
