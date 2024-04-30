@@ -3,23 +3,9 @@ import json
 import re
 import unicodedata
 
-"""
-Description: Converts Chinese characters to Taiwanese Hokkien phonetic transcriptions.
-             Supports both Traditional and Simplified characters.
-Invariant: system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tongiong`, `IPA`
-           dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-leaning)
-           format = `mark` (diacritical), `number` (numeric), `strip` (no tones)
-           delimiter = String that replaces the default delimiter
-           sandhi = `auto`, `none`, `exc_last`, `incl_last`
-           punctuation = `format` (Latin-style, default), `none` (preserve original)
-           convert_non_cjk = True, False (default)
-"""
-
-
 word_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/words.json"),'r', encoding="utf-8"))
 trad_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/simplified.json"),'r', encoding="utf-8"))
-simplified_dict = {v: k for k, v in trad_dict.items()}
-simplified_dict['臺'] = '台'
+simplified_dict = {v: k for k, v in trad_dict.items()}.update({'臺': '台'})
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
@@ -41,6 +27,18 @@ def to_traditional(input):
 def to_simplified(input):
     return ''.join(simplified_dict.get(c, c) for c in input)
 
+
+"""
+Description: Converts Chinese characters to Taiwanese Hokkien phonetic transcriptions.
+             Supports both Traditional and Simplified characters.
+Invariant: system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tongiong`, `IPA`
+           dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-leaning)
+           format = `mark` (diacritical), `number` (numeric), `strip` (no tones)
+           delimiter = String that replaces the default delimiter
+           sandhi = `auto`, `none`, `exc_last`, `incl_last`
+           punctuation = `format` (Latin-style, default), `none` (preserve original)
+           convert_non_cjk = True, False (default)
+"""
 class Converter(object):
 
     suffix_token = '[ЅFFX_ТКŊ]'
@@ -133,7 +131,10 @@ class Converter(object):
             number_tones = [s[:-1] + '0' if replace_with_zero or (replace_with_zero := s[-1] == '0') else s for s in number_tones]
         if self.sandhi in ['auto', 'exc_last', 'incl_last']:
             index = next((i for i, s in enumerate(number_tones) if s.startswith(self.suffix_token)), len(number_tones))
-            number_tones = self.__tone_sandhi(number_tones[:index], False) + number_tones[index:] if len(number_tones) != index and len(number_tones) > 1 else self.__tone_sandhi(number_tones, input[1])
+            if len(number_tones) != index and len(number_tones) > 1:
+                number_tones = self.__tone_sandhi(number_tones[:index], False) + number_tones[index:]
+            else:
+                number_tones = self.__tone_sandhi(number_tones, input[1])
         return number_tones
 
 
@@ -187,7 +188,11 @@ class Converter(object):
         a_sandhi = {'1':'7', '2':'1', '3':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'1', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'7'}
         if self.dialect == 'north':
             sandhi.update({'5':'3'})
-        indices = range(len(words)-2) if last == 'a suff' and len(words) > 1 else range(len(words)-1) if not last else range(len(words))
+        indices = (
+            list(range(len(words) - 2)) if last == 'a suff' and len(words) > 1 
+            else list(range(len(words) - 1)) if not last 
+            else list(range(len(words)))
+        )
         sandhi_words = [self.__replacement_tool(sandhi, words[i]) for i in indices]
         if last == 'a suff' and len(words) > 1:
             sandhi_words.append(self.__replacement_tool(a_sandhi, words[-2]))
@@ -248,7 +253,11 @@ class Converter(object):
         tones = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
         placement += [s.capitalize() for s in placement]
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
-        input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) for nt in self.__get_number_tones(input))
+        number_tones = self.__get_number_tones(input)
+        input = '-'.join(
+            self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) 
+            for nt in number_tones
+        )
         return input.replace(self.suffix_token, '--')
 
 
@@ -346,7 +355,12 @@ class Converter(object):
         placement += [s.capitalize() for s in placement]
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
         number_tones = [nt[:-2] + 'or' + nt[-1] if nt[-2] == 'o' else nt for nt in self.__get_number_tones(input)]
-        input = '-'.join(self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) if self.format != 'number' else self.__replacement_tool(convert, nt) for nt in number_tones)
+        input = '-'.join(
+            self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) 
+            if self.format != 'number' 
+            else self.__replacement_tool(convert, nt) 
+            for nt in number_tones
+        )
         return input.replace(self.suffix_token, '--')
     
 
@@ -448,6 +462,18 @@ class Tokeniser(object):
                 traditional = ""
         punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
         indices = [0] + [len(item) for item in tokenised]
-        tokenised = [input[sum(indices[:i+1]):sum(indices[:i+2])] for i in range(len(tokenised))]
-        tokenised = [item for word in tokenised for subword in punctuations.split(word) if subword for item in subword.split(" ") if item]
-        return [subword for word in tokenised for subword in ((word[:-1], word[-1]) if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1 else (word,))]
+        tokenised = [input[sum(indices[:i+1]):sum(indices[:i+2])] for i in range(len(indices)-1)]
+        tokenised = [
+            item 
+            for word in tokenised 
+            for subword in re.split(punctuations, word) if subword 
+            for item in subword.split(" ") if item
+        ]
+        return [
+            subword 
+            for word in tokenised 
+            for subword in (
+                (word[:-1], word[-1]) if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1 
+                else (word,)
+            )
+        ]

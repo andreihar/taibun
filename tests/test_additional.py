@@ -1,4 +1,4 @@
-from taibun.taibun import Converter, Tokeniser, is_cjk, to_traditional, to_simplified
+from taibun.taibun import Converter, is_cjk, to_traditional, to_simplified
 
 def test_convert_simplified():
 	c = Converter()
