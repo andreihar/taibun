@@ -14,8 +14,8 @@
 
 
 <!-- PROJECT SHIELDS -->
+[![Contributions][contributions-badge]][contributions]
 [![Tests][tests-badge]][tests]
-[![Contributors][contributors-badge]][contributors]
 [![Release][release-badge]][release]
 [![Licence][licence-badge]][licence]
 [![LinkedIn][linkedin-badge]][linkedin]
@@ -356,10 +356,10 @@ The data is licensed under [CC BY-SA 4.0][data-cc]
 
 
 <!-- MARKDOWN LINKS -->
+[contributions]: https://github.com/andreihar/taibun/issues
+[contributions-badge]: https://img.shields.io/badge/Contributions-Welcomed-be132d?style=for-the-badge&logo=github
 [tests]: https://github.com/andreihar/taibun/actions
-[tests-badge]: https://img.shields.io/github/actions/workflow/status/andreihar/taibun/ci.yaml?style=for-the-badge&logo=github
-[contributors-badge]: https://img.shields.io/github/contributors/andreihar/taibun?style=for-the-badge
-[contributors]: #usage
+[tests-badge]: https://img.shields.io/github/actions/workflow/status/andreihar/taibun/ci.yaml?style=for-the-badge&logo=github-actions&logoColor=ffffff
 [release-badge]: https://img.shields.io/github/v/release/andreihar/taibun?color=38618c&style=for-the-badge
 [release]: https://github.com/andreihar/taibun/releases
 [licence-badge]: https://img.shields.io/github/license/andreihar/taibun?color=000000&style=for-the-badge

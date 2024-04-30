@@ -14,8 +14,8 @@
 
 
 <!-- PROJECT SHIELDS -->
+[![Contributions][contributions-badge]][contributions]
 [![Tests][tests-badge]][tests]
-[![Contributors][contributors-badge]][contributors]
 [![Release][release-badge]][release]
 [![Licence][licence-badge]][licence]
 [![LinkedIn][linkedin-badge]][linkedin]
@@ -356,8 +356,10 @@ is_cjk('我食pháng')
 
 
 <!-- MARKDOWN LINKS -->
+[contributions]: https://github.com/andreihar/taibun/issues
+[contributions-badge]: https://img.shields.io/badge/歡迎-貢獻協助-be132d?style=for-the-badge&logo=github
 [tests]: https://github.com/andreihar/taibun/actions
-[tests-badge]: https://img.shields.io/github/actions/workflow/status/andreihar/taibun/ci.yaml?style=for-the-badge&logo=github&label=構建
+[tests-badge]: https://img.shields.io/github/actions/workflow/status/andreihar/taibun/ci.yaml?style=for-the-badge&logo=github-actions&logoColor=ffffff&label=構建
 [contributors-badge]: https://img.shields.io/github/contributors/andreihar/taibun?style=for-the-badge&label=貢獻者
 [contributors]: #usage
 [release-badge]: https://img.shields.io/github/v/release/andreihar/taibun?color=38618c&style=for-the-badge&label=發布
