@@ -5,7 +5,7 @@ import unicodedata
 
 word_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/words.json"),'r', encoding="utf-8"))
 trad_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/simplified.json"),'r', encoding="utf-8"))
-simplified_dict = {v: k for k, v in trad_dict.items()}.update({'臺': '台'})
+simplified_dict = {**{v: k for k, v in trad_dict.items()}, '臺': '台'}
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
