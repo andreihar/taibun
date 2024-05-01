@@ -79,7 +79,7 @@ class Converter(object):
             if "/" in word[0]:
                 dialect_part = word[0].split("/")[1] if self.dialect == 'north' else word[0].split("/")[0]
                 word = (dialect_part,) + word[1:]
-        elif not self.convert_non_cjk:
+        elif not self.convert_non_cjk or word[0] in ".,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”":
             return word[0]
         word = self.__system_conversion(word).replace('---', '--')
         if self.format == 'number' and self.system in ['tailo', 'poj']:
