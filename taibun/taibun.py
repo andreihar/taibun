@@ -216,11 +216,12 @@ class Converter(object):
             elif len(word) > 1 and word[-1] == "仔":
                 result = "a suff"
             else:
-                result = i < len(input) - 1 and is_cjk(input[i+1])
+                last = i < len(input) - 1
+                result = last if self.convert_non_cjk else last and is_cjk(input[i+1])
             result_list.append((word, result))
         result_list = sandhi_logic.get(self.sandhi, result_list)
         for i in range(len(result_list) - 2, -1, -1):
-            if result_list[i+1][0] in self.__suffixes:
+            if self.convert_non_cjk and result_list[i+1][0].startswith('--') or result_list[i+1][0] in self.__suffixes:
                 result_list[i] = (result_list[i][0], False)
         return result_list
 
