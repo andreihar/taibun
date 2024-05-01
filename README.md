@@ -40,6 +40,7 @@ Includes word tokeniser for Taiwanese Hokkien.
 <details open>
   <summary>Table of Contents</summary>
   <ol>
+    <li><a href="#versions">Versions</a></li>
     <li><a href="#install">Install</a></li>
     <li>
       <a href="#usage">Usage</a>
@@ -62,9 +63,17 @@ Includes word tokeniser for Taiwanese Hokkien.
     </li>
     <li><a href="#example">Example</a></li>
     <li><a href="#data">Data</a></li>
+    <li><a href="#acknowledgements">Acknowledgements</a></li>
     <li><a href="#licence">Licence</a></li>
   </ol>
 </details>
+
+
+
+<!-- OTHER VERSIONS -->
+## Versions
+
+[![JavaScript Version][js-badge]][js-link]
 
 
 
@@ -87,10 +96,10 @@ $ pip install taibun
 `Converter` class transliterates the Chinese characters to the chosen transliteration system with parameters specified by the developer. Works for both Traditional and Simplified characters.
 
 ```python
-# constructor
+# Constructor
 c = Converter(system, dialect, format, delimiter, sandhi, punctuation, convert_non_cjk)
 
-# transliterate Chinese characters
+# Transliterate Chinese characters
 c.get(input)
 ```
 
@@ -149,7 +158,7 @@ Default value depends on the chosen `system`:
 
 #### Sandhi
 
-`sandhi` String - applies the [sandhi rules of Taiwanese Hokkien][sandhi-wiki] to syllables of a single word.
+`sandhi` String - applies the [sandhi rules of Taiwanese Hokkien][sandhi-wiki].
 
 Since it's difficult to encode all sandhi rules, Taibun provides multiple modes for sandhi conversion to allow for customised sandhi handling.
 
@@ -163,9 +172,9 @@ Default value depends on the chosen `system`:
 * `auto` - for `Tongiong`
 * `none` - for `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `IPA`
 
-| text         | none                 | auto                 | exc_last             | incl_last            |
-| ------------ | -------------------- | -------------------- | -------------------- | -------------------- |
-| 這是台灣囡仔 | Tse sī Tâi-uân gín-á | Tse sì Tāi-uān gin-á | Tsē sì Tāi-uān gin-á | Tsē sì Tāi-uān gin-a |
+| text             | none                      | auto                       | exc_last                  | incl_last                 |
+| ---------------- | ------------------------- | -------------------------- | ------------------------- | ------------------------- |
+| 這是你的手機仔無 | Tse sī lí ê tshiú-ki-á bô | Tse sì li ē tshiu-kī-á bô? | Tsē sì li ē tshiu-kī-a bô | Tsē sì li ē tshiu-kī-a bō |
 
 Sandhi rules also change depending on the dialect chosen.
 
@@ -200,14 +209,16 @@ Sandhi rules also change depending on the dialect chosen.
 `Tokeniser` class performs [NLTK wordpunct_tokenize][nltk-tokenize]-like tokenisation of a Taiwanese Hokkien sentence.
 
 ```python
-# constructor
+# Constructor
 t = Tokeniser()
 
-# tokenise Taiwanese Hokkien sentence
+# Tokenise Taiwanese Hokkien sentence
 t.tokenise(input)
 ```
 
 ### Other Functions
+
+Handy functions for NLP tasks in Taiwanese Hokkien.
 
 ```python
 # Convert to Traditional
@@ -364,8 +375,10 @@ The data is licensed under [CC BY-SA 4.0][data-cc]
 [release]: https://github.com/andreihar/taibun/releases
 [licence-badge]: https://img.shields.io/github/license/andreihar/taibun?color=000000&style=for-the-badge
 [licence]: LICENSE
-[linkedin-badge]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
+[linkedin-badge]: https://img.shields.io/badge/LinkedIn-0077b5?style=for-the-badge&logo=linkedin&logoColor=ffffff
 [linkedin]: https://www.linkedin.com/in/andrei-harbachov/
+[js-badge]: https://img.shields.io/badge/JS_Version-f7df1e?style=for-the-badge&logo=javascript&logoColor=000000
+[js-link]: https://github.com/andreihar/taibun.js
 
 [pypi]: https://pypi.org/project/taibun
 [bug]: https://github.com/andreihar/taibun/issues
