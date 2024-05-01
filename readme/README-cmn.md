@@ -40,6 +40,7 @@
 <details open>
   <summary>目錄</summary>
   <ol>
+    <li><a href="#版本">版本</a></li>
     <li><a href="#安裝">安裝</a></li>
     <li>
       <a href="#用法">用法</a>
@@ -62,9 +63,17 @@
     </li>
     <li><a href="#例子">例子</a></li>
     <li><a href="#數據">數據</a></li>
+    <li><a href="#致謝">致謝</a></li>
     <li><a href="#執照">執照</a></li>
   </ol>
 </details>
+
+
+
+<!-- OTHER VERSIONS -->
+## 版本
+
+[![JavaScript Version][js-badge]][js-link]
 
 
 
@@ -141,7 +150,7 @@ c.get(input)
 
 * `'-'` - 對於 `Tailo`, `POJ`, `Tongiong`
 * `''` - 對於 `Pingyim`
-* `' '` - 對於 `Zhuyin`, `TLPA`
+* `' '` - 對於 `Zhuyin`, `TLPA`, `IPA`
 
 | 文本 | '-'     | ''     | ' '     |
 | ---- | ------- | ------ | ------- |
@@ -149,7 +158,7 @@ c.get(input)
 
 #### Sandhi
 
-`sandhi` String - 將[臺灣話變調規則][sandhi-wiki]應用於單個單詞的音節。
+`sandhi` String - 應用[臺灣話變調規則][sandhi-wiki]。
 
 由於編碼所有變調規則困難，Taibun 提供多種模式變調轉換以支援自訂變調處理。
 
@@ -163,9 +172,9 @@ c.get(input)
 * `auto` - 對於 `Tongiong`
 * `none` - 對於 `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `IPA`
 
-| 文本         | none                 | auto                 | exc_last             | incl_last            |
-| ------------ | -------------------- | -------------------- | -------------------- | -------------------- |
-| 這是台灣囡仔 | Tse sī Tâi-uân gín-á | Tse sì Tāi-uān gin-á | Tsē sì Tāi-uān gin-á | Tsē sì Tāi-uān gin-a |
+| 文本             | none                      | auto                       | exc_last                  | incl_last                 |
+| ---------------- | ------------------------- | -------------------------- | ------------------------- | ------------------------- |
+| 這是你的手機仔無 | Tse sī lí ê tshiú-ki-á bô | Tse sì li ē tshiu-kī-á bô? | Tsē sì li ē tshiu-kī-a bô | Tsē sì li ē tshiu-kī-a bō |
 
 變調規則也會根據所選擇的方言而變化。
 
@@ -208,6 +217,8 @@ t.tokenise(input)
 ```
 
 ### 其他功能
+
+實用的臺灣話 NLP 助手功能。
 
 ```python
 # 轉換為繁體
@@ -364,8 +375,10 @@ is_cjk('我食pháng')
 [release]: https://github.com/andreihar/taibun/releases
 [licence-badge]: https://img.shields.io/github/license/andreihar/taibun?color=000000&style=for-the-badge&label=執照
 [licence]: ../LICENSE
-[linkedin-badge]: https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white
+[linkedin-badge]: https://img.shields.io/badge/LinkedIn-0077b5?style=for-the-badge&logo=linkedin&logoColor=ffffff
 [linkedin]: https://www.linkedin.com/in/andrei-harbachov/
+[js-badge]: https://img.shields.io/badge/JS_版本-f7df1e?style=for-the-badge&logo=javascript&logoColor=000000
+[js-link]: https://github.com/andreihar/taibun.js
 
 [pypi]: https://pypi.org/project/taibun
 [bug]: https://github.com/andreihar/taibun/issues
