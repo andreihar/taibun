@@ -2,7 +2,7 @@ from taibun.taibun import Converter
 from utils import checker
 
 hanji_data = ["khai-sí","khá-khì","kià-huê","bah-pau","hip-au","hit-hō","khak-sìn","lâm-bīn","bī-lâi","bi̍h-tshio̍h","gia̍p-bū","hua̍t-kim","ha̍k-sing"]
-hanji_sentence = ["Thài-khong pîng-iú, lín-hó! Lín tsia̍h-pá buē","Thôo kha tshing-khì--ah"]
+hanji_sentence = ["Thài-khong pîng-iú lín-hó! Lín tsia̍h-pá buē","Thôo kha tshing-khì--ah"]
 
 def test_sandhi_default():
 	test_data = [
