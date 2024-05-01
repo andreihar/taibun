@@ -76,13 +76,13 @@ def test_sandhi_incl_last():
 
 def test_sentence_auto():
     test_data = [
-        (["Thái-khōng pīng-iu, lin-ho! Lin tsià-pa buē/Thái-khōng pìng-iu, lin-ho! Lin tsià-pa buē","Thōo khā tshīng-khì--ah/Thòo khā tshīng-khì--ah"], "Tailo"),
-        (["Thái-khōng pēng-iu, lin-ho! Lin chià-pa bōe/Thái-khōng pèng-iu, lin-ho! Lin chià-pa bōe","Thō͘ khā chhēng-khì--ah/Thò͘ khā chhēng-khì--ah"], "POJ"),
-        (["ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˫ ㄧㄨ,˫ ㄌㄧㄣ ㄏㄜ!˫ ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˫/ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˪ ㄧㄨ,˫ ㄌㄧㄣ ㄏㄜ!˫ ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˫","ㄊㆦ˫ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ/ㄊㆦ˪ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ"], "Zhuyin"),
-        (["Thai2 khong7 ping7 iu1,7 lin1 ho1!7 Lin1 cia3 pa1 bue7/Thai2 khong7 ping3 iu1,7 lin1 ho1!7 Lin1 cia3 pa1 bue7","Thoo7 kha7 ching7 khi3 ah0/Thoo3 kha7 ching7 khi3 ah0"], "TLPA"),
-        (["Tǎikông bîngyū, līnhō! Līn ziàbā bbuê/Tǎikông bìngyū, līnhō! Līn ziàbā bbuê","Toô kâ cîngkìah/Toò kâ cîngkìah"], "Pingyim"),
-        (["Tài-kōng bīng-iu, lin-hor! Lin ziâ-ba bhuē/Tài-kōng bîng-iu, lin-hor! Lin ziâ-ba bhuē","Tōr kā cīng-kî--åh/Tôr kā cīng-kî--åh"], "Tongiong"),
-        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴,²² lin⁴⁴ hə⁴⁴!²² Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue²²/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵,³³ lin⁵⁵ ho⁵⁵!³³ Lin⁵⁵ tɕia²¹ pa⁵⁵ bue³³","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ"], "IPA")
+        (["Thái-khōng pīng-iu lin-ho! Lin tsià-pa buē/Thái-khōng pìng-iu lin-ho! Lin tsià-pa buē","Thōo khā tshīng-khì--ah/Thòo khā tshīng-khì--ah"], "Tailo"),
+        (["Thái-khōng pēng-iu lin-ho! Lin chià-pa bōe/Thái-khōng pèng-iu lin-ho! Lin chià-pa bōe","Thō͘ khā chhēng-khì--ah/Thò͘ khā chhēng-khì--ah"], "POJ"),
+        (["ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˫ ㄧㄨ ㄌㄧㄣ ㄏㄜ! ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˫/ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˪ ㄧㄨ ㄌㄧㄣ ㄏㄜ! ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˫","ㄊㆦ˫ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ/ㄊㆦ˪ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ"], "Zhuyin"),
+        (["Thai2 khong7 ping7 iu1 lin1 ho1! Lin1 cia3 pa1 bue7/Thai2 khong7 ping3 iu1 lin1 ho1! Lin1 cia3 pa1 bue7","Thoo7 kha7 ching7 khi3 ah0/Thoo3 kha7 ching7 khi3 ah0"], "TLPA"),
+        (["Tǎikông bîngyū līnhō! Līn ziàbā bbuê/Tǎikông bìngyū līnhō! Līn ziàbā bbuê","Toô kâ cîngkìah/Toò kâ cîngkìah"], "Pingyim"),
+        (["Tài-kōng bīng-iu lin-hor! Lin ziâ-ba bhuē/Tài-kōng bîng-iu lin-hor! Lin ziâ-ba bhuē","Tōr kā cīng-kî--åh/Tôr kā cīng-kî--åh"], "Tongiong"),
+        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴ lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue²²/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵ lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ bue³³","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
@@ -90,13 +90,13 @@ def test_sentence_auto():
 
 def test_sentence_none():
     test_data = [
-        (["Thài-khong pîng-iú, lín-hó! Lín tsia̍h-pá buē","Thôo kha tshing-khì--ah"], "Tailo"),
-        (["Thài-khong pêng-iú, lín-hó! Lín chia̍h-pá bōe","Thô͘ kha chheng-khì--ah"], "POJ"),
-        (["ㄊㄞ˪ ㄎㆲ ㄅㄧㄥˊ ㄧㄨˋ, ㄌㄧㄣˋ ㄏㄜˋ! ㄌㄧㄣˋ ㄐㄧㄚㆷ˙ ㄅㄚˋ ㆠㄨㆤ˫","ㄊㆦˊ ㄎㄚ ㄑㄧㄥ ㄎㄧ˪ ㄚ"], "Zhuyin"),
-        (["Thai3 khong1 ping5 iu2,1 lin2 ho2!1 Lin2 ciah8 pa2 bue7","Thoo5 kha1 ching1 khi3 ah0"], "TLPA"),
-        (["Tàikōng bíngyǔ, lǐnhǒ! Lǐn ziáhbǎ bbuê","Toó kā cīngkìah"], "Pingyim"),
-        (["Tâi-kong bĭng-iù, lìn-hòr! Lìn ziah-bà bhuē","Tŏr ka cing-kî--åh"], "Tongiong"),
-        (["Tʰai¹¹ kʰɔŋ⁴⁴ piɪŋ²⁵ iu⁵³,⁴⁴ lin⁵³ hə⁵³!⁴⁴ Lin⁵³ tɕiaʔ⁵ pa⁵³ bue²²/Tʰai²¹ kʰɔŋ⁵⁵ piɪŋ²⁴ iu⁵¹,⁵⁵ lin⁵¹ ho⁵¹!⁵⁵ Lin⁵¹ tɕiaʔ⁴ pa⁵¹ bue³³","Tʰɔ²⁵ kʰa⁴⁴ tɕʰiɪŋ⁴⁴ kʰi¹¹ aʔ/Tʰɔ²⁴ kʰa⁵⁵ tɕʰiɪŋ⁵⁵ kʰi²¹ aʔ"], "IPA")
+        (["Thài-khong pîng-iú lín-hó! Lín tsia̍h-pá buē","Thôo kha tshing-khì--ah"], "Tailo"),
+        (["Thài-khong pêng-iú lín-hó! Lín chia̍h-pá bōe","Thô͘ kha chheng-khì--ah"], "POJ"),
+        (["ㄊㄞ˪ ㄎㆲ ㄅㄧㄥˊ ㄧㄨˋ ㄌㄧㄣˋ ㄏㄜˋ! ㄌㄧㄣˋ ㄐㄧㄚㆷ˙ ㄅㄚˋ ㆠㄨㆤ˫","ㄊㆦˊ ㄎㄚ ㄑㄧㄥ ㄎㄧ˪ ㄚ"], "Zhuyin"),
+        (["Thai3 khong1 ping5 iu2 lin2 ho2! Lin2 ciah8 pa2 bue7","Thoo5 kha1 ching1 khi3 ah0"], "TLPA"),
+        (["Tàikōng bíngyǔ lǐnhǒ! Lǐn ziáhbǎ bbuê","Toó kā cīngkìah"], "Pingyim"),
+        (["Tâi-kong bĭng-iù lìn-hòr! Lìn ziah-bà bhuē","Tŏr ka cing-kî--åh"], "Tongiong"),
+        (["Tʰai¹¹ kʰɔŋ⁴⁴ piɪŋ²⁵ iu⁵³ lin⁵³ hə⁵³! Lin⁵³ tɕiaʔ⁵ pa⁵³ bue²²/Tʰai²¹ kʰɔŋ⁵⁵ piɪŋ²⁴ iu⁵¹ lin⁵¹ ho⁵¹! Lin⁵¹ tɕiaʔ⁴ pa⁵¹ bue³³","Tʰɔ²⁵ kʰa⁴⁴ tɕʰiɪŋ⁴⁴ kʰi¹¹ aʔ/Tʰɔ²⁴ kʰa⁵⁵ tɕʰiɪŋ⁵⁵ kʰi²¹ aʔ"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
@@ -104,13 +104,13 @@ def test_sentence_none():
 
 def test_sentence_exc_last():
     test_data = [
-        (["Thái-khōng pīng-iu, lin-ho! Lin tsià-pa buē/Thái-khōng pìng-iu, lin-ho! Lin tsià-pa buē","Thōo khā tshīng-khì--ah/Thòo khā tshīng-khì--ah"], "Tailo"),
-        (["Thái-khōng pēng-iu, lin-ho! Lin chià-pa bōe/Thái-khōng pèng-iu, lin-ho! Lin chià-pa bōe","Thō͘ khā chhēng-khì--ah/Thò͘ khā chhēng-khì--ah"], "POJ"),
-        (["ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˫ ㄧㄨ,˫ ㄌㄧㄣ ㄏㄜ!˫ ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˫/ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˪ ㄧㄨ,˫ ㄌㄧㄣ ㄏㄜ!˫ ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˫","ㄊㆦ˫ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ/ㄊㆦ˪ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ"], "Zhuyin"),
-        (["Thai2 khong7 ping7 iu1,7 lin1 ho1!7 Lin1 cia3 pa1 bue7/Thai2 khong7 ping3 iu1,7 lin1 ho1!7 Lin1 cia3 pa1 bue7","Thoo7 kha7 ching7 khi3 ah0/Thoo3 kha7 ching7 khi3 ah0"], "TLPA"),
-        (["Tǎikông bîngyū, līnhō! Līn ziàbā bbuê/Tǎikông bìngyū, līnhō! Līn ziàbā bbuê","Toô kâ cîngkìah/Toò kâ cîngkìah"], "Pingyim"),
-        (["Tài-kōng bīng-iu, lin-hor! Lin ziâ-ba bhuē/Tài-kōng bîng-iu, lin-hor! Lin ziâ-ba bhuē","Tōr kā cīng-kî--åh/Tôr kā cīng-kî--åh"], "Tongiong"),
-        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴,²² lin⁴⁴ hə⁴⁴!²² Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue²²/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵,³³ lin⁵⁵ ho⁵⁵!³³ Lin⁵⁵ tɕia²¹ pa⁵⁵ bue³³","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ"], "IPA")
+        (["Thái-khōng pīng-iu lin-ho! Lin tsià-pa buē/Thái-khōng pìng-iu lin-ho! Lin tsià-pa buē","Thōo khā tshīng-khì--ah/Thòo khā tshīng-khì--ah"], "Tailo"),
+        (["Thái-khōng pēng-iu lin-ho! Lin chià-pa bōe/Thái-khōng pèng-iu lin-ho! Lin chià-pa bōe","Thō͘ khā chhēng-khì--ah/Thò͘ khā chhēng-khì--ah"], "POJ"),
+        (["ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˫ ㄧㄨ ㄌㄧㄣ ㄏㄜ! ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˫/ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˪ ㄧㄨ ㄌㄧㄣ ㄏㄜ! ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˫","ㄊㆦ˫ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ/ㄊㆦ˪ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ"], "Zhuyin"),
+        (["Thai2 khong7 ping7 iu1 lin1 ho1! Lin1 cia3 pa1 bue7/Thai2 khong7 ping3 iu1 lin1 ho1! Lin1 cia3 pa1 bue7","Thoo7 kha7 ching7 khi3 ah0/Thoo3 kha7 ching7 khi3 ah0"], "TLPA"),
+        (["Tǎikông bîngyū līnhō! Līn ziàbā bbuê/Tǎikông bìngyū līnhō! Līn ziàbā bbuê","Toô kâ cîngkìah/Toò kâ cîngkìah"], "Pingyim"),
+        (["Tài-kōng bīng-iu lin-hor! Lin ziâ-ba bhuē/Tài-kōng bîng-iu lin-hor! Lin ziâ-ba bhuē","Tōr kā cīng-kî--åh/Tôr kā cīng-kî--åh"], "Tongiong"),
+        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴ lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue²²/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵ lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ bue³³","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
@@ -118,13 +118,13 @@ def test_sentence_exc_last():
 
 def test_sentence_incl_last():
     test_data = [
-        (["Thái-khōng pīng-iu, lin-ho! Lin tsià-pa buè/Thái-khōng pìng-iu, lin-ho! Lin tsià-pa buè","Thōo khā tshīng-khì--ah/Thòo khā tshīng-khì--ah"], "Tailo"),
-        (["Thái-khōng pēng-iu, lin-ho! Lin chià-pa bòe/Thái-khōng pèng-iu, lin-ho! Lin chià-pa bòe","Thō͘ khā chhēng-khì--ah/Thò͘ khā chhēng-khì--ah"], "POJ"),
-        (["ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˫ ㄧㄨ,˫ ㄌㄧㄣ ㄏㄜ!˫ ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˪/ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˪ ㄧㄨ,˫ ㄌㄧㄣ ㄏㄜ!˫ ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˪","ㄊㆦ˫ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ/ㄊㆦ˪ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ"], "Zhuyin"),
-        (["Thai2 khong7 ping7 iu1,7 lin1 ho1!7 Lin1 cia3 pa1 bue3/Thai2 khong7 ping3 iu1,7 lin1 ho1!7 Lin1 cia3 pa1 bue3","Thoo7 kha7 ching7 khi3 ah0/Thoo3 kha7 ching7 khi3 ah0"], "TLPA"),
-        (["Tǎikông bîngyū, līnhō! Līn ziàbā bbuè/Tǎikông bìngyū, līnhō! Līn ziàbā bbuè","Toô kâ cîngkìah/Toò kâ cîngkìah"], "Pingyim"),
-        (["Tài-kōng bīng-iu, lin-hor! Lin ziâ-ba bhuê/Tài-kōng bîng-iu, lin-hor! Lin ziâ-ba bhuê","Tōr kā cīng-kî--åh/Tôr kā cīng-kî--åh"], "Tongiong"),
-        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴,²² lin⁴⁴ hə⁴⁴!²² Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue¹¹/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵,³³ lin⁵⁵ ho⁵⁵!³³ Lin⁵⁵ tɕia²¹ pa⁵⁵ bue²¹","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ"], "IPA")
+        (["Thái-khōng pīng-iu lin-ho! Lin tsià-pa buè/Thái-khōng pìng-iu lin-ho! Lin tsià-pa buè","Thōo khā tshīng-khì--ah/Thòo khā tshīng-khì--ah"], "Tailo"),
+        (["Thái-khōng pēng-iu lin-ho! Lin chià-pa bòe/Thái-khōng pèng-iu lin-ho! Lin chià-pa bòe","Thō͘ khā chhēng-khì--ah/Thò͘ khā chhēng-khì--ah"], "POJ"),
+        (["ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˫ ㄧㄨ ㄌㄧㄣ ㄏㄜ! ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˪/ㄊㄞˋ ㄎㆲ˫ ㄅㄧㄥ˪ ㄧㄨ ㄌㄧㄣ ㄏㄜ! ㄌㄧㄣ ㄐㄧㄚ˪ ㄅㄚ ㆠㄨㆤ˪","ㄊㆦ˫ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ/ㄊㆦ˪ ㄎㄚ˫ ㄑㄧㄥ˫ ㄎㄧ˪ ㄚ"], "Zhuyin"),
+        (["Thai2 khong7 ping7 iu1 lin1 ho1! Lin1 cia3 pa1 bue3/Thai2 khong7 ping3 iu1 lin1 ho1! Lin1 cia3 pa1 bue3","Thoo7 kha7 ching7 khi3 ah0/Thoo3 kha7 ching7 khi3 ah0"], "TLPA"),
+        (["Tǎikông bîngyū līnhō! Līn ziàbā bbuè/Tǎikông bìngyū līnhō! Līn ziàbā bbuè","Toô kâ cîngkìah/Toò kâ cîngkìah"], "Pingyim"),
+        (["Tài-kōng bīng-iu lin-hor! Lin ziâ-ba bhuê/Tài-kōng bîng-iu lin-hor! Lin ziâ-ba bhuê","Tōr kā cīng-kî--åh/Tôr kā cīng-kî--åh"], "Tongiong"),
+        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴ lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue¹¹/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵ lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ bue²¹","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
