@@ -19,6 +19,7 @@
 [![Release][release-badge]][release]
 [![Licence][licence-badge]][licence]
 [![LinkedIn][linkedin-badge]][linkedin]
+[![Downloads][downloads-badge]][pypi]
 
 **臺灣話音譯器和標記器**
 
@@ -379,6 +380,7 @@ is_cjk('我食pháng')
 [linkedin]: https://www.linkedin.com/in/andrei-harbachov/
 [js-badge]: https://img.shields.io/badge/JS_版本-f7df1e?style=for-the-badge&logo=javascript&logoColor=000000
 [js-link]: https://github.com/andreihar/taibun.js
+[downloads-badge]: https://img.shields.io/pypi/dm/taibun.svg?style=for-the-badge&label=下載
 
 [pypi]: https://pypi.org/project/taibun
 [bug]: https://github.com/andreihar/taibun/issues
