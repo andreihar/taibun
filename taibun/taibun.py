@@ -3,9 +3,18 @@ import json
 import re
 import unicodedata
 
-word_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/words.json"),'r', encoding="utf-8"))
-trad_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/simplified.json"),'r', encoding="utf-8"))
-simplified_dict = {**{v: k for k, v in trad_dict.items()}, '臺': '台'}
+data_dir = os.path.join(os.path.dirname(__file__), "data")
+word_dict = json.load(open(os.path.join(data_dir, "words.json"), 'r', encoding="utf-8"))
+
+with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
+    trad_dict = json.load(f)
+with open(os.path.join(data_dir, "vars.json"), 'r', encoding="utf-8") as f:
+    trad_dict.update(json.load(f))
+
+with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
+    simplified_dict = {v: k for k, v in json.load(f).items()}
+with open(os.path.join(data_dir, "simplified.json"), 'r', encoding="utf-8") as f:
+    simplified_dict.update(json.load(f))
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
