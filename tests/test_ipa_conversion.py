@@ -5,7 +5,7 @@ c = Converter(system="IPA", punctuation='none')
 c_north = Converter(system="IPA", dialect="north", punctuation='none')
 
 def test_ipa_initials():
-    bilabial = ["啡,pi⁴⁴/pi⁵⁵","波,pʰə⁴⁴/pʰo⁵⁵","毛,mɔ̃²⁵/mɔ̃²⁴","猫,ba²⁵/ba²⁴"]
+    bilabial = ["啡,pi⁴⁴/pi⁵⁵","波,pʰə⁴⁴/pʰo⁵⁵","毛,mɔ̃²⁵/mɔ̃²⁴","麻,ba²⁵/ba²⁴"]
     checker(bilabial, c, c_north)
     alveolar = ["地,te²²/tue³³","唾,tʰə¹¹/tʰo²¹","早,tsa⁵³/tsa⁵¹","厝,tsʰu¹¹/tsʰu²¹","思,su⁴⁴/su⁵⁵","耐,nãi²²/nãi³³","如,dzu²⁵/lu²⁴","柳,liu⁵³/liu⁵¹"]
     checker(alveolar, c, c_north)

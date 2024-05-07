@@ -5,7 +5,7 @@ c = Converter(system="TLPA", punctuation='none')
 c_north = Converter(system="TLPA", dialect="north", punctuation='none')
 
 def test_tlpa_initials():
-    bilabial = ["啡,pi1","波,pho1","毛,moo5","猫,ba5"]
+    bilabial = ["啡,pi1","波,pho1","毛,moo5","麻,ba5"]
     checker(bilabial, c, c_north)
     alveolar = ["地,te7/tue7","唾,tho3","早,ca2","厝,chu3","思,su1","耐,nai7","如,ju5/lu5","柳,liu2"]
     checker(alveolar, c, c_north)

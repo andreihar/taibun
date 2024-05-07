@@ -5,7 +5,7 @@ c = Converter(system="POJ", punctuation='none')
 c_north = Converter(system="POJ", dialect="north", punctuation='none')
 
 def test_poj_initials():
-    bilabial = ["啡,pi","波,pho","毛,mô͘","猫,bâ"]
+    bilabial = ["啡,pi","波,pho","毛,mô͘","麻,bâ"]
     checker(bilabial, c, c_north)
     alveolar = ["地,tē/tōe","唾,thò","早,chá","厝,chhù","思,su","耐,nāi","如,jû/lû","柳,liú"]
     checker(alveolar, c, c_north)

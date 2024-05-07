@@ -5,7 +5,7 @@ c = Converter(system="Zhuyin", punctuation='none')
 c_north = Converter(system="Zhuyin", dialect="north", punctuation='none')
 
 def test_zhuyin_initials():
-    bilabial = ["啡,ㄅㄧ","波,ㄆㄜ","毛,ㄇㆦˊ","猫,ㆠㄚˊ"]
+    bilabial = ["啡,ㄅㄧ","波,ㄆㄜ","毛,ㄇㆦˊ","麻,ㆠㄚˊ"]
     checker(bilabial, c, c_north)
     alveolar = ["地,ㄉㆤ˫/ㄉㄨㆤ˫","唾,ㄊㄜ˪","早,ㄗㄚˋ","厝,ㄘㄨ˪","思,ㄙㄨ","耐,ㄋㄞ˫","如,ㆡㄨˊ/ㄌㄨˊ","柳,ㄌㄧㄨˋ"]
     checker(alveolar, c, c_north)

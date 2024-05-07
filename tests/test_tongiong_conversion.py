@@ -5,7 +5,7 @@ c = Converter(system="Tongiong", punctuation='none')
 c_north = Converter(system="Tongiong", dialect="north", punctuation='none')
 
 def test_tongiong_initials():
-    bilabial = ["啡,bi","波,por","毛,mŏr","猫,bhă"]
+    bilabial = ["啡,bi","波,por","毛,mŏr","麻,bhă"]
     checker(bilabial, c, c_north)
     alveolar = ["地,dē/duē","唾,tôr","早,zà","厝,cû","思,su","耐,nāi","如,rŭ/lŭ","柳,liù"]
     checker(alveolar, c, c_north)
