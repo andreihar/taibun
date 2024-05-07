@@ -11,10 +11,10 @@ with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as 
 with open(os.path.join(data_dir, "vars.json"), 'r', encoding="utf-8") as f:
     trad_dict.update(json.load(f))
 
-# with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
-#     simplified_dict = {v: k for k, v in json.load(f).items()}
-# with open(os.path.join(data_dir, "simplified.json"), 'r', encoding="utf-8") as f:
-#     simplified_dict.update(json.load(f))
+with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
+    simplified_dict = {item: k for k, v in json.load(f).items() for item in v}
+with open(os.path.join(data_dir, "simplified.json"), 'r', encoding="utf-8") as f:
+    simplified_dict.update(json.load(f))
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
@@ -30,9 +30,9 @@ def is_cjk(input):
 
 # Convert Simplified to Traditional characters
 def to_traditional(input):
-    return ''.join(__get_best_solution(input))
+    return ''.join(get_best_solution(input))
 
-def __get_best_solution(input):
+def get_best_solution(input):
     traditional_variants = ['']
     for c in input:
         if c in trad_dict:
@@ -63,7 +63,7 @@ def __get_best_solution(input):
 
 # Convert Traditional to Simplified characters
 def to_simplified(input):
-    return ''#.join(simplified_dict.get(c, c) for c in input)
+    return ''.join(simplified_dict.get(c, c) for c in input)
 
 
 """
@@ -101,7 +101,7 @@ class Converter(object):
 
     # Convert tokenised text into specified transliteration system
     def get(self, input):
-        converted = Tokeniser().tokenise(to_traditional(input))
+        converted = Tokeniser().tokenise(input, False)
         converted = ' '.join(self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(converted)).strip()
         if self.punctuation == 'format':
             return self.__format_text(self.__format_punctuation_western(converted[0].upper() + converted[1:]))
@@ -482,11 +482,12 @@ class Tokeniser(object):
         pass
 
     # Tokenise the text into separate words
-    def tokenise(self, input):
-        tokenised = self.__get_best_solution(input)
+    def tokenise(self, input, keep_original=True):
+        tokenised = get_best_solution(input)
         punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
-        indices = [0] + [len(item) for item in tokenised]
-        tokenised = [input[sum(indices[:i+1]):sum(indices[:i+2])] for i in range(len(indices)-1)]
+        if keep_original:
+            indices = [0] + [len(item) for item in tokenised]
+            tokenised = [input[sum(indices[:i+1]):sum(indices[:i+2])] for i in range(len(indices)-1)]
         tokenised = [
             item 
             for word in tokenised 
