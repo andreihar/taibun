@@ -418,7 +418,7 @@ class Converter(object):
         if self.dialect == 'north':
             convert.update({'o':'o'})
         convert2 = {
-            'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'ʔ0'}
+            'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'0'}
         tones = ['', '⁴⁴', '⁵³', '¹¹', '²¹', '²⁵', '', '²²', '⁵'] if self.dialect != 'north' else ['', '⁵⁵', '⁵¹', '²¹', '³²', '²⁴', '', '³³', '⁴']
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
         convert2.update({k.capitalize(): v.capitalize() for k, v in convert2.items()})
