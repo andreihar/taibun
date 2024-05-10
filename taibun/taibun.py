@@ -3,9 +3,15 @@ import json
 import re
 import unicodedata
 
-word_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/words.json"),'r', encoding="utf-8"))
-trad_dict = json.load(open(os.path.join(os.path.dirname(__file__), "data/simplified.json"),'r', encoding="utf-8"))
-simplified_dict = {**{v: k for k, v in trad_dict.items()}, '臺': '台'}
+data_dir = os.path.join(os.path.dirname(__file__), "data")
+word_dict = json.load(open(os.path.join(data_dir, "words.json"), 'r', encoding="utf-8"))
+
+with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
+    trad_dict = json.load(f)
+with open(os.path.join(data_dir, "vars.json"), 'r', encoding="utf-8") as f:
+    vars_dict = json.load(f)
+with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
+    simplified_dict = {item: k for k, v in json.load(f).items() for item in v}
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
@@ -19,13 +25,42 @@ def is_cjk(input):
         for char in input
     )
 
-# Convert Simplified to Traditional characters
-def to_traditional(input):
-    return ''.join(trad_dict.get(c, c) for c in input)
-
 # Convert Traditional to Simplified characters
 def to_simplified(input):
     return ''.join(simplified_dict.get(c, c) for c in input)
+
+# Convert Simplified to Traditional characters
+def to_traditional(input):
+    return ''.join(get_best_solution(input))
+
+def get_best_solution(input):
+    input = ''.join(vars_dict.get(c, c) for c in input)
+    traditional_variants = ['']
+    for c in input:
+        if c in trad_dict:
+            traditional_variants = [variant + trad for variant in traditional_variants for trad in trad_dict[c]]
+        else:
+            traditional_variants = [variant + c for variant in traditional_variants]
+    tokenised = []
+    for traditional in traditional_variants:
+        temp_tokenised = []
+        while traditional:
+            for j in range(4, 0, -1):
+                if len(traditional) < j:
+                    continue
+                word = traditional[:j]
+                if word_dict.get(word) or j == 1:
+                    if j == 1 and temp_tokenised and not (is_cjk(temp_tokenised[-1]) or is_cjk(word)):
+                        temp_tokenised[-1] += word
+                    else:
+                        temp_tokenised.append(word)
+                    traditional = traditional[j:]
+                    break
+            else:
+                traditional = ""
+        if len(temp_tokenised) < len(tokenised) or not tokenised:
+            tokenised = temp_tokenised
+    return tokenised
 
 
 """
@@ -63,7 +98,7 @@ class Converter(object):
 
     # Convert tokenised text into specified transliteration system
     def get(self, input):
-        converted = Tokeniser().tokenise(to_traditional(input))
+        converted = Tokeniser(False).tokenise(input)
         converted = ' '.join(self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(converted)).strip()
         if self.punctuation == 'format':
             return self.__format_text(self.__format_punctuation_western(converted[0].upper() + converted[1:]))
@@ -380,7 +415,7 @@ class Converter(object):
         if self.dialect == 'north':
             convert.update({'o':'o'})
         convert2 = {
-            'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'ʔ0'}
+            'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'0'}
         tones = ['', '⁴⁴', '⁵³', '¹¹', '²¹', '²⁵', '', '²²', '⁵'] if self.dialect != 'north' else ['', '⁵⁵', '⁵¹', '²¹', '³²', '²⁴', '', '³³', '⁴']
         convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
         convert2.update({k.capitalize(): v.capitalize() for k, v in convert2.items()})
@@ -432,38 +467,30 @@ class Converter(object):
 
     # Helper to capitalise text in according to punctuation
     def __format_text(self, input):
-        punc_filter = re.compile("([.!?]\s*)")
+        # punc_filter = re.compile("([.!?]\s*)")
+        punc_filter = re.compile(r"([.!?]\s*)")
         split_with_punc = punc_filter.split(input)
         split_with_punc = [i[0].upper() + i[1:] if len(i) > 1 else i for i in split_with_punc]
         return "".join(split_with_punc)
 
 
+"""
+Description: Tokenises Taiwanese Hokkien sentences.
+             Supports both Traditional and Simplified characters.
+Invariant: keep_original = True (default), False
+"""
 class Tokeniser(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, keep_original=True):
+        self.keep_original = keep_original
 
     # Tokenise the text into separate words
     def tokenise(self, input):
-        tokenised = []
-        traditional = to_traditional(input)
-        while traditional:
-            for j in range(4, 0, -1):
-                if len(traditional) < j:
-                    continue
-                word = traditional[:j]
-                if word_dict.get(word) or j == 1:
-                    if j == 1 and tokenised and not (is_cjk(tokenised[-1]) or is_cjk(word)):
-                        tokenised[-1] += word
-                    else:
-                        tokenised.append(word)
-                    traditional = traditional[j:]
-                    break
-            else:
-                traditional = ""
-        punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
-        indices = [0] + [len(item) for item in tokenised]
-        tokenised = [input[sum(indices[:i+1]):sum(indices[:i+2])] for i in range(len(indices)-1)]
+        tokenised = get_best_solution(input)
+        punctuations = re.compile(r"([.,!?\"#$%&()*+/:;<=>@[\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
+        if self.keep_original:
+            indices = [0] + [len(item) for item in tokenised]
+            tokenised = [input[sum(indices[:i+1]):sum(indices[:i+2])] for i in range(len(indices)-1)]
         tokenised = [
             item 
             for word in tokenised 
