@@ -9,7 +9,8 @@ word_dict = json.load(open(os.path.join(data_dir, "words.json"), 'r', encoding="
 with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
     trad_dict = json.load(f)
 with open(os.path.join(data_dir, "vars.json"), 'r', encoding="utf-8") as f:
-    trad_dict.update(json.load(f))
+    vars_dict = json.load(f)
+    # trad_dict.update(json.load(f))
 
 with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
     simplified_dict = {item: k for k, v in json.load(f).items() for item in v}
@@ -33,6 +34,7 @@ def to_traditional(input):
     return ''.join(get_best_solution(input))
 
 def get_best_solution(input):
+    input = ''.join(vars_dict.get(c, c) for c in input)
     traditional_variants = ['']
     for c in input:
         if c in trad_dict:
