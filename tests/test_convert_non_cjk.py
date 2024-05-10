@@ -82,7 +82,7 @@ def test_sentence_auto():
         (["Thai2 khong7 ping7 iu1 lin1 ho1! Lin1 cia3 pa1 bue7/Thai2 khong7 ping3 iu1 lin1 ho1! Lin1 cia3 pa1 bue7","Thoo7 kha7 ching7 khi3 ah0/Thoo3 kha7 ching7 khi3 ah0"], "TLPA"),
         (["Tǎikông bîngyū līnhō! Līn ziàbā bbuê/Tǎikông bìngyū līnhō! Līn ziàbā bbuê","Toô kâ cîngkìah/Toò kâ cîngkìah"], "Pingyim"),
         (["Tài-kōng bīng-iu lin-hor! Lin ziâ-ba bhuē/Tài-kōng bîng-iu lin-hor! Lin ziâ-ba bhuē","Tōr kā cīng-kî--åh/Tôr kā cīng-kî--åh"], "Tongiong"),
-        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴ lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue²²/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵ lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ bue³³","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ"], "IPA")
+        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴ lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue²²/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵ lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ bue³³","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ a/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ a"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
@@ -96,7 +96,7 @@ def test_sentence_none():
         (["Thai3 khong1 ping5 iu2 lin2 ho2! Lin2 ciah8 pa2 bue7","Thoo5 kha1 ching1 khi3 ah0"], "TLPA"),
         (["Tàikōng bíngyǔ lǐnhǒ! Lǐn ziáhbǎ bbuê","Toó kā cīngkìah"], "Pingyim"),
         (["Tâi-kong bĭng-iù lìn-hòr! Lìn ziah-bà bhuē","Tŏr ka cing-kî--åh"], "Tongiong"),
-        (["Tʰai¹¹ kʰɔŋ⁴⁴ piɪŋ²⁵ iu⁵³ lin⁵³ hə⁵³! Lin⁵³ tɕiaʔ⁵ pa⁵³ bue²²/Tʰai²¹ kʰɔŋ⁵⁵ piɪŋ²⁴ iu⁵¹ lin⁵¹ ho⁵¹! Lin⁵¹ tɕiaʔ⁴ pa⁵¹ bue³³","Tʰɔ²⁵ kʰa⁴⁴ tɕʰiɪŋ⁴⁴ kʰi¹¹ aʔ/Tʰɔ²⁴ kʰa⁵⁵ tɕʰiɪŋ⁵⁵ kʰi²¹ aʔ"], "IPA")
+        (["Tʰai¹¹ kʰɔŋ⁴⁴ piɪŋ²⁵ iu⁵³ lin⁵³ hə⁵³! Lin⁵³ tɕiaʔ⁵ pa⁵³ bue²²/Tʰai²¹ kʰɔŋ⁵⁵ piɪŋ²⁴ iu⁵¹ lin⁵¹ ho⁵¹! Lin⁵¹ tɕiaʔ⁴ pa⁵¹ bue³³","Tʰɔ²⁵ kʰa⁴⁴ tɕʰiɪŋ⁴⁴ kʰi¹¹ a/Tʰɔ²⁴ kʰa⁵⁵ tɕʰiɪŋ⁵⁵ kʰi²¹ a"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
@@ -110,7 +110,7 @@ def test_sentence_exc_last():
         (["Thai2 khong7 ping7 iu1 lin1 ho1! Lin1 cia3 pa1 bue7/Thai2 khong7 ping3 iu1 lin1 ho1! Lin1 cia3 pa1 bue7","Thoo7 kha7 ching7 khi3 ah0/Thoo3 kha7 ching7 khi3 ah0"], "TLPA"),
         (["Tǎikông bîngyū līnhō! Līn ziàbā bbuê/Tǎikông bìngyū līnhō! Līn ziàbā bbuê","Toô kâ cîngkìah/Toò kâ cîngkìah"], "Pingyim"),
         (["Tài-kōng bīng-iu lin-hor! Lin ziâ-ba bhuē/Tài-kōng bîng-iu lin-hor! Lin ziâ-ba bhuē","Tōr kā cīng-kî--åh/Tôr kā cīng-kî--åh"], "Tongiong"),
-        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴ lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue²²/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵ lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ bue³³","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ"], "IPA")
+        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴ lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue²²/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵ lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ bue³³","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ a/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ a"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
@@ -124,7 +124,7 @@ def test_sentence_incl_last():
         (["Thai2 khong7 ping7 iu1 lin1 ho1! Lin1 cia3 pa1 bue3/Thai2 khong7 ping3 iu1 lin1 ho1! Lin1 cia3 pa1 bue3","Thoo7 kha7 ching7 khi3 ah0/Thoo3 kha7 ching7 khi3 ah0"], "TLPA"),
         (["Tǎikông bîngyū līnhō! Līn ziàbā bbuè/Tǎikông bìngyū līnhō! Līn ziàbā bbuè","Toô kâ cîngkìah/Toò kâ cîngkìah"], "Pingyim"),
         (["Tài-kōng bīng-iu lin-hor! Lin ziâ-ba bhuê/Tài-kōng bîng-iu lin-hor! Lin ziâ-ba bhuê","Tōr kā cīng-kî--åh/Tôr kā cīng-kî--åh"], "Tongiong"),
-        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴ lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue¹¹/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵ lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ bue²¹","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ aʔ/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ aʔ"], "IPA")
+        (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴ lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue¹¹/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵ lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ bue²¹","Tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ a/Tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ a"], "IPA")
     ]
     for transl, system in test_data:
         data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
