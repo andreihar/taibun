@@ -14,7 +14,7 @@ def test_format():
 		(['Tse⁴⁴ ɕi²² Tai²⁵ lam²⁵, kan⁵³ tɕʰiɪŋ⁴⁴ "lam²⁵" (Peʔ⁵ ue²² dʑi²²: Tâi-lâm; tsu¹¹ im⁴⁴ hu²⁵ hə²²: ㄊㄞˊ ㄋㄢˊ, kɔk̚²¹ gi⁵³: Táinán). 1623 nĩ²⁵, Hə²⁵ lan²⁵ ti²² Tai²⁵ lam²⁵ kin²² hai⁵³ tiɔŋ⁴⁴ e²⁵ an⁴⁴ piɪŋ²⁵ kʰi⁵³ ki⁴⁴ te²². 1624 nĩ²⁵, Hə²⁵ lan²⁵ tʰe¹¹ tsʰut̚²¹ Pʰẽ²⁵ ɔ²⁵ liau⁵³ au²², tui¹¹ tɕia⁴⁴ e²⁵ kʰai⁴⁴ huat̚²¹, kiɛn¹¹ ɕiɛt̚²¹ liau⁵³ Dʑiɛt̚⁵ lan²⁵ dʑia⁴⁴ ɕiã²⁵ (Fort Zeelandia)./Tse⁵⁵ ɕi³³ Tai²⁴ lam²⁴, kan⁵¹ tɕʰiɪŋ⁵⁵ "lam²⁴" (Peʔ⁴ ue³³ li³³: Tâi-lâm; tsu²¹ im⁵⁵ hu²⁴ ho³³: ㄊㄞˊ ㄋㄢˊ, kɔk̚³² gu⁵¹: Táinán). 1623 nĩ²⁴, Ho²⁴ lan²⁴ ti³³ Tai²⁴ lam²⁴ kun³³ hai⁵¹ tiɔŋ⁵⁵ e²⁴ an⁵⁵ piɪŋ²⁴ kʰi⁵¹ ki⁵⁵ tue³³. 1624 nĩ²⁴, Ho²⁴ lan²⁴ tʰe²¹ tsʰut̚³² Pʰẽ²⁴ ɔ²⁴ liau⁵¹ au³³, tui²¹ tɕia⁵⁵ e²⁴ kʰai⁵⁵ huat̚³², kiɛn²¹ ɕiɛt̚³² liau⁵¹ Liɛt̚⁴ lan²⁴ lia⁵⁵ ɕiã²⁴ (Fort Zeelandia).'], "IPA")
 	]
 	for transl, system in test_data:
-		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+		data = list(zip(hanji_data, transl))
 		checker(data, Converter(system=system, punctuation='format'), Converter(system=system, dialect="north", punctuation='format'))
 
 def test_none():
@@ -28,5 +28,5 @@ def test_none():
 		(['tse⁴⁴ ɕi²² Tai²⁵ lam²⁵，kan⁵³ tɕʰiɪŋ⁴⁴「lam²⁵」（Peʔ⁵ ue²² dʑi²²：Tâi-lâm；tsu¹¹ im⁴⁴ hu²⁵ hə²²：ㄊㄞˊ ㄋㄢˊ，kɔk̚²¹ gi⁵³：Táinán）。1623 nĩ²⁵，Hə²⁵ lan²⁵ ti²² Tai²⁵ lam²⁵ kin²² hai⁵³ tiɔŋ⁴⁴ e²⁵ an⁴⁴ piɪŋ²⁵ kʰi⁵³ ki⁴⁴ te²²。1624 nĩ²⁵，Hə²⁵ lan²⁵ tʰe¹¹ tsʰut̚²¹ Pʰẽ²⁵ ɔ²⁵ liau⁵³ au²²，tui¹¹ tɕia⁴⁴ e²⁵ kʰai⁴⁴ huat̚²¹，kiɛn¹¹ ɕiɛt̚²¹ liau⁵³ Dʑiɛt̚⁵ lan²⁵ dʑia⁴⁴ ɕiã²⁵（Fort Zeelandia）。/tse⁵⁵ ɕi³³ Tai²⁴ lam²⁴，kan⁵¹ tɕʰiɪŋ⁵⁵「lam²⁴」（Peʔ⁴ ue³³ li³³：Tâi-lâm；tsu²¹ im⁵⁵ hu²⁴ ho³³：ㄊㄞˊ ㄋㄢˊ，kɔk̚³² gu⁵¹：Táinán）。1623 nĩ²⁴，Ho²⁴ lan²⁴ ti³³ Tai²⁴ lam²⁴ kun³³ hai⁵¹ tiɔŋ⁵⁵ e²⁴ an⁵⁵ piɪŋ²⁴ kʰi⁵¹ ki⁵⁵ tue³³。1624 nĩ²⁴，Ho²⁴ lan²⁴ tʰe²¹ tsʰut̚³² Pʰẽ²⁴ ɔ²⁴ liau⁵¹ au³³，tui²¹ tɕia⁵⁵ e²⁴ kʰai⁵⁵ huat̚³²，kiɛn²¹ ɕiɛt̚³² liau⁵¹ Liɛt̚⁴ lan²⁴ lia⁵⁵ ɕiã²⁴（Fort Zeelandia）。'], "IPA")
 	]
 	for transl, system in test_data:
-		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+		data = list(zip(hanji_data, transl))
 		checker(data, Converter(system=system, punctuation='none'), Converter(system=system, dialect="north", punctuation='none'))

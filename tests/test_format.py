@@ -14,7 +14,7 @@ def test_mark():
 		(["pʰiau⁴⁴ ke¹¹/pʰiau⁵⁵ ke²¹","an⁵³ nẽ⁴⁴/an⁵¹ nĩ⁵⁵","kai¹¹ ɕiau²² dʑin²⁵/kai²¹ ɕiau³³ lin²⁴","peʔ²¹ dʑi²²/pueʔ³² li³³","sap̚²¹ se⁵³/sap̚³² sue⁵¹","hat̚²¹ kʰu⁴⁴/hat̚³² kʰu⁵⁵","Hɔk̚²¹ kiɛn¹¹/Hɔk̚³² kiɛn²¹","nĩu²⁵ kiã⁵³/nĩu²⁴ kiã⁵¹","m̩²² biɛn⁵³/m̩³³ biɛn⁵¹","Peʔ⁵ ue²² dʑi²²/Peʔ⁴ ue³³ li³³","giap̚⁵ san⁵³/giap̚⁴ san⁵¹","Put̚⁵ tsɔ⁵³/Put̚⁴ tsɔ⁵¹","bak̚⁵ hiũ⁴⁴/bak̚⁴ hiũ⁵⁵","m̩⁵³ pə²⁵/m̩⁵¹ po²⁴"], "IPA")
 	]
 	for transl, system in test_data:
-		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+		data = list(zip(hanji_data, transl))
 		checker(data, Converter(system=system, punctuation='none', format='mark'), Converter(system=system, dialect="north", punctuation='none', format='mark'))
 
 def test_number():
@@ -28,7 +28,7 @@ def test_number():
 		(["pʰiau1 ke3","an2 nẽ1/an2 nĩ1","kai3 ɕiau7 dʑin5/kai3 ɕiau7 lin5","peʔ4 dʑi7/pueʔ4 li7","sap̚4 se2/sap̚4 sue2","hat̚4 kʰu1","Hɔk̚4 kiɛn3","nĩu5 kiã2","m̩7 biɛn2","Peʔ8 ue7 dʑi7/Peʔ8 ue7 li7","giap̚8 san2","Put̚8 tsɔ2","bak̚8 hiũ1","m̩2 pə5/m̩2 po5"], "IPA")
 	]
 	for transl, system in test_data:
-		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+		data = list(zip(hanji_data, transl))
 		checker(data, Converter(system=system, punctuation='none', format='number'), Converter(system=system, dialect="north", punctuation='none', format='number'))
 
 def test_strip():
@@ -42,5 +42,5 @@ def test_strip():
 		(["pʰiau ke","an nẽ/an nĩ","kai ɕiau dʑin/kai ɕiau lin","peʔ dʑi/pueʔ li","sap̚ se/sap̚ sue","hat̚ kʰu","Hɔk̚ kiɛn","nĩu kiã","m̩ biɛn","Peʔ ue dʑi/Peʔ ue li","giap̚ san","Put̚ tsɔ","bak̚ hiũ","m̩ pə/m̩ po"], "IPA")
 	]
 	for transl, system in test_data:
-		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+		data = list(zip(hanji_data, transl))
 		checker(data, Converter(system=system, punctuation='none', format='strip'), Converter(system=system, dialect="north", punctuation='none', format='strip'))

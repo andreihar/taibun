@@ -16,7 +16,7 @@ def test_default():
         (["kʰai⁴⁴ ɕi⁵³/kʰai⁵⁵ ɕi⁵¹","kʰa⁵³ kʰi¹¹/kʰa⁵¹ kʰi²¹","kia¹¹ hue²⁵/kia²¹ he²⁴","baʔ²¹ pau⁴⁴/baʔ³² pau⁵⁵","hip̚²¹ au⁴⁴/hip̚³² au⁵⁵","hit̚²¹ hə²²/hit̚³² ho³³","kʰak̚²¹ ɕin¹¹/kʰak̚³² ɕin²¹","lam²⁵ bin²²/lam²⁴ bin³³","bi²² lai²⁵/bi³³ lai²⁴","biʔ⁵ tɕʰiəʔ⁵/biʔ⁴ tɕʰioʔ⁴","giap̚⁵ bu²²/giap̚⁴ bu³³","huat̚⁵ kim⁴⁴/huat̚⁴ kim⁵⁵","hak̚⁵ ɕiɪŋ⁴⁴/hak̚⁴ ɕiɪŋ⁵⁵"], "IPA")
     ]
 	for transl, system in test_data:
-		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+		data = list(zip(hanji_data, transl))
 		checker(data, Converter(system=system, punctuation='none'), Converter(system=system, dialect="north", punctuation='none'))
 
 def test_auto():
@@ -30,7 +30,7 @@ def test_auto():
         (["kʰai²² ɕi⁵³/kʰai³³ ɕi⁵¹","kʰa⁴⁴ kʰi¹¹/kʰa⁵⁵ kʰi²¹","kia⁵³ hue²⁵/kia⁵¹ he²⁴","ba⁵³ pau⁴⁴/ba⁵¹ pau⁵⁵","hip̚⁵ au⁴⁴/hip̚⁴ au⁵⁵","hit̚⁵ hə²²/hit̚⁴ ho³³","kʰak̚⁵ ɕin¹¹/kʰak̚⁴ ɕin²¹","lam²² bin²²/lam²¹ bin³³","bi¹¹ lai²⁵/bi²¹ lai²⁴","bi¹¹ tɕʰiəʔ⁵/bi²¹ tɕʰioʔ⁴","giap̚²¹ bu²²/giap̚³² bu³³","huat̚²¹ kim⁴⁴/huat̚³² kim⁵⁵","hak̚²¹ ɕiɪŋ⁴⁴/hak̚³² ɕiɪŋ⁵⁵"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+        data = list(zip(hanji_data, transl))
         checker(data, Converter(system=system, punctuation='none', sandhi='auto'), Converter(system=system, dialect="north", punctuation='none', sandhi='auto'))
 
 def test_none():
@@ -44,7 +44,7 @@ def test_none():
         (["kʰai⁴⁴ ɕi⁵³/kʰai⁵⁵ ɕi⁵¹","kʰa⁵³ kʰi¹¹/kʰa⁵¹ kʰi²¹","kia¹¹ hue²⁵/kia²¹ he²⁴","baʔ²¹ pau⁴⁴/baʔ³² pau⁵⁵","hip̚²¹ au⁴⁴/hip̚³² au⁵⁵","hit̚²¹ hə²²/hit̚³² ho³³","kʰak̚²¹ ɕin¹¹/kʰak̚³² ɕin²¹","lam²⁵ bin²²/lam²⁴ bin³³","bi²² lai²⁵/bi³³ lai²⁴","biʔ⁵ tɕʰiəʔ⁵/biʔ⁴ tɕʰioʔ⁴","giap̚⁵ bu²²/giap̚⁴ bu³³","huat̚⁵ kim⁴⁴/huat̚⁴ kim⁵⁵","hak̚⁵ ɕiɪŋ⁴⁴/hak̚⁴ ɕiɪŋ⁵⁵"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+        data = list(zip(hanji_data, transl))
         checker(data, Converter(system=system, punctuation='none', sandhi='none'), Converter(system=system, dialect="north", punctuation='none', sandhi='none'))
 
 def test_exc_last():
@@ -58,7 +58,7 @@ def test_exc_last():
         (["kʰai²² ɕi⁵³/kʰai³³ ɕi⁵¹","kʰa⁴⁴ kʰi¹¹/kʰa⁵⁵ kʰi²¹","kia⁵³ hue²⁵/kia⁵¹ he²⁴","ba⁵³ pau⁴⁴/ba⁵¹ pau⁵⁵","hip̚⁵ au⁴⁴/hip̚⁴ au⁵⁵","hit̚⁵ hə²²/hit̚⁴ ho³³","kʰak̚⁵ ɕin¹¹/kʰak̚⁴ ɕin²¹","lam²² bin²²/lam²¹ bin³³","bi¹¹ lai²⁵/bi²¹ lai²⁴","bi¹¹ tɕʰiəʔ⁵/bi²¹ tɕʰioʔ⁴","giap̚²¹ bu²²/giap̚³² bu³³","huat̚²¹ kim⁴⁴/huat̚³² kim⁵⁵","hak̚²¹ ɕiɪŋ⁴⁴/hak̚³² ɕiɪŋ⁵⁵"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+        data = list(zip(hanji_data, transl))
         checker(data, Converter(system=system, punctuation='none', sandhi='exc_last'), Converter(system=system, dialect="north", punctuation='none', sandhi='exc_last'))
 
 def test_incl_last():
@@ -72,7 +72,7 @@ def test_incl_last():
         (["kʰai²² ɕi⁴⁴/kʰai³³ ɕi⁵⁵","kʰa⁴⁴ kʰi⁵³/kʰa⁵⁵ kʰi⁵¹","kia⁵³ hue²²/kia⁵¹ he²¹","ba⁵³ pau²²/ba⁵¹ pau³³","hip̚⁵ au²²/hip̚⁴ au³³","hit̚⁵ hə¹¹/hit̚⁴ ho²¹","kʰak̚⁵ ɕin⁵³/kʰak̚⁴ ɕin⁵¹","lam²² bin¹¹/lam²¹ bin²¹","bi¹¹ lai²²/bi²¹ lai²¹","bi¹¹ tɕʰiə¹¹/bi²¹ tɕʰio²¹","giap̚²¹ bu¹¹/giap̚³² bu²¹","huat̚²¹ kim²²/huat̚³² kim³³","hak̚²¹ ɕiɪŋ²²/hak̚³² ɕiɪŋ³³"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+        data = list(zip(hanji_data, transl))
         checker(data, Converter(system=system, punctuation='none', sandhi='incl_last'), Converter(system=system, dialect="north", punctuation='none', sandhi='incl_last'))
 
 def test_add_auto():
@@ -86,7 +86,7 @@ def test_add_auto():
         (["biə¹¹ aŋ²² a⁵³/bio²¹ aŋ³³ a⁵¹","aŋ²² bɔ⁴⁴ a⁵³/aŋ³³ bɔ⁵⁵ a⁵¹","ba⁵³ iu⁴⁴ a⁵³/ba⁵¹ iu⁵⁵ a⁵¹","hue²² ta⁴⁴ a⁵³/hue³³ ta⁵⁵ a⁵¹","bi²² bi²² a⁵³/bi²¹ bi³³ a⁵¹","ban¹¹ ban²² a⁵³/ban²¹ ban³³ a⁵¹","bue⁴⁴ ia²² a⁵³/be⁵⁵ ia³³ a⁵¹","ti¹¹ tsʰu⁵³ a⁵³ tiɪŋ⁵³ gua⁴⁴ 咧 kiã²⁵/ti²¹ tsʰu⁵¹ a⁵¹ tiɪŋ⁵¹ gua⁵⁵ 咧 kiã²⁴","tʰɔ²⁵ kʰa⁴⁴ tɕʰiɪŋ²² kʰi¹¹ a/tʰɔ²⁴ kʰa⁵⁵ tɕʰiɪŋ³³ kʰi²¹ a","guan⁴⁴ ti¹¹ tsʰu¹¹ gua²² laŋ⁴⁴ kaŋ⁴⁴ tai²² gi⁵³/guan⁵⁵ ti²¹ tsʰu²¹ gua³³ laŋ⁵⁵ kaŋ⁵⁵ tai²¹ gu⁵¹","ti¹¹ kɔŋ²² hŋ̍²⁵ lai²² kʰun¹¹/ti²¹ kɔŋ³³ hŋ̍²⁴ lai³³ kʰun²¹","tɕia⁴⁴ iu⁵³ ⾞ e¹¹ bə²⁵/tɕia⁵⁵ iu⁵¹ ⾞ e²¹ bo²⁴","tse⁴⁴ tɕia⁵³ kau⁴⁴ a⁵³ put̚⁵ ɕi²² e¹¹ pui²²/tse⁵⁵ tɕia⁵¹ kau⁵⁵ a⁵¹ put̚⁴ ɕi²¹ e²¹ pui³³"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_a, transl)]
+        data = list(zip(hanji_a, transl))
         checker(data, Converter(system=system, punctuation='none', sandhi='auto'), Converter(system=system, dialect="north", punctuation='none', sandhi='auto'))
 
 def test_add_none():
@@ -100,7 +100,7 @@ def test_add_none():
         (["biə²² aŋ⁴⁴ a⁵³/bio³³ aŋ⁵⁵ a⁵¹","aŋ⁴⁴ bɔ⁵³ a⁵³/aŋ⁵⁵ bɔ⁵¹ a⁵¹","baʔ²¹ iu¹¹ a⁵³/baʔ³² iu²¹ a⁵¹","hue⁴⁴ taʔ²¹ a⁵³/hue⁵⁵ taʔ³² a⁵¹","bi²⁵ bi²⁵ a⁵³/bi²⁴ bi²⁴ a⁵¹","ban²² ban²² a⁵³/ban³³ ban³³ a⁵¹","bue⁵³ iaʔ⁵ a⁵³/be⁵¹ iaʔ⁴ a⁵¹","ti²² tsʰu¹¹ a⁵³ tiɪŋ⁵³ gua⁵³ 咧 kiã²⁵/ti³³ tsʰu²¹ a⁵¹ tiɪŋ⁵¹ gua⁵¹ 咧 kiã²⁴","tʰɔ²⁵ kʰa⁴⁴ tɕʰiɪŋ⁴⁴ kʰi¹¹ a/tʰɔ²⁴ kʰa⁵⁵ tɕʰiɪŋ⁵⁵ kʰi²¹ a","guan⁵³ ti²² tsʰu¹¹ gua²² laŋ⁵³ kaŋ⁵³ tai²⁵ gi⁵³/guan⁵¹ ti³³ tsʰu²¹ gua³³ laŋ⁵¹ kaŋ⁵¹ tai²⁴ gu⁵¹","ti²² kɔŋ⁴⁴ hŋ̍²⁵ lai²² kʰun¹¹/ti³³ kɔŋ⁵⁵ hŋ̍²⁴ lai³³ kʰun²¹","tɕia⁴⁴ iu⁵³ ⾞ e²² bə²⁵/tɕia⁵⁵ iu⁵¹ ⾞ e³³ bo²⁴","tse⁴⁴ tɕiaʔ²¹ kau⁵³ a⁵³ put̚²¹ ɕi²⁵ e²² pui²²/tse⁵⁵ tɕiaʔ³² kau⁵¹ a⁵¹ put̚³² ɕi²⁴ e³³ pui³³"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_a, transl)]
+        data = list(zip(hanji_a, transl))
         checker(data, Converter(system=system, punctuation='none', sandhi='none'), Converter(system=system, dialect="north", punctuation='none', sandhi='none'))
 
 def test_add_exc_last():
@@ -114,7 +114,7 @@ def test_add_exc_last():
         (["biə¹¹ aŋ²² a⁵³/bio²¹ aŋ³³ a⁵¹","aŋ²² bɔ⁴⁴ a⁵³/aŋ³³ bɔ⁵⁵ a⁵¹","ba⁵³ iu⁵³ a⁵³/ba⁵¹ iu⁵¹ a⁵¹","hue²² ta⁵³ a⁵³/hue³³ ta⁵¹ a⁵¹","bi²² bi²² a⁵³/bi²¹ bi²¹ a⁵¹","ban¹¹ ban¹¹ a⁵³/ban²¹ ban²¹ a⁵¹","bue⁴⁴ ia¹¹ a⁵³/be⁵⁵ ia²¹ a⁵¹","ti¹¹ tsʰu⁵³ a⁴⁴ tiɪŋ⁴⁴ gua⁴⁴ 咧 kiã²⁵/ti²¹ tsʰu⁵¹ a⁵⁵ tiɪŋ⁵⁵ gua⁵⁵ 咧 kiã²⁴","tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ a/tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ a","guan⁴⁴ ti¹¹ tsʰu⁵³ gua¹¹ laŋ⁴⁴ kaŋ⁴⁴ tai²² gi⁵³/guan⁵⁵ ti²¹ tsʰu⁵¹ gua²¹ laŋ⁵⁵ kaŋ⁵⁵ tai²¹ gu⁵¹","ti¹¹ kɔŋ²² hŋ̍²² lai¹¹ kʰun¹¹/ti²¹ kɔŋ³³ hŋ̍²¹ lai²¹ kʰun²¹","tɕia²² iu⁴⁴ ⾞ e¹¹ bə²⁵/tɕia³³ iu⁵⁵ ⾞ e²¹ bo²⁴","tse²² tɕia⁵³ kau⁴⁴ a⁴⁴ put̚⁵ ɕi²² e¹¹ pui²²/tse³³ tɕia⁵¹ kau⁵⁵ a⁵⁵ put̚⁴ ɕi²¹ e²¹ pui³³"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_a, transl)]
+        data = list(zip(hanji_a, transl))
         checker(data, Converter(system=system, punctuation='none', sandhi='exc_last'), Converter(system=system, dialect="north", punctuation='none', sandhi='exc_last'))
 
 def test_add_incl_last():
@@ -128,7 +128,7 @@ def test_add_incl_last():
         (["biə¹¹ aŋ²² a⁴⁴/bio²¹ aŋ³³ a⁵⁵","aŋ²² bɔ⁴⁴ a⁴⁴/aŋ³³ bɔ⁵⁵ a⁵⁵","ba⁵³ iu⁵³ a⁴⁴/ba⁵¹ iu⁵¹ a⁵⁵","hue²² ta⁵³ a⁴⁴/hue³³ ta⁵¹ a⁵⁵","bi²² bi²² a⁴⁴/bi²¹ bi²¹ a⁵⁵","ban¹¹ ban¹¹ a⁴⁴/ban²¹ ban²¹ a⁵⁵","bue⁴⁴ ia¹¹ a⁴⁴/be⁵⁵ ia²¹ a⁵⁵","ti¹¹ tsʰu⁵³ a⁴⁴ tiɪŋ⁴⁴ gua⁴⁴ 咧 kiã²²/ti²¹ tsʰu⁵¹ a⁵⁵ tiɪŋ⁵⁵ gua⁵⁵ 咧 kiã²¹","tʰɔ²² kʰa²² tɕʰiɪŋ²² kʰi¹¹ a/tʰɔ²¹ kʰa³³ tɕʰiɪŋ³³ kʰi²¹ a","guan⁴⁴ ti¹¹ tsʰu⁵³ gua¹¹ laŋ⁴⁴ kaŋ⁴⁴ tai²² gi⁴⁴/guan⁵⁵ ti²¹ tsʰu⁵¹ gua²¹ laŋ⁵⁵ kaŋ⁵⁵ tai²¹ gu⁵⁵","ti¹¹ kɔŋ²² hŋ̍²² lai¹¹ kʰun⁵³/ti²¹ kɔŋ³³ hŋ̍²¹ lai²¹ kʰun⁵¹","tɕia²² iu⁴⁴ ⾞ e¹¹ bə²²/tɕia³³ iu⁵⁵ ⾞ e²¹ bo²¹","tse²² tɕia⁵³ kau⁴⁴ a⁴⁴ put̚⁵ ɕi²² e¹¹ pui¹¹/tse³³ tɕia⁵¹ kau⁵⁵ a⁵⁵ put̚⁴ ɕi²¹ e²¹ pui²¹"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_a, transl)]
+        data = list(zip(hanji_a, transl))
         checker(data, Converter(system=system, punctuation='none', sandhi='incl_last'), Converter(system=system, dialect="north", punctuation='none', sandhi='incl_last'))
 
 def test_sentence_auto():
@@ -142,7 +142,7 @@ def test_sentence_auto():
         (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁵³, lin⁴⁴ hə⁵³! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue²²/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵¹, lin⁵⁵ ho⁵¹! Lin⁵⁵ tɕia²¹ pa⁵⁵ be³³"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
+        data = list(zip(hanji_sentence, transl))
         checker(data, Converter(system=system, sandhi='auto'), Converter(system=system, dialect="north", sandhi='auto'))
 
 def test_sentence_none():
@@ -156,7 +156,7 @@ def test_sentence_none():
         (["Tʰai¹¹ kʰɔŋ⁴⁴ piɪŋ²⁵ iu⁵³, lin⁵³ hə⁵³! Lin⁵³ tɕiaʔ⁵ pa⁵³ bue²²/Tʰai²¹ kʰɔŋ⁵⁵ piɪŋ²⁴ iu⁵¹, lin⁵¹ ho⁵¹! Lin⁵¹ tɕiaʔ⁴ pa⁵¹ be³³"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
+        data = list(zip(hanji_sentence, transl))
         checker(data, Converter(system=system, sandhi='none'), Converter(system=system, dialect="north", sandhi='none'))
 
 def test_sentence_exc_last():
@@ -170,7 +170,7 @@ def test_sentence_exc_last():
         (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴, lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue²²/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵, lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ be³³"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
+        data = list(zip(hanji_sentence, transl))
         checker(data, Converter(system=system, sandhi='exc_last'), Converter(system=system, dialect="north", sandhi='exc_last'))
 
 def test_sentence_incl_last():
@@ -184,5 +184,5 @@ def test_sentence_incl_last():
         (["Tʰai⁵³ kʰɔŋ²² piɪŋ²² iu⁴⁴, lin⁴⁴ hə⁴⁴! Lin⁴⁴ tɕia¹¹ pa⁴⁴ bue¹¹/Tʰai⁵¹ kʰɔŋ³³ piɪŋ²¹ iu⁵⁵, lin⁵⁵ ho⁵⁵! Lin⁵⁵ tɕia²¹ pa⁵⁵ be²¹"], "IPA")
     ]
     for transl, system in test_data:
-        data = [f"{h},{t}" for h, t in zip(hanji_sentence, transl)]
+        data = list(zip(hanji_sentence, transl))
         checker(data, Converter(system=system, sandhi='incl_last'), Converter(system=system, dialect="north", sandhi='incl_last'))

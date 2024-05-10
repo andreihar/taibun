@@ -14,7 +14,7 @@ def test_default():
 		(["pʰiau⁴⁴ ke¹¹/pʰiau⁵⁵ ke²¹","an⁵³ nẽ⁴⁴/an⁵¹ nĩ⁵⁵","kai¹¹ ɕiau²² dʑin²⁵/kai²¹ ɕiau³³ lin²⁴","tɕiɔk̚²¹ li⁵³ kin⁴⁴ a⁵³ dʑit̚⁵ tɕin⁴⁴ hə⁵³ e²⁵ dʑit̚⁵ tɕi⁵³/tɕiɔk̚³² li⁵¹ kin⁵⁵ a⁵¹ lit̚⁴ tɕin⁵⁵ ho⁵¹ e²⁴ lit̚⁴ tɕi⁵¹","lan⁵³ e²⁵ tɕiaʔ⁵ pŋ̍²²/lan⁵¹ e²⁴ tɕiaʔ⁴ pŋ̍³³","kɔŋ⁴⁴ tɕʰia⁴⁴ ti²⁵ tə¹¹ a/kɔŋ⁵⁵ tɕʰia⁵⁵ ti²⁴ to²¹ a"], "IPA")
     ]
 	for transl, system in test_data:
-		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+		data = list(zip(hanji_data, transl))
 		checker(data, Converter(system=system, punctuation='none'), Converter(system=system, dialect="north", punctuation='none'))
 
 def test_hyphen():
@@ -28,7 +28,7 @@ def test_hyphen():
 		(["pʰiau⁴⁴-ke¹¹/pʰiau⁵⁵-ke²¹","an⁵³-nẽ⁴⁴/an⁵¹-nĩ⁵⁵","kai¹¹-ɕiau²²-dʑin²⁵/kai²¹-ɕiau³³-lin²⁴","tɕiɔk̚²¹ li⁵³ kin⁴⁴-a⁵³-dʑit̚⁵ tɕin⁴⁴-hə⁵³ e²⁵ dʑit̚⁵-tɕi⁵³/tɕiɔk̚³² li⁵¹ kin⁵⁵-a⁵¹-lit̚⁴ tɕin⁵⁵-ho⁵¹ e²⁴ lit̚⁴-tɕi⁵¹","lan⁵³ e²⁵ tɕiaʔ⁵-pŋ̍²²/lan⁵¹ e²⁴ tɕiaʔ⁴-pŋ̍³³","kɔŋ⁴⁴-tɕʰia⁴⁴ ti²⁵-tə¹¹ a/kɔŋ⁵⁵-tɕʰia⁵⁵ ti²⁴-to²¹ a"], "IPA")
 	]
 	for transl, system in test_data:
-		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+		data = list(zip(hanji_data, transl))
 		checker(data, Converter(system=system, punctuation='none', delimiter='-'), Converter(system=system, dialect="north", punctuation='none', delimiter='-'))
 
 def test_space():
@@ -42,7 +42,7 @@ def test_space():
 		(["pʰiau⁴⁴ ke¹¹/pʰiau⁵⁵ ke²¹","an⁵³ nẽ⁴⁴/an⁵¹ nĩ⁵⁵","kai¹¹ ɕiau²² dʑin²⁵/kai²¹ ɕiau³³ lin²⁴","tɕiɔk̚²¹ li⁵³ kin⁴⁴ a⁵³ dʑit̚⁵ tɕin⁴⁴ hə⁵³ e²⁵ dʑit̚⁵ tɕi⁵³/tɕiɔk̚³² li⁵¹ kin⁵⁵ a⁵¹ lit̚⁴ tɕin⁵⁵ ho⁵¹ e²⁴ lit̚⁴ tɕi⁵¹","lan⁵³ e²⁵ tɕiaʔ⁵ pŋ̍²²/lan⁵¹ e²⁴ tɕiaʔ⁴ pŋ̍³³","kɔŋ⁴⁴ tɕʰia⁴⁴ ti²⁵ tə¹¹ a/kɔŋ⁵⁵ tɕʰia⁵⁵ ti²⁴ to²¹ a"], "IPA")
 	]
 	for transl, system in test_data:
-		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+		data = list(zip(hanji_data, transl))
 		checker(data, Converter(system=system, punctuation='none', delimiter=' '), Converter(system=system, dialect="north", punctuation='none', delimiter=' '))
 
 def test_nospace():
@@ -56,5 +56,5 @@ def test_nospace():
 		(["pʰiau⁴⁴ke¹¹/pʰiau⁵⁵ke²¹","an⁵³nẽ⁴⁴/an⁵¹nĩ⁵⁵","kai¹¹ɕiau²²dʑin²⁵/kai²¹ɕiau³³lin²⁴","tɕiɔk̚²¹ li⁵³ kin⁴⁴a⁵³dʑit̚⁵ tɕin⁴⁴hə⁵³ e²⁵ dʑit̚⁵tɕi⁵³/tɕiɔk̚³² li⁵¹ kin⁵⁵a⁵¹lit̚⁴ tɕin⁵⁵ho⁵¹ e²⁴ lit̚⁴tɕi⁵¹","lan⁵³ e²⁵ tɕiaʔ⁵pŋ̍²²/lan⁵¹ e²⁴ tɕiaʔ⁴pŋ̍³³","kɔŋ⁴⁴tɕʰia⁴⁴ ti²⁵tə¹¹ a/kɔŋ⁵⁵tɕʰia⁵⁵ ti²⁴to²¹ a"], "IPA")
 	]
 	for transl, system in test_data:
-		data = [f"{h},{t}" for h, t in zip(hanji_data, transl)]
+		data = list(zip(hanji_data, transl))
 		checker(data, Converter(system=system, punctuation='none', delimiter=''), Converter(system=system, dialect="north", punctuation='none', delimiter=''))
