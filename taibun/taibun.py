@@ -10,12 +10,8 @@ with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as 
     trad_dict = json.load(f)
 with open(os.path.join(data_dir, "vars.json"), 'r', encoding="utf-8") as f:
     vars_dict = json.load(f)
-    # trad_dict.update(json.load(f))
-
 with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
     simplified_dict = {item: k for k, v in json.load(f).items() for item in v}
-with open(os.path.join(data_dir, "simplified.json"), 'r', encoding="utf-8") as f:
-    simplified_dict.update(json.load(f))
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
@@ -28,6 +24,10 @@ def is_cjk(input):
         0x2EBF0 <= ord(char) <= 0x2EE5F  # Ext I
         for char in input
     )
+
+# Convert Traditional to Simplified characters
+def to_simplified(input):
+    return ''.join(simplified_dict.get(c, c) for c in input)
 
 # Convert Simplified to Traditional characters
 def to_traditional(input):
@@ -61,11 +61,6 @@ def get_best_solution(input):
         if len(temp_tokenised) < len(tokenised) or not tokenised:
             tokenised = temp_tokenised
     return tokenised
-
-
-# Convert Traditional to Simplified characters
-def to_simplified(input):
-    return ''.join(simplified_dict.get(c, c) for c in input)
 
 
 """
@@ -103,7 +98,7 @@ class Converter(object):
 
     # Convert tokenised text into specified transliteration system
     def get(self, input):
-        converted = Tokeniser().tokenise(input, False)
+        converted = Tokeniser(False).tokenise(input)
         converted = ' '.join(self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(converted)).strip()
         if self.punctuation == 'format':
             return self.__format_text(self.__format_punctuation_western(converted[0].upper() + converted[1:]))
@@ -472,22 +467,28 @@ class Converter(object):
 
     # Helper to capitalise text in according to punctuation
     def __format_text(self, input):
-        punc_filter = re.compile("([.!?]\s*)")
+        # punc_filter = re.compile("([.!?]\s*)")
+        punc_filter = re.compile(r"([.!?]\s*)")
         split_with_punc = punc_filter.split(input)
         split_with_punc = [i[0].upper() + i[1:] if len(i) > 1 else i for i in split_with_punc]
         return "".join(split_with_punc)
 
 
+"""
+Description: Tokenises Taiwanese Hokkien sentences.
+             Supports both Traditional and Simplified characters.
+Invariant: keep_original = True (default), False
+"""
 class Tokeniser(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, keep_original=True):
+        self.keep_original = keep_original
 
     # Tokenise the text into separate words
-    def tokenise(self, input, keep_original=True):
+    def tokenise(self, input):
         tokenised = get_best_solution(input)
-        punctuations = re.compile("([.,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
-        if keep_original:
+        punctuations = re.compile(r"([.,!?\"#$%&()*+/:;<=>@[\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
+        if self.keep_original:
             indices = [0] + [len(item) for item in tokenised]
             tokenised = [input[sum(indices[:i+1]):sum(indices[:i+2])] for i in range(len(indices)-1)]
         tokenised = [
