@@ -86,12 +86,68 @@ class Converter(object):
 
     def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
         self.system = system.lower()
-        self.dialect = dialect.lower()
         self.format = format
         self.delimiter = delimiter if delimiter != self.DEFAULT_DELIMITER else self.__set_default_delimiter()
         self.sandhi = sandhi if sandhi != self.DEFAULT_SANDHI else self.__set_default_sandhi()
         self.punctuation = punctuation
         self.convert_non_cjk = convert_non_cjk
+        self.__declarations(dialect.lower())
+
+
+    def __declarations(self, dialect):
+        def placements(elements):
+            return elements + [s.capitalize() for s in elements]
+        def converts(dictionary):
+            return {**dictionary, **{k.capitalize(): v.capitalize() for k, v in dictionary.items()}}
+
+        # Conversion
+        self.conversion_func = {
+            'poj': self.__tailo_to_poj,
+            'zhuyin': self.__tailo_to_zhuyin,
+            'tlpa': self.__tailo_to_tlpa,
+            'pingyim': self.__tailo_to_pingyim,
+            'tongiong': self.__tailo_to_ti,
+            'ipa': self.__tailo_to_ipa,
+            'tailo': self.__tailo_to_tailo
+        }.get(self.system, lambda word: word[0])
+
+        if self.system == 'tailo':
+            self.placement = placements(['ia'+self.tt+'u', 'ua'+self.tt+'i', 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt, 'a'+self.tt+'i', 'a'+self.tt+'u', 'o'+self.tt+'o','ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'o'+self.tt+'o', 'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt])
+            self.tones = ["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
+        if self.system == 'poj':
+            self.convert = converts({'nng':'nng', 'nnh':'hⁿ', 'nn':'ⁿ', 'ts':'ch', 'ing':'eng', 'uai':'oai', 'uan':'oan', 'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘'})
+            self.placement = placements(['oa'+self.tt+'h', 'oa'+self.tt+'n', 'oa'+self.tt+'ng', 'oa'+self.tt+'ⁿ', 'oa'+self.tt+'t', 'ia'+self.tt+'u', 'oe'+self.tt+'h', 'o'+self.tt+'e', 'oa'+self.tt+'i', 'u'+self.tt+'i', 'o'+self.tt+'a', 'a'+self.tt+'i', 'a'+self.tt+'u', 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'a'+self.tt, 'o'+self.tt, 'o͘'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt])
+            self.tones = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
+        if self.system == 'zhuyin':
+            self.convert = {'p4':'ㆴ4', 'p8':'ㆴ8', 'k4':'ㆶ4', 'k8':'ㆶ8', 't4':'ㆵ4', 't8':'ㆵ8', 'h4':'ㆷ4', 'h8':'ㆷ8', 'h0': '0','tshing':'ㄑㄧㄥ', 'tshinn':'ㄑㆪ', 'phing':'ㄆㄧㄥ', 'phinn':'ㄆㆪ', 'tsing':'ㄐㄧㄥ', 'tsinn':'ㄐㆪ','ainn':'ㆮ', 'aunn':'ㆯ', 'giok':'ㆣㄧㄜㆶ', 'ngai':'ㄫㄞ', 'ngau':'ㄫㄠ', 'ngoo':'ㄫㆦ', 'ping':'ㄅㄧㄥ','pinn':'ㄅㆪ', 'senn':'ㄙㆥ', 'sing':'ㄒㄧㄥ', 'sinn':'ㄒㆪ', 'tshi':'ㄑㄧ','ang':'ㄤ', 'ann':'ㆩ', 'enn':'ㆥ', 'ing':'ㄧㄥ', 'inn':'ㆪ', 'mai':'ㄇㄞ', 'mau':'ㄇㄠ', 'mng':'ㄇㆭ','moo':'ㄇㆦ', 'mua':'ㄇㄨㄚ', 'mue':'ㄇㄨㆤ', 'mui':'ㄇㄨㄧ', 'nga':'ㄫㄚ', 'nge':'ㄫㆤ', 'ngi':'ㄫㄧ','ong':'ㆲ', 'onn':'ㆧ', 'tsh':'ㄘ', 'tsi':'ㄐㄧ', 'unn':'ㆫ','ai':'ㄞ', 'am':'ㆰ', 'an':'ㄢ', 'au':'ㄠ', 'ji':'ㆢㄧ', 'kh':'ㄎ', 'ma':'ㄇㄚ', 'me':'ㄇㆤ', 'mi':'ㄇㄧ','ng':'ㆭ', 'ok':'ㆦㆶ', 'om':'ㆱ', 'oo':'ㆦ', 'ph':'ㄆ', 'si':'ㄒㄧ', 'th':'ㄊ', 'ts':'ㄗ','a':'ㄚ', 'b':'ㆠ', 'e':'ㆤ', 'g':'ㆣ', 'h':'ㄏ', 'i':'ㄧ', 'j':'ㆡ', 'k':'ㄍ', 'l':'ㄌ', 'm':'ㆬ','n':'ㄋ', 'o':'ㄜ', 'p':'ㄅ', 's':'ㄙ', 't':'ㄉ', 'u':'ㄨ'}
+            self.tones = ['', '', 'ˋ', '˪', '', 'ˊ', '', '˫', '˙']
+        if self.system == 'tlpa':
+            self.convert = converts({'tsh':'ch', 'ts':'c'})
+        if self.system == 'pingyim':
+            self.convert = converts({'p4':'p4', 't4':'t4', 'k4':'k4', 'h4':'h4', 'p8':'p8', 't8':'t8', 'k8':'k8', 'h8':'h8','ainn':'nai', 'iunn':'niu', 'ann':'na', 'onn':'noo', 'enn':'ne','inn':'ni', 'unn':'nu', 'au':'ao', 'ph':'p', 'nng':'lng', 'tsh':'c','ng':'ggn', 'ts':'z', 'th':'t', 'kh':'k', 'ir':'i', 'p':'b', 'b':'bb','t':'d', 'k':'g', 'g':'gg', 'j':'zz', 'n':'ln', 'm':'bbn'})
+            self.placement = placements(['ua'+self.tt+'i', 'ia'+self.tt+'o', 'a'+self.tt+'i', 'a'+self.tt+'o', 'oo'+self.tt, 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt,'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt, 'n'+self.tt])
+            self.tones = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
+        if self.system == 'tongiong':
+            self.convert = converts({'p4':'p4', 't4':'t4', 'k4':'k4', 'h4':'h4', 'p8':'p8', 't8':'t8', 'k8':'k8', 'h8':'h8','oo':'o', 'om':'om', 'ong':'ong', 'ir':'i', 'tsh':'c','ts':'z', 'nng':'nng', 'ng':'ng', 'g':'gh', 'kh':'k', 'k':'g','ph':'p', 'p':'b', 'b':'bh', 'th':'t', 't':'d', 'j':'r'})
+            self.placement = placements(['ua'+self.tt+'i', 'ia'+self.tt+'o', 'a'+self.tt+'i', 'a'+self.tt+'o', 'oo'+self.tt, 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt,'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt])
+            self.tones = ["̊", "", "̀", "̂", "̄", "̆", "", "̄", "", "́"]
+        if self.system == 'ipa':
+            convert = {'tsing':'tɕiɪŋ','jiang':'dʑiaŋ','tshing':'tɕʰiɪŋ','tsik':'tɕiɪk','tshik':'tɕʰiɪk','jian':'dʑiɛn','jiat':'dʑiɛt','tshi':'tɕʰi','iann':'iã','ainn':'ãi','iang':'iaŋ','nng':'nŋ','mia':'miã','mui':'muĩ','mue':'muẽ','mua':'muã','ma':'mã','me':'mẽ','mi':'mĩ','moo':'mɔ̃','nia':'niã','nua':'nuã','na':'nã','ne':'nẽ','ni':'nĩ','noo':'nɔ̃','ngia':'ŋiã','ngiu':'ŋiũ','nga':'ŋã','nge':'ŋẽ','ngi':'ŋĩ','ngoo':'ŋɔ̃','ing':'iɪŋ','tsh':'tsʰ','tsi':'tɕi','ian':'iɛn','iat':'iɛt','onn':'ɔ̃','ong':'ɔŋ','ik':'iɪk','ji':'dʑi','kh':'kʰ','ng':'ŋ','oo':'ɔ','nn':'̃','hm':'hm̩','ph':'pʰ','th':'tʰ','ok':'ɔk','om':'ɔm','j':'dz','o':'ə'}
+            if dialect == 'north':
+                convert.update({'o':'o'})
+            self.convert = converts(convert)
+            self.convert2 = converts({'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'0'})
+            self.tones = ['', '⁴⁴', '⁵³', '¹¹', '²¹', '²⁵', '', '²²', '⁵'] if dialect != 'north' else ['', '⁵⁵', '⁵¹', '²¹', '³²', '²⁴', '', '³³', '⁴']
+
+        # Dialect
+        self.word_dict = {k: (v.split('/')[1] if dialect == 'north' else v.split('/')[0]) if '/' in v else v for k, v in word_dict.items()}
+
+        # Sandhi
+        if self.sandhi in ['auto', 'exc_last', 'incl_last']:
+            self.sandhi_conversion = {'1':'7', '7':'3', '3':'2', '2':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'2', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'3'}
+            if dialect == 'north':
+                self.sandhi_conversion.update({'5':'3'})
+            self.a_sandhi = {'1':'7', '2':'1', '3':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'1', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'7'}
 
 
     ### Interface functions
@@ -109,14 +165,11 @@ class Converter(object):
 
     # Helper to convert separate words
     def __convert_tokenised(self, word):
-        if word[0] in word_dict:
-            word = (word_dict[word[0]],) + word[1:]
-            if "/" in word[0]:
-                dialect_part = word[0].split("/")[1] if self.dialect == 'north' else word[0].split("/")[0]
-                word = (dialect_part,) + word[1:]
+        if word[0] in self.word_dict:
+            word = (self.word_dict[word[0]],) + word[1:]
         elif not self.convert_non_cjk or word[0] in ".,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”":
             return word[0]
-        word = self.__system_conversion(word).replace('---', '--')
+        word = self.conversion_func(word).replace('---', '--')
         if self.format == 'number' and self.system in ['tailo', 'poj']:
             word = self.__mark_to_number(word)
         if self.format == 'strip':
@@ -128,18 +181,6 @@ class Converter(object):
                 word = word.translate(str.maketrans('', '', ''.join(['¹', '²', '³', '⁴', '⁵'])))
             else: word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
         return word.replace('--', self.suffix_token).replace('-', self.delimiter).replace(self.suffix_token, '--')
-
-
-    # Helper switch for converting 漢字 based on defined transliteration system
-    def __system_conversion(self, word):
-        if self.system == 'poj': return self.__tailo_to_poj(word)
-        if self.system == 'zhuyin': return self.__tailo_to_zhuyin(word)
-        if self.system == 'tlpa': return self.__tailo_to_tlpa(word)
-        if self.system == 'pingyim': return self.__tailo_to_pingyim(word)
-        if self.system == 'tongiong': return self.__tailo_to_ti(word)
-        if self.system == 'ipa': return self.__tailo_to_ipa(word)
-        if self.sandhi in ['auto', 'exc_last', 'incl_last']: return self.__tailo_to_tailo(word)
-        else: return word[0]
 
 
     # Helper functions to set delimiter according to transliteration system if wasn't explicitly defined by user
@@ -219,18 +260,14 @@ class Converter(object):
 
     # Helper to apply tone sandhi to a word
     def __tone_sandhi(self, words, last):
-        sandhi = {'1':'7', '7':'3', '3':'2', '2':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'2', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'3'}
-        a_sandhi = {'1':'7', '2':'1', '3':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'1', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'7'}
-        if self.dialect == 'north':
-            sandhi.update({'5':'3'})
         indices = (
             list(range(len(words) - 2)) if last == 'a suff' and len(words) > 1 
             else list(range(len(words) - 1)) if not last 
             else list(range(len(words)))
         )
-        sandhi_words = [self.__replacement_tool(sandhi, words[i]) for i in indices]
+        sandhi_words = [self.__replacement_tool(self.sandhi_conversion, words[i]) for i in indices]
         if last == 'a suff' and len(words) > 1:
-            sandhi_words.append(self.__replacement_tool(a_sandhi, words[-2]))
+            sandhi_words.append(self.__replacement_tool(self.a_sandhi, words[-2]))
         if not last or last == 'a suff':
             sandhi_words.append(words[-1])
         return sandhi_words
@@ -264,34 +301,16 @@ class Converter(object):
     ### Tai-lo to other transliteration systems converting
 
     # Helper to convert syllable from Tai-lo to Tai-lo
-    # (called only in cases when tone sandhi is applied)
     def __tailo_to_tailo(self, input):
-        placement = [
-            'ia'+self.tt+'u', 'ua'+self.tt+'i', 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt, 'a'+self.tt+'i',
-            'a'+self.tt+'u', 'o'+self.tt+'o','ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'o'+self.tt+'o', 'a'+self.tt, 
-            'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt
-        ]
-        tones = ["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
-        placement += [s.capitalize() for s in placement]
-        input = '-'.join(self.__get_mark_tone(nt, placement, tones) for nt in self.__get_number_tones(input))
+        input = '-'.join(self.__get_mark_tone(nt, self.placement, self.tones) for nt in self.__get_number_tones(input))
         return input.replace(self.suffix_token, '--')
 
 
     # Helper to convert syllable from Tai-lo to POJ
     def __tailo_to_poj(self, input):
-        placement = [
-            'oa'+self.tt+'h', 'oa'+self.tt+'n', 'oa'+self.tt+'ng', 'oa'+self.tt+'ⁿ', 'oa'+self.tt+'t',
-            'ia'+self.tt+'u', 'oe'+self.tt+'h', 'o'+self.tt+'e', 'oa'+self.tt+'i', 'u'+self.tt+'i', 'o'+self.tt+'a',
-            'a'+self.tt+'i', 'a'+self.tt+'u', 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'a'+self.tt,
-            'o'+self.tt, 'o͘'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt
-        ]
-        convert = {'nng':'nng', 'nnh':'hⁿ', 'nn':'ⁿ', 'ts':'ch', 'ing':'eng', 'uai':'oai', 'uan':'oan', 'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘'}
-        tones = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
-        placement += [s.capitalize() for s in placement]
-        convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
         number_tones = self.__get_number_tones(input)
         input = '-'.join(
-            self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) 
+            self.__get_mark_tone(self.__replacement_tool(self.convert, nt), self.placement, self.tones) 
             for nt in number_tones
         )
         return input.replace(self.suffix_token, '--')
@@ -299,58 +318,28 @@ class Converter(object):
 
     # Helper to convert syllable from Tai-lo to 方音符號 (zhuyin)
     def __tailo_to_zhuyin(self, input):
-        convert = {
-            'p4':'ㆴ4', 'p8':'ㆴ8', 'k4':'ㆶ4', 'k8':'ㆶ8', 't4':'ㆵ4', 't8':'ㆵ8', 'h4':'ㆷ4', 'h8':'ㆷ8', 'h0': '0',
-            'tshing':'ㄑㄧㄥ', 'tshinn':'ㄑㆪ', 'phing':'ㄆㄧㄥ', 'phinn':'ㄆㆪ', 'tsing':'ㄐㄧㄥ', 'tsinn':'ㄐㆪ',
-            'ainn':'ㆮ', 'aunn':'ㆯ', 'giok':'ㆣㄧㄜㆶ', 'ngai':'ㄫㄞ', 'ngau':'ㄫㄠ', 'ngoo':'ㄫㆦ', 'ping':'ㄅㄧㄥ',
-            'pinn':'ㄅㆪ', 'senn':'ㄙㆥ', 'sing':'ㄒㄧㄥ', 'sinn':'ㄒㆪ', 'tshi':'ㄑㄧ',
-            'ang':'ㄤ', 'ann':'ㆩ', 'enn':'ㆥ', 'ing':'ㄧㄥ', 'inn':'ㆪ', 'mai':'ㄇㄞ', 'mau':'ㄇㄠ', 'mng':'ㄇㆭ',
-            'moo':'ㄇㆦ', 'mua':'ㄇㄨㄚ', 'mue':'ㄇㄨㆤ', 'mui':'ㄇㄨㄧ', 'nga':'ㄫㄚ', 'nge':'ㄫㆤ', 'ngi':'ㄫㄧ',
-            'ong':'ㆲ', 'onn':'ㆧ', 'tsh':'ㄘ', 'tsi':'ㄐㄧ', 'unn':'ㆫ',
-            'ai':'ㄞ', 'am':'ㆰ', 'an':'ㄢ', 'au':'ㄠ', 'ji':'ㆢㄧ', 'kh':'ㄎ', 'ma':'ㄇㄚ', 'me':'ㄇㆤ', 'mi':'ㄇㄧ',
-            'ng':'ㆭ', 'ok':'ㆦㆶ', 'om':'ㆱ', 'oo':'ㆦ', 'ph':'ㄆ', 'si':'ㄒㄧ', 'th':'ㄊ', 'ts':'ㄗ',
-            'a':'ㄚ', 'b':'ㆠ', 'e':'ㆤ', 'g':'ㆣ', 'h':'ㄏ', 'i':'ㄧ', 'j':'ㆡ', 'k':'ㄍ', 'l':'ㄌ', 'm':'ㆬ',
-            'n':'ㄋ', 'o':'ㄜ', 'p':'ㄅ', 's':'ㄙ', 't':'ㄉ', 'u':'ㄨ'}
-        tones = ['', '', 'ˋ', '˪', '', 'ˊ', '', '˫', '˙']
         output = []
         for nt in self.__get_number_tones((input[0].lower(), input[1])):
-            nt = self.__replacement_tool(convert, nt).replace(self.suffix_token, '')
+            nt = self.__replacement_tool(self.convert, nt).replace(self.suffix_token, '')
             if len(nt) > 2 and nt[-2] == 'ㄋ':
                 nt = nt[:-2] + 'ㄣ' + nt[-1]
             if self.format != 'number':
-                nt = ''.join(tones[int(t)] if t.isnumeric() else t for t in nt)
+                nt = ''.join(self.tones[int(t)] if t.isnumeric() else t for t in nt)
             output.append(nt)
         return '-'.join(output).replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to TLPA
     def __tailo_to_tlpa(self, input):
-        convert = {'tsh':'ch', 'ts':'c'}
-        convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
-        input = '-'.join(self.__replacement_tool(convert, nt) for nt in self.__get_number_tones(input))
+        input = '-'.join(self.__replacement_tool(self.convert, nt) for nt in self.__get_number_tones(input))
         return input.replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to Bbanlam pingyim
     def __tailo_to_pingyim(self, input):
-        placement = [
-            'ua'+self.tt+'i', 'ia'+self.tt+'o', 'a'+self.tt+'i', 'a'+self.tt+'o', 
-            'oo'+self.tt, 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt,
-            'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt, 'n'+self.tt
-        ]
-        # plosives don't change, ptkh 4/8 -> ptkh 4/8
-        convert = {
-            'p4':'p4', 't4':'t4', 'k4':'k4', 'h4':'h4', 'p8':'p8', 't8':'t8', 'k8':'k8', 'h8':'h8',
-            'ainn':'nai', 'iunn':'niu', 'ann':'na', 'onn':'noo', 'enn':'ne',
-            'inn':'ni', 'unn':'nu', 'au':'ao', 'ph':'p', 'nng':'lng', 'tsh':'c',
-            'ng':'ggn', 'ts':'z', 'th':'t', 'kh':'k', 'ir':'i', 'p':'b', 'b':'bb',
-            't':'d', 'k':'g', 'g':'gg', 'j':'zz', 'n':'ln', 'm':'bbn'}
-        tones = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
-        placement += [s.capitalize() for s in placement]
-        convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
         output = []
         for nt in self.__get_number_tones(input):
-            replaced = self.__replacement_tool(convert, nt)
+            replaced = self.__replacement_tool(self.convert, nt)
             if replaced[0] in ['i', 'I']: # Initial i
                 replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower())
             if replaced[0] in ['u', 'U']: # Initial u
@@ -367,34 +356,19 @@ class Converter(object):
             if replaced[-3:-1] == 'ln': # Final n
                 replaced = replaced[:-3] + 'n' + replaced[-1]
             if self.format != 'number':
-                output.append(self.__get_mark_tone(replaced, placement, tones))
+                output.append(self.__get_mark_tone(replaced, self.placement, self.tones))
             else:
                 output.append(replaced)
         return '-'.join(output).replace(self.suffix_token, '')
 
 
     # Helper to convert syllable from Tai-lo to Tong-iong ping-im
-    #       Not enough information on tone mark placement
     def __tailo_to_ti(self, input):
-        placement = [
-            'ua'+self.tt+'i', 'ia'+self.tt+'o', 'a'+self.tt+'i', 'a'+self.tt+'o', 
-            'oo'+self.tt, 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt,
-            'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt
-        ]
-        # plosives don't change, ptkh 4/8 -> ptkh 4/8
-        convert = {
-            'p4':'p4', 't4':'t4', 'k4':'k4', 'h4':'h4', 'p8':'p8', 't8':'t8', 'k8':'k8', 'h8':'h8',
-            'oo':'o', 'om':'om', 'ong':'ong', 'ir':'i', 'tsh':'c',
-            'ts':'z', 'nng':'nng', 'ng':'ng', 'g':'gh', 'kh':'k', 'k':'g',
-            'ph':'p', 'p':'b', 'b':'bh', 'th':'t', 't':'d', 'j':'r'}
-        tones = ["̊", "", "̀", "̂", "̄", "̆", "", "̄", "", "́"]
-        placement += [s.capitalize() for s in placement]
-        convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
         number_tones = [nt[:-2] + 'or' + nt[-1] if nt[-2] == 'o' else nt for nt in self.__get_number_tones(input)]
         input = '-'.join(
-            self.__get_mark_tone(self.__replacement_tool(convert, nt), placement, tones) 
+            self.__get_mark_tone(self.__replacement_tool(self.convert, nt), self.placement, self.tones) 
             if self.format != 'number' 
-            else self.__replacement_tool(convert, nt) 
+            else self.__replacement_tool(self.convert, nt) 
             for nt in number_tones
         )
         return input.replace(self.suffix_token, '--')
@@ -402,26 +376,9 @@ class Converter(object):
 
     # Helper to convert syllable from Tai-lo to International Phonetic Alphabet
     def __tailo_to_ipa(self, input):
-        convert = {
-            'tsing':'tɕiɪŋ','jiang':'dʑiaŋ','tshing':'tɕʰiɪŋ','tsik':'tɕiɪk','tshik':'tɕʰiɪk',
-            'jian':'dʑiɛn','jiat':'dʑiɛt','tshi':'tɕʰi',
-            'iann':'iã','ainn':'ãi','iang':'iaŋ','nng':'nŋ',
-            'mia':'miã','mui':'muĩ','mue':'muẽ','mua':'muã','ma':'mã','me':'mẽ','mi':'mĩ','moo':'mɔ̃', # m nasalisation
-            'nia':'niã','nua':'nuã','na':'nã','ne':'nẽ','ni':'nĩ','noo':'nɔ̃', # n nasalisation
-            'ngia':'ŋiã','ngiu':'ŋiũ','nga':'ŋã','nge':'ŋẽ','ngi':'ŋĩ','ngoo':'ŋɔ̃', # ng nasalisation
-            'ing':'iɪŋ','tsh':'tsʰ','tsi':'tɕi','ian':'iɛn','iat':'iɛt','onn':'ɔ̃',
-            'ong':'ɔŋ','ik':'iɪk','ji':'dʑi','kh':'kʰ','ng':'ŋ','oo':'ɔ','nn':'̃',
-            'hm':'hm̩','ph':'pʰ','th':'tʰ','ok':'ɔk','om':'ɔm','j':'dz','o':'ə'}
-        if self.dialect == 'north':
-            convert.update({'o':'o'})
-        convert2 = {
-            'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'0'}
-        tones = ['', '⁴⁴', '⁵³', '¹¹', '²¹', '²⁵', '', '²²', '⁵'] if self.dialect != 'north' else ['', '⁵⁵', '⁵¹', '²¹', '³²', '²⁴', '', '³³', '⁴']
-        convert.update({k.capitalize(): v.capitalize() for k, v in convert.items()})
-        convert2.update({k.capitalize(): v.capitalize() for k, v in convert2.items()})
         output = []
         for nt in self.__get_number_tones((input[0], input[1])):
-            nt = self.__replacement_tool(convert, nt).replace(self.suffix_token, '')
+            nt = self.__replacement_tool(self.convert, nt).replace(self.suffix_token, '')
             if 'ŋ' in nt:
                 if len(nt) > 2:
                     if all(c.lower() not in 'aeioɔu' for c in nt[:nt.index('ŋ')]) and nt.index('ŋ') != 0:
@@ -430,9 +387,9 @@ class Converter(object):
                     nt = nt.replace('ŋ', 'ŋ̍')
             if len(nt) == 2 and nt[0] == 'm':
                 nt = 'm̩' + nt[-1]
-            nt = self.__replacement_tool(convert2, nt)
+            nt = self.__replacement_tool(self.convert2, nt)
             if self.format != 'number':
-                nt = ''.join(tones[int(t)] if t.isnumeric() else t for t in nt)
+                nt = ''.join(self.tones[int(t)] if t.isnumeric() else t for t in nt)
             output.append(unicodedata.normalize('NFC', nt))
         return '-'.join(output).replace(self.suffix_token, '')
 
@@ -467,7 +424,6 @@ class Converter(object):
 
     # Helper to capitalise text in according to punctuation
     def __format_text(self, input):
-        # punc_filter = re.compile("([.!?]\s*)")
         punc_filter = re.compile(r"([.!?]\s*)")
         split_with_punc = punc_filter.split(input)
         split_with_punc = [i[0].upper() + i[1:] if len(i) > 1 else i for i in split_with_punc]
