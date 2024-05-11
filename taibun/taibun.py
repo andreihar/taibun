@@ -80,6 +80,39 @@ class Converter(object):
     tt = '[ТŊ_ТКŊ]'
     DEFAULT_DELIMITER = object()
     DEFAULT_SANDHI = object()
+    SYSTEM_CONFIGS = {
+        'tailo': {
+            'placement': ['ia'+tt+'u','ua'+tt+'i','ua'+tt,'ue'+tt,'ui'+tt,'a'+tt+'i','a'+tt+'u','o'+tt+'o','ia'+tt,'iu'+tt,'io'+tt,'o'+tt+'o','a'+tt,'o'+tt,'e'+tt,'i'+tt,'u'+tt,'n'+tt+'g','m'+tt],
+            'tones': ['','','́','̀','','̂','̌','̄','̍','̋']
+        },
+        'poj': {
+            'convert': {'nng':'nng','nnh':'hⁿ','nn':'ⁿ','ts':'ch','ing':'eng','uai':'oai','uan':'oan','ik':'ek','ua':'oa','ue':'oe','oo':'o͘'},
+            'placement': ['oa'+tt+'h','oa'+tt+'n','oa'+tt+'ng','oa'+tt+'ⁿ','oa'+tt+'t','ia'+tt+'u','oe'+tt+'h','o'+tt+'e','oa'+tt+'i','u'+tt+'i','o'+tt+'a','a'+tt+'i','a'+tt+'u','ia'+tt,'iu'+tt,'io'+tt,'a'+tt,'o'+tt,'o͘'+tt,'e'+tt,'i'+tt,'u'+tt,'n'+tt+'g','m'+tt],
+            'tones': ['','','́','̀','','̂','','̄','̍','']
+        },
+        'zhuyin': {
+            'convert': {'p4':'ㆴ4','p8':'ㆴ8','k4':'ㆶ4','k8':'ㆶ8','t4':'ㆵ4','t8':'ㆵ8','h4':'ㆷ4','h8':'ㆷ8','h0': '0','tshing':'ㄑㄧㄥ','tshinn':'ㄑㆪ','phing':'ㄆㄧㄥ','phinn':'ㄆㆪ','tsing':'ㄐㄧㄥ','tsinn':'ㄐㆪ','ainn':'ㆮ','aunn':'ㆯ','giok':'ㆣㄧㄜㆶ','ngai':'ㄫㄞ','ngau':'ㄫㄠ','ngoo':'ㄫㆦ','ping':'ㄅㄧㄥ','pinn':'ㄅㆪ','senn':'ㄙㆥ','sing':'ㄒㄧㄥ','sinn':'ㄒㆪ','tshi':'ㄑㄧ','ang':'ㄤ','ann':'ㆩ','enn':'ㆥ','ing':'ㄧㄥ','inn':'ㆪ','mai':'ㄇㄞ','mau':'ㄇㄠ','mng':'ㄇㆭ','moo':'ㄇㆦ','mua':'ㄇㄨㄚ','mue':'ㄇㄨㆤ','mui':'ㄇㄨㄧ','nga':'ㄫㄚ','nge':'ㄫㆤ','ngi':'ㄫㄧ','ong':'ㆲ','onn':'ㆧ','tsh':'ㄘ','tsi':'ㄐㄧ','unn':'ㆫ','ai':'ㄞ','am':'ㆰ','an':'ㄢ','au':'ㄠ','ji':'ㆢㄧ','kh':'ㄎ','ma':'ㄇㄚ','me':'ㄇㆤ','mi':'ㄇㄧ','ng':'ㆭ','ok':'ㆦㆶ','om':'ㆱ','oo':'ㆦ','ph':'ㄆ','si':'ㄒㄧ','th':'ㄊ','ts':'ㄗ','a':'ㄚ','b':'ㆠ','e':'ㆤ','g':'ㆣ','h':'ㄏ','i':'ㄧ','j':'ㆡ','k':'ㄍ','l':'ㄌ','m':'ㆬ','n':'ㄋ','o':'ㄜ','p':'ㄅ','s':'ㄙ','t':'ㄉ','u':'ㄨ'},
+            'tones': ['','','ˋ','˪','','ˊ','','˫','˙']
+        },
+        'tlpa': {
+            'convert': {'tsh':'ch','ts':'c'}
+        },
+        'pingyim': {
+            'convert': {'p4':'p4','t4':'t4','k4':'k4','h4':'h4','p8':'p8','t8':'t8','k8':'k8','h8':'h8','ainn':'nai','iunn':'niu','ann':'na','onn':'noo','enn':'ne','inn':'ni','unn':'nu','au':'ao','ph':'p','nng':'lng','tsh':'c','ng':'ggn','ts':'z','th':'t','kh':'k','ir':'i','p':'b','b':'bb','t':'d','k':'g','g':'gg','j':'zz','n':'ln','m':'bbn'},
+            'placement': ['ua'+tt+'i','ia'+tt+'o','a'+tt+'i','a'+tt+'o','oo'+tt,'ia'+tt,'iu'+tt,'io'+tt,'ua'+tt,'ue'+tt,'ui'+tt,'a'+tt,'o'+tt,'e'+tt,'i'+tt,'u'+tt,'n'+tt+'g','m'+tt,'n'+tt],
+            'tones': ['','̄','̌','̀','̄','́','','̂','́','']
+        },
+        'tongiong': {
+            'convert': {'p4':'p4','t4':'t4','k4':'k4','h4':'h4','p8':'p8','t8':'t8','k8':'k8','h8':'h8','oo':'o','om':'om','ong':'ong','ir':'i','tsh':'c','ts':'z','nng':'nng','ng':'ng','g':'gh','kh':'k','k':'g','ph':'p','p':'b','b':'bh','th':'t','t':'d','j':'r'},
+            'placement': ['ua'+tt+'i','ia'+tt+'o','a'+tt+'i','a'+tt+'o','oo'+tt,'ia'+tt,'iu'+tt,'io'+tt,'ua'+tt,'ue'+tt,'ui'+tt,'a'+tt,'o'+tt,'e'+tt,'i'+tt,'u'+tt,'n'+tt+'g','m'+tt],
+            'tones': ['̊','','̀','̂','̄','̆','','̄','','́']
+        },
+        'ipa': {
+            'convert': {'tsing':'tɕiɪŋ','jiang':'dʑiaŋ','tshing':'tɕʰiɪŋ','tsik':'tɕiɪk','tshik':'tɕʰiɪk','jian':'dʑiɛn','jiat':'dʑiɛt','tshi':'tɕʰi','iann':'iã','ainn':'ãi','iang':'iaŋ','nng':'nŋ','mia':'miã','mui':'muĩ','mue':'muẽ','mua':'muã','ma':'mã','me':'mẽ','mi':'mĩ','moo':'mɔ̃','nia':'niã','nua':'nuã','na':'nã','ne':'nẽ','ni':'nĩ','noo':'nɔ̃','ngia':'ŋiã','ngiu':'ŋiũ','nga':'ŋã','nge':'ŋẽ','ngi':'ŋĩ','ngoo':'ŋɔ̃','ing':'iɪŋ','tsh':'tsʰ','tsi':'tɕi','ian':'iɛn','iat':'iɛt','onn':'ɔ̃','ong':'ɔŋ','ik':'iɪk','ji':'dʑi','kh':'kʰ','ng':'ŋ','oo':'ɔ','nn':'̃','hm':'hm̩','ph':'pʰ','th':'tʰ','ok':'ɔk','om':'ɔm','j':'dz','o':'ə'},
+            'convert2': {'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'0'},
+            'tones': ['','⁴⁴','⁵³','¹¹','²¹','²⁵','','²²','⁵']
+        }
+    }
     __suffixes = ['啊','矣','喂','欸','唅','嘿','諾','乎','唷','喔','嘖']
     __no_sandhi = ['這','彼','遮','遐']
     __location = ['頂','跤','外','內']
@@ -94,12 +127,8 @@ class Converter(object):
         self.__declarations(dialect.lower())
 
 
+    # Helper to declare system-specific conversion information
     def __declarations(self, dialect):
-        def placements(elements):
-            return elements + [s.capitalize() for s in elements]
-        def converts(dictionary):
-            return {**dictionary, **{k.capitalize(): v.capitalize() for k, v in dictionary.items()}}
-
         # Conversion
         self.conversion_func = {
             'poj': self.__tailo_to_poj,
@@ -111,43 +140,21 @@ class Converter(object):
             'tailo': self.__tailo_to_tailo
         }.get(self.system, lambda word: word[0])
 
-        if self.system == 'tailo':
-            self.placement = placements(['ia'+self.tt+'u', 'ua'+self.tt+'i', 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt, 'a'+self.tt+'i', 'a'+self.tt+'u', 'o'+self.tt+'o','ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'o'+self.tt+'o', 'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt])
-            self.tones = ["", "", "́", "̀", "", "̂", "̌", "̄", "̍", "̋"]
-        if self.system == 'poj':
-            self.convert = converts({'nng':'nng', 'nnh':'hⁿ', 'nn':'ⁿ', 'ts':'ch', 'ing':'eng', 'uai':'oai', 'uan':'oan', 'ik':'ek', 'ua':'oa', 'ue':'oe', 'oo':'o͘'})
-            self.placement = placements(['oa'+self.tt+'h', 'oa'+self.tt+'n', 'oa'+self.tt+'ng', 'oa'+self.tt+'ⁿ', 'oa'+self.tt+'t', 'ia'+self.tt+'u', 'oe'+self.tt+'h', 'o'+self.tt+'e', 'oa'+self.tt+'i', 'u'+self.tt+'i', 'o'+self.tt+'a', 'a'+self.tt+'i', 'a'+self.tt+'u', 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'a'+self.tt, 'o'+self.tt, 'o͘'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt])
-            self.tones = ['', '', '́', '̀', '', '̂', '', '̄', '̍', '']
-        if self.system == 'zhuyin':
-            self.convert = {'p4':'ㆴ4', 'p8':'ㆴ8', 'k4':'ㆶ4', 'k8':'ㆶ8', 't4':'ㆵ4', 't8':'ㆵ8', 'h4':'ㆷ4', 'h8':'ㆷ8', 'h0': '0','tshing':'ㄑㄧㄥ', 'tshinn':'ㄑㆪ', 'phing':'ㄆㄧㄥ', 'phinn':'ㄆㆪ', 'tsing':'ㄐㄧㄥ', 'tsinn':'ㄐㆪ','ainn':'ㆮ', 'aunn':'ㆯ', 'giok':'ㆣㄧㄜㆶ', 'ngai':'ㄫㄞ', 'ngau':'ㄫㄠ', 'ngoo':'ㄫㆦ', 'ping':'ㄅㄧㄥ','pinn':'ㄅㆪ', 'senn':'ㄙㆥ', 'sing':'ㄒㄧㄥ', 'sinn':'ㄒㆪ', 'tshi':'ㄑㄧ','ang':'ㄤ', 'ann':'ㆩ', 'enn':'ㆥ', 'ing':'ㄧㄥ', 'inn':'ㆪ', 'mai':'ㄇㄞ', 'mau':'ㄇㄠ', 'mng':'ㄇㆭ','moo':'ㄇㆦ', 'mua':'ㄇㄨㄚ', 'mue':'ㄇㄨㆤ', 'mui':'ㄇㄨㄧ', 'nga':'ㄫㄚ', 'nge':'ㄫㆤ', 'ngi':'ㄫㄧ','ong':'ㆲ', 'onn':'ㆧ', 'tsh':'ㄘ', 'tsi':'ㄐㄧ', 'unn':'ㆫ','ai':'ㄞ', 'am':'ㆰ', 'an':'ㄢ', 'au':'ㄠ', 'ji':'ㆢㄧ', 'kh':'ㄎ', 'ma':'ㄇㄚ', 'me':'ㄇㆤ', 'mi':'ㄇㄧ','ng':'ㆭ', 'ok':'ㆦㆶ', 'om':'ㆱ', 'oo':'ㆦ', 'ph':'ㄆ', 'si':'ㄒㄧ', 'th':'ㄊ', 'ts':'ㄗ','a':'ㄚ', 'b':'ㆠ', 'e':'ㆤ', 'g':'ㆣ', 'h':'ㄏ', 'i':'ㄧ', 'j':'ㆡ', 'k':'ㄍ', 'l':'ㄌ', 'm':'ㆬ','n':'ㄋ', 'o':'ㄜ', 'p':'ㄅ', 's':'ㄙ', 't':'ㄉ', 'u':'ㄨ'}
-            self.tones = ['', '', 'ˋ', '˪', '', 'ˊ', '', '˫', '˙']
-        if self.system == 'tlpa':
-            self.convert = converts({'tsh':'ch', 'ts':'c'})
-        if self.system == 'pingyim':
-            self.convert = converts({'p4':'p4', 't4':'t4', 'k4':'k4', 'h4':'h4', 'p8':'p8', 't8':'t8', 'k8':'k8', 'h8':'h8','ainn':'nai', 'iunn':'niu', 'ann':'na', 'onn':'noo', 'enn':'ne','inn':'ni', 'unn':'nu', 'au':'ao', 'ph':'p', 'nng':'lng', 'tsh':'c','ng':'ggn', 'ts':'z', 'th':'t', 'kh':'k', 'ir':'i', 'p':'b', 'b':'bb','t':'d', 'k':'g', 'g':'gg', 'j':'zz', 'n':'ln', 'm':'bbn'})
-            self.placement = placements(['ua'+self.tt+'i', 'ia'+self.tt+'o', 'a'+self.tt+'i', 'a'+self.tt+'o', 'oo'+self.tt, 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt,'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt, 'n'+self.tt])
-            self.tones = ['', '̄', '̌', '̀', '̄', '́', '', '̂', '́', '']
-        if self.system == 'tongiong':
-            self.convert = converts({'p4':'p4', 't4':'t4', 'k4':'k4', 'h4':'h4', 'p8':'p8', 't8':'t8', 'k8':'k8', 'h8':'h8','oo':'o', 'om':'om', 'ong':'ong', 'ir':'i', 'tsh':'c','ts':'z', 'nng':'nng', 'ng':'ng', 'g':'gh', 'kh':'k', 'k':'g','ph':'p', 'p':'b', 'b':'bh', 'th':'t', 't':'d', 'j':'r'})
-            self.placement = placements(['ua'+self.tt+'i', 'ia'+self.tt+'o', 'a'+self.tt+'i', 'a'+self.tt+'o', 'oo'+self.tt, 'ia'+self.tt, 'iu'+self.tt, 'io'+self.tt, 'ua'+self.tt, 'ue'+self.tt, 'ui'+self.tt,'a'+self.tt, 'o'+self.tt, 'e'+self.tt, 'i'+self.tt, 'u'+self.tt, 'n'+self.tt+'g', 'm'+self.tt])
-            self.tones = ["̊", "", "̀", "̂", "̄", "̆", "", "̄", "", "́"]
-        if self.system == 'ipa':
-            convert = {'tsing':'tɕiɪŋ','jiang':'dʑiaŋ','tshing':'tɕʰiɪŋ','tsik':'tɕiɪk','tshik':'tɕʰiɪk','jian':'dʑiɛn','jiat':'dʑiɛt','tshi':'tɕʰi','iann':'iã','ainn':'ãi','iang':'iaŋ','nng':'nŋ','mia':'miã','mui':'muĩ','mue':'muẽ','mua':'muã','ma':'mã','me':'mẽ','mi':'mĩ','moo':'mɔ̃','nia':'niã','nua':'nuã','na':'nã','ne':'nẽ','ni':'nĩ','noo':'nɔ̃','ngia':'ŋiã','ngiu':'ŋiũ','nga':'ŋã','nge':'ŋẽ','ngi':'ŋĩ','ngoo':'ŋɔ̃','ing':'iɪŋ','tsh':'tsʰ','tsi':'tɕi','ian':'iɛn','iat':'iɛt','onn':'ɔ̃','ong':'ɔŋ','ik':'iɪk','ji':'dʑi','kh':'kʰ','ng':'ŋ','oo':'ɔ','nn':'̃','hm':'hm̩','ph':'pʰ','th':'tʰ','ok':'ɔk','om':'ɔm','j':'dz','o':'ə'}
-            if dialect == 'north':
-                convert.update({'o':'o'})
-            self.convert = converts(convert)
-            self.convert2 = converts({'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'0'})
-            self.tones = ['', '⁴⁴', '⁵³', '¹¹', '²¹', '²⁵', '', '²²', '⁵'] if dialect != 'north' else ['', '⁵⁵', '⁵¹', '²¹', '³²', '²⁴', '', '³³', '⁴']
+        config = self.SYSTEM_CONFIGS.get(self.system)
+        if 'tones' in config: self.tones = config['tones']
+        if 'placement' in config: self.placement = config['placement'] + [s.capitalize() for s in config['placement']]
+        if 'convert' in config: self.convert = {**config['convert'], **{k.capitalize(): v.capitalize() for k, v in config['convert'].items()}}
+        if 'convert2' in config: self.convert2 = {**config['convert2'], **{k.capitalize(): v.capitalize() for k, v in config['convert2'].items()}}
 
         # Dialect
+        self.sandhi_conversion = {'1':'7','7':'3','3':'2','2':'1','5':'7','p4':'p8','t4':'t8','k4':'k8','h4':'2','p8':'p4','t8':'t4','k8':'k4','h8':'3'}
+        self.a_sandhi = {'1':'7','2':'1','3':'1','5':'7','p4':'p8','t4':'t8','k4':'k8','h4':'1','p8':'p4','t8':'t4','k8':'k4','h8':'7'}
         self.word_dict = {k: (v.split('/')[1] if dialect == 'north' else v.split('/')[0]) if '/' in v else v for k, v in word_dict.items()}
-
-        # Sandhi
-        if self.sandhi in ['auto', 'exc_last', 'incl_last']:
-            self.sandhi_conversion = {'1':'7', '7':'3', '3':'2', '2':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'2', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'3'}
-            if dialect == 'north':
-                self.sandhi_conversion.update({'5':'3'})
-            self.a_sandhi = {'1':'7', '2':'1', '3':'1', '5':'7', 'p4':'p8', 't4':'t8', 'k4':'k8', 'h4':'1', 'p8':'p4', 't8':'t4', 'k8':'k4', 'h8':'7'}
+        if dialect == 'north':
+            self.sandhi_conversion.update({'5':'3'})
+            if self.system == 'ipa':
+                self.convert.update({'o':'o'})
+                self.tones = ['','⁵⁵','⁵¹','²¹','³²','²⁴','','³³','⁴']
 
 
     ### Interface functions
