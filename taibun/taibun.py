@@ -4,14 +4,13 @@ import re
 import unicodedata
 
 data_dir = os.path.join(os.path.dirname(__file__), "data")
-word_dict = json.load(open(os.path.join(data_dir, "words.json"), 'r', encoding="utf-8"))
-
+with open(os.path.join(data_dir, "words.json"), 'r', encoding="utf-8") as f:
+    word_dict = json.load(f)
 with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
     trad_dict = json.load(f)
 with open(os.path.join(data_dir, "vars.json"), 'r', encoding="utf-8") as f:
     vars_dict = json.load(f)
-with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
-    simplified_dict = {item: k for k, v in json.load(f).items() for item in v}
+simp_dict = {item: k for k, v in trad_dict.items() for item in v}
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
@@ -27,7 +26,7 @@ def is_cjk(input):
 
 # Convert Traditional to Simplified characters
 def to_simplified(input):
-    return ''.join(simplified_dict.get(c, c) for c in input)
+    return ''.join(simp_dict.get(c, c) for c in input)
 
 # Convert Simplified to Traditional characters
 def to_traditional(input):
@@ -82,12 +81,12 @@ class Converter(object):
     DEFAULT_SANDHI = object()
     SYSTEM_CONFIGS = {
         'tailo': {
-            'placement': ['ia'+tt+'u','ua'+tt+'i','ua'+tt,'ue'+tt,'ui'+tt,'a'+tt+'i','a'+tt+'u','o'+tt+'o','ia'+tt,'iu'+tt,'io'+tt,'o'+tt+'o','a'+tt,'o'+tt,'e'+tt,'i'+tt,'u'+tt,'n'+tt+'g','m'+tt],
+            'placement': [f'ia{tt}u',f'ua{tt}i',f'ua{tt}',f'ue{tt}',f'ui{tt}',f'a{tt}i',f'a{tt}u',f'o{tt}o',f'ia{tt}',f'iu{tt}',f'io{tt}',f'o{tt}o',f'a{tt}',f'o{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'n{tt}g',f'm{tt}'],
             'tones': ['','','́','̀','','̂','̌','̄','̍','̋']
         },
         'poj': {
             'convert': {'nng':'nng','nnh':'hⁿ','nn':'ⁿ','ts':'ch','ing':'eng','uai':'oai','uan':'oan','ik':'ek','ua':'oa','ue':'oe','oo':'o͘'},
-            'placement': ['oa'+tt+'h','oa'+tt+'n','oa'+tt+'ng','oa'+tt+'ⁿ','oa'+tt+'t','ia'+tt+'u','oe'+tt+'h','o'+tt+'e','oa'+tt+'i','u'+tt+'i','o'+tt+'a','a'+tt+'i','a'+tt+'u','ia'+tt,'iu'+tt,'io'+tt,'a'+tt,'o'+tt,'o͘'+tt,'e'+tt,'i'+tt,'u'+tt,'n'+tt+'g','m'+tt],
+            'placement': [f'oa{tt}h',f'oa{tt}n',f'oa{tt}ng',f'oa{tt}ⁿ',f'oa{tt}t',f'ia{tt}u',f'oe{tt}h',f'o{tt}e',f'oa{tt}i',f'u{tt}i',f'o{tt}a',f'a{tt}i',f'a{tt}u',f'ia{tt}',f'iu{tt}',f'io{tt}',f'a{tt}',f'o{tt}',f'o͘{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'n{tt}g',f'm{tt}'],
             'tones': ['','','́','̀','','̂','','̄','̍','']
         },
         'zhuyin': {
@@ -99,12 +98,12 @@ class Converter(object):
         },
         'pingyim': {
             'convert': {'p4':'p4','t4':'t4','k4':'k4','h4':'h4','p8':'p8','t8':'t8','k8':'k8','h8':'h8','ainn':'nai','iunn':'niu','ann':'na','onn':'noo','enn':'ne','inn':'ni','unn':'nu','au':'ao','ph':'p','nng':'lng','tsh':'c','ng':'ggn','ts':'z','th':'t','kh':'k','ir':'i','p':'b','b':'bb','t':'d','k':'g','g':'gg','j':'zz','n':'ln','m':'bbn'},
-            'placement': ['ua'+tt+'i','ia'+tt+'o','a'+tt+'i','a'+tt+'o','oo'+tt,'ia'+tt,'iu'+tt,'io'+tt,'ua'+tt,'ue'+tt,'ui'+tt,'a'+tt,'o'+tt,'e'+tt,'i'+tt,'u'+tt,'n'+tt+'g','m'+tt,'n'+tt],
+            'placement': [f'ua{tt}i',f'ia{tt}o',f'a{tt}i',f'a{tt}o',f'oo{tt}',f'ia{tt}',f'iu{tt}',f'io{tt}',f'ua{tt}',f'ue{tt}',f'ui{tt}',f'a{tt}',f'o{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'n{tt}g',f'm{tt}',f'n{tt}'],
             'tones': ['','̄','̌','̀','̄','́','','̂','́','']
         },
         'tongiong': {
             'convert': {'p4':'p4','t4':'t4','k4':'k4','h4':'h4','p8':'p8','t8':'t8','k8':'k8','h8':'h8','oo':'o','om':'om','ong':'ong','ir':'i','tsh':'c','ts':'z','nng':'nng','ng':'ng','g':'gh','kh':'k','k':'g','ph':'p','p':'b','b':'bh','th':'t','t':'d','j':'r'},
-            'placement': ['ua'+tt+'i','ia'+tt+'o','a'+tt+'i','a'+tt+'o','oo'+tt,'ia'+tt,'iu'+tt,'io'+tt,'ua'+tt,'ue'+tt,'ui'+tt,'a'+tt,'o'+tt,'e'+tt,'i'+tt,'u'+tt,'n'+tt+'g','m'+tt],
+            'placement': [f'ua{tt}i',f'ia{tt}o',f'a{tt}i',f'a{tt}o',f'oo{tt}',f'ia{tt}',f'iu{tt}',f'io{tt}',f'ua{tt}',f'ue{tt}',f'ui{tt}',f'a{tt}',f'o{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'n{tt}g',f'm{tt}'],
             'tones': ['̊','','̀','̂','̄','̆','','̄','','́']
         },
         'ipa': {
