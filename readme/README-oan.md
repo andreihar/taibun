@@ -58,8 +58,13 @@
             <li><a href="#convert-non-cjk">Convert non-CJK</a></li>
           </ul>
         </li>
-        <li><a href="#tokeniser">Tokeniser</a></li>
-        <li><a href="#其他的功能">其他的功能</a></li>
+        <li>
+          <a href="#tokeniser">Tokeniser</a>
+          <ul>
+            <li><a href="#keep-original">Keep original</a></li>
+          </ul>
+        </li>
+        <li><a href="#其他的函式">其他的函式</a></li>
       </ul>
     </li>
     <li><a href="#例">例</a></li>
@@ -94,13 +99,13 @@ $ pip install taibun
 
 ### Converter
 
-`Converter` 類別使用開發人員指定的參數將漢文音譯為所選的音譯系統。繁體佮簡體攏合用。
+`Converter` 類別使用開發人員指定的參數將中文字音譯為所選的音譯系統。繁體佮簡體攏合用。
 
 ```python
 # 建構仔
 c = Converter(system, dialect, format, delimiter, sandhi, punctuation, convert_non_cjk)
 
-# 音譯漢文
+# 音譯中文字
 c.get(input)
 ```
 
@@ -147,7 +152,7 @@ c.get(input)
 
 `delimiter` String - 設定欲放佇詞音節中間的分隔符。
 
-預設值看所選的 `system` 決定：
+預設值看所選的 `system` 決定:
 
 * `'-'` - 對著 `Tailo`, `POJ`, `Tongiong`
 * `''` - 對著 `Pingyim`
@@ -173,15 +178,15 @@ c.get(input)
 * `auto` - 對著 `Tongiong`
 * `none` - 對著 `Tailo`, `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `IPA`
 
-| 文本             | none                      | auto                       | exc_last                  | incl_last                 |
-| ---------------- | ------------------------- | -------------------------- | ------------------------- | ------------------------- |
-| 這是你的手機仔無 | Tse sī lí ê tshiú-ki-á bô | Tse sì li ē tshiu-kī-á bô? | Tsē sì li ē tshiu-kī-a bô | Tsē sì li ē tshiu-kī-a bō |
+| 文本             | none                    | auto                   | exc_last               | incl_last              |
+| ---------------- | ----------------------- | ---------------------- | ---------------------- | ---------------------- |
+| 這是你的茶桌仔無 | Tse sī lí ê tê-toh-á bô | Tse sì li ē tē-to-á bô | Tsē sì li ē tē-tó-a bô | Tsē sì li ē tē-tó-a bō |
 
 變調規則也會隨著選的方言而有所改變。
 
-| 文本 | 沒有變速 | south   | north   |
-| ---- | -------- | ------- | ------- |
-| 台灣 | Tâi-uân  | Tāi-uân | Tài-uân |
+| 文本 | 無變速  | south   | north   |
+| ---- | ------- | ------- | ------- |
+| 台灣 | Tâi-uân | Tāi-uân | Tài-uân |
 
 #### Punctuation
 
@@ -211,24 +216,38 @@ c.get(input)
 
 ```python
 # 建構仔
-t = Tokeniser()
+t = Tokeniser(keep_original)
 
 # 標記台語句
 t.tokenise(input)
 ```
 
-### 其他的功能
+#### Keep original
 
-實用的台語 NLP 助手功能。
+`keep_original` Boolean - 定義保留輸入的原始字符。
+
+* `True` (預設) - 保留原始字符
+* `False` - 使用資料集中定義的字符替換原始字符
+
+| 文本         | True                 | False                |
+| ------------ | -------------------- | -------------------- |
+| 臺灣火鸡肉饭 | ['臺灣', '火鸡肉饭'] | ['台灣', '火雞肉飯'] |
+
+### 其他的函式
+
+實用的台語 NLP 助手函式。
+
+`to_traditional` 函式共輸入轉換做繁體字元以便佇資料集使用。嘛會當應對繁體字符變體。
+
+`to_simplified` 函式共輸入轉換做簡體字元。
+
+`is_cjk` 函式檢查輸入字串敢是完全由中文字符成做。
 
 ```python
-# 轉換做繁體
 to_traditional(input)
 
-# 轉換做簡體
 to_simplified(input)
 
-# 檢查字串是毋是完全由中文字符組成
 is_cjk(input)
 ```
 
@@ -283,20 +302,20 @@ c.get("先生講，學生恬恬聽。")
 
 ## Sandhi
 c = Converter() # 佇 Tailo 中，sandhi 預設值: none
-c.get("這是台灣囡仔")
->> Tse sī Tâi-uân gín-á
+c.get("這是你的茶桌仔無")
+>> Tse sī lí ê tê-toh-á bô
 
 c = Converter(sandhi='auto')
-c.get("這是台灣囡仔")
->> Tse sì Tāi-uān gin-á
+c.get("這是你的茶桌仔無")
+>> Tse sì li ē tē-to-á bô
 
 c = Converter(sandhi='exc_last')
-c.get("這是台灣囡仔")
->> Tsē sì Tāi-uān gin-á
+c.get("這是你的茶桌仔無")
+>> Tsē sì li ē tē-tó-a bô
 
 c = Converter(sandhi='incl_last')
-c.get("這是台灣囡仔")
->> Tsē sì Tāi-uān gin-a
+c.get("這是你的茶桌仔無")
+>> Tsē sì li ē tē-tó-a bō
 
 ## Punctuation
 c = Converter() # punctuation 預設值: format
@@ -308,11 +327,11 @@ c.get("太空朋友，恁好！恁食飽未？")
 >> thài-khong pîng-iú，lín-hó！lín tsia̍h-pá buē？
 
 ## Convert non-CJK
-c = Convert(system='Zhuyin') # convert_non_cjk 預設值: False
+c = Converter(system='Zhuyin') # convert_non_cjk 預設值: False
 c.get("我食pháng")
 >> ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ pháng
 
-c = Convert(system='Zhuyin', convert_non_cjk=True)
+c = Converter(system='Zhuyin', convert_non_cjk=True)
 c.get("我食pháng")
 >> ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ ㄆㄤˋ
 
@@ -324,16 +343,40 @@ t = Tokeniser()
 t.tokenise("太空朋友，恁好！恁食飽未？")
 >> ['太空', '朋友', '，', '恁好', '！', '恁', '食飽', '未', '？']
 
+## Keep Original
+t = Tokeniser() # keep_original 預設值: True
+t.tokenise("爲啥物臺灣遮爾好？")
+>> ['爲啥物', '臺灣', '遮爾', '好', '？']
 
-# 其他的功能
+t.tokenise("为啥物台湾遮尔好？")
+>> ['为啥物', '台湾', '遮尔', '好', '？']
+
+t = Tokeniser(False)
+t.tokenise("爲啥物臺灣遮爾好？")
+>> ['為啥物', '台灣', '遮爾', '好', '？']
+
+t.tokenise("为啥物台湾遮尔好？")
+>> ['為啥物', '台灣', '遮爾', '好', '？']
+
+
+# 其他的函式
 from taibun import to_traditional, to_simplified, is_cjk
 
-to_traditional("我听无台湾话")
->> 我聽無台灣話
+## to_traditional
+to_traditional("我听无台语")
+>> 我聽無台語
 
-to_simplified("我聽無臺灣話")
->> 我听无台湾话
+to_traditional("我爱这个个人台面")
+>> 我愛這个個人檯面
 
+to_traditional("爲啥物")
+>> 為啥物
+
+## to_simplified
+to_simplified("我聽無台語")
+>> 我听无台语
+
+## is_cjk
 is_cjk('我食麭')
 >> True
 
@@ -377,7 +420,7 @@ is_cjk('我食pháng')
 [licence-badge]: https://img.shields.io/github/license/andreihar/taibun?color=000000&style=for-the-badge&label=牌照
 [licence]: ../LICENSE
 [linkedin-badge]: https://img.shields.io/badge/LinkedIn-0077b5?style=for-the-badge&logo=linkedin&logoColor=ffffff
-[linkedin]: https://www.linkedin.com/in/andrei-harbachov/
+[linkedin]: https://www.linkedin.com/in/andreihar/
 [js-badge]: https://img.shields.io/badge/JS_版本-f7df1e?style=for-the-badge&logo=javascript&logoColor=000000
 [js-link]: https://github.com/andreihar/taibun.js
 [downloads-badge]: https://img.shields.io/pypi/dm/taibun.svg?style=for-the-badge&label=下載
