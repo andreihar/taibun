@@ -8,9 +8,10 @@ with open(os.path.join(data_dir, "words.json"), 'r', encoding="utf-8") as f:
     word_dict = json.load(f)
 with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
     trad_dict = json.load(f)
+with open(os.path.join(data_dir, "simplified.json"), 'r', encoding="utf-8") as f:
+    simp_dict = json.load(f)
 with open(os.path.join(data_dir, "vars.json"), 'r', encoding="utf-8") as f:
     vars_dict = json.load(f)
-simp_dict = {item: k for k, v in trad_dict.items() for item in v}
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
@@ -30,36 +31,18 @@ def to_simplified(input):
 
 # Convert Simplified to Traditional characters
 def to_traditional(input):
-    return ''.join(get_best_solution(input))
-
-def get_best_solution(input):
     input = ''.join(vars_dict.get(c, c) for c in input)
-    traditional_variants = ['']
-    for c in input:
-        if c in trad_dict:
-            traditional_variants = [variant + trad for variant in traditional_variants for trad in trad_dict[c]]
-        else:
-            traditional_variants = [variant + c for variant in traditional_variants]
-    tokenised = []
-    for traditional in traditional_variants:
-        temp_tokenised = []
-        while traditional:
-            for j in range(4, 0, -1):
-                if len(traditional) < j:
-                    continue
-                word = traditional[:j]
-                if word_dict.get(word) or j == 1:
-                    if j == 1 and temp_tokenised and not (is_cjk(temp_tokenised[-1]) or is_cjk(word)):
-                        temp_tokenised[-1] += word
-                    else:
-                        temp_tokenised.append(word)
-                    traditional = traditional[j:]
-                    break
-            else:
-                traditional = ""
-        if len(temp_tokenised) < len(tokenised) or not tokenised:
-            tokenised = temp_tokenised
-    return tokenised
+    traditional = []
+    while input:
+        for j in range(4, 0, -1):
+            if len(input) < j:
+                continue
+            word = input[:j]
+            if word in trad_dict or j == 1:
+                traditional.append(trad_dict.get(word, word))
+                input = input[j:]
+                break
+    return "".join(traditional)
 
 
 """
@@ -448,7 +431,22 @@ class Tokeniser(object):
 
     # Tokenise the text into separate words
     def tokenise(self, input):
-        tokenised = get_best_solution(input)
+        tokenised = []
+        traditional = to_traditional(input)
+        while traditional:
+            for j in range (4, 0, -1):
+                if len(traditional) < j:
+                    continue
+                word = traditional[:j]
+                if word_dict.get(word) or j == 1:
+                    if j == 1 and tokenised and not (is_cjk(tokenised[-1]) or is_cjk(word)):
+                        tokenised[-1] += word
+                    else:
+                        tokenised.append(word)
+                    traditional = traditional[j:]
+                    break
+            else:
+                traditional = ""
         punctuations = re.compile(r"([.,!?\"#$%&()*+/:;<=>@[\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
         if self.keep_original:
             indices = [0] + [len(item) for item in tokenised]
