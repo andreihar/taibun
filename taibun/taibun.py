@@ -9,7 +9,7 @@ with open(os.path.join(data_dir, "words.json"), 'r', encoding="utf-8") as f:
 with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
     trad_dict = json.load(f)
 with open(os.path.join(data_dir, "simplified.json"), 'r', encoding="utf-8") as f:
-    simp_dict = json.load(f)
+    simp_dict = {**{v: k for k, v in trad_dict.items() if len(k) == 1}, **json.load(f)}
 with open(os.path.join(data_dir, "vars.json"), 'r', encoding="utf-8") as f:
     vars_dict = json.load(f)
 
