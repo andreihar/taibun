@@ -6,7 +6,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/andreihar/taibun">
-    <img src="readme/logo.png" alt="Logo" width="90" height="80">
+    <img src="[readme/logo.png](https://github.com/andreihar/taibun/raw/main/readme/logo.png)" alt="Logo" width="90" height="80">
   </a>
   
 # Taibun
