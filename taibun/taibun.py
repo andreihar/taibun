@@ -95,7 +95,7 @@ class Converter(object):
             'tones': ['','⁴⁴','⁵³','¹¹','²¹','²⁵','','²²','⁵']
         }
     }
-    __suffixes = ['啊','矣','喂','欸','唅','嘿','諾','乎','唷','喔','嘖']
+    __suffixes = ['啊','矣','喂','欸','唅','嘿','諾','乎','唷','啦','喔','嘖']
     __no_sandhi = ['這','彼','遮','遐']
     __location = ['頂','跤','外','內']
 
@@ -131,7 +131,21 @@ class Converter(object):
         # Dialect
         self.sandhi_conversion = {'1':'7','7':'3','3':'2','2':'1','5':'7','p4':'p8','t4':'t8','k4':'k8','h4':'2','p8':'p4','t8':'t4','k8':'k4','h8':'3'}
         self.a_sandhi = {'1':'7','2':'1','3':'1','5':'7','p4':'p8','t4':'t8','k4':'k8','h4':'1','p8':'p4','t8':'t4','k8':'k4','h8':'7'}
-        self.word_dict = {k: (v.split('/')[1] if dialect == 'north' else v.split('/')[0]) if '/' in v else v for k, v in word_dict.items()}
+        class WordDict:
+            def __init__(self, word_dict, dialect):
+                self.word_dict = word_dict
+                self.dialect = dialect
+
+            def __getitem__(self, key):
+                value = self.word_dict.get(key)
+                if value and '/' in value:
+                    return value.split('/')[1] if self.dialect == 'north' else value.split('/')[0]
+                return value
+
+            def __contains__(self, key):
+                return key in self.word_dict
+        
+        self.word_dict = WordDict(word_dict, dialect)
         if dialect == 'north':
             self.sandhi_conversion.update({'5':'3'})
             if self.system == 'ipa':
