@@ -6,7 +6,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/andreihar/taibun">
-    <img src="readme/logo.png" alt="Logo" width="90" height="80">
+    <img src="https://github.com/andreihar/taibun/raw/main/readme/logo.png" alt="Logo" width="90" height="80">
   </a>
   
 # Taibun
@@ -15,6 +15,7 @@
 
 <!-- PROJECT SHIELDS -->
 [![Contributions][contributions-badge]][contributions]
+[![Live Demo][demo-badge]][demo]
 [![Tests][tests-badge]][tests]
 [![Release][release-badge]][release]
 [![Licence][licence-badge]][licence]
@@ -413,6 +414,8 @@ The data is licensed under [CC BY-SA 4.0][data-cc]
 <!-- MARKDOWN LINKS -->
 [contributions]: https://github.com/andreihar/taibun/issues
 [contributions-badge]: https://img.shields.io/badge/Contributions-Welcomed-be132d?style=for-the-badge&logo=github
+[demo]: https://taibun.andreihar.com/
+[demo-badge]: https://img.shields.io/badge/Live_Demo-222222?style=for-the-badge&logo=homeadvisor&logoColor=white
 [tests]: https://github.com/andreihar/taibun/actions
 [tests-badge]: https://img.shields.io/github/actions/workflow/status/andreihar/taibun/ci.yaml?style=for-the-badge&logo=github-actions&logoColor=ffffff
 [release-badge]: https://img.shields.io/github/v/release/andreihar/taibun?color=38618c&style=for-the-badge
