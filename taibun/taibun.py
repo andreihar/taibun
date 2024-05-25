@@ -1,17 +1,18 @@
 import os
+import msgpack
 import json
 import re
 import unicodedata
 
 data_dir = os.path.join(os.path.dirname(__file__), "data")
-with open(os.path.join(data_dir, "words.json"), 'r', encoding="utf-8") as f:
-    word_dict = json.load(f)
-with open(os.path.join(data_dir, "traditional.json"), 'r', encoding="utf-8") as f:
-    trad_dict = json.load(f)
-with open(os.path.join(data_dir, "simplified.json"), 'r', encoding="utf-8") as f:
-    simp_dict = {**{v: k for k, v in trad_dict.items() if len(k) == 1}, **json.load(f)}
-with open(os.path.join(data_dir, "vars.json"), 'r', encoding="utf-8") as f:
-    vars_dict = json.load(f)
+with open(os.path.join(data_dir, "words.msgpack"), 'rb') as f:
+    word_dict = msgpack.unpackb(f.read(), raw=False)
+with open(os.path.join(data_dir, "traditional.msgpack"), 'rb') as f:
+    trad_dict = msgpack.unpackb(f.read(), raw=False)
+with open(os.path.join(data_dir, "simplified.msgpack"), 'rb') as f:
+    simp_dict = {**{v: k for k, v in trad_dict.items() if len(k) == 1}, **msgpack.unpackb(f.read(), raw=False)}
+with open(os.path.join(data_dir, "vars.msgpack"), 'rb') as f:
+    vars_dict = msgpack.unpackb(f.read(), raw=False)
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
