@@ -1,6 +1,5 @@
 import os
 import msgpack
-import json
 import re
 import unicodedata
 
@@ -446,22 +445,28 @@ class Tokeniser(object):
 
     # Tokenise the text into separate words
     def tokenise(self, input):
-        tokenised = []
         traditional = to_traditional(input)
-        while traditional:
-            for j in range (4, 0, -1):
-                if len(traditional) < j:
-                    continue
-                word = traditional[:j]
-                if word_dict.get(word) or j == 1:
-                    if j == 1 and tokenised and not (is_cjk(tokenised[-1]) or is_cjk(word)):
-                        tokenised[-1] += word
-                    else:
-                        tokenised.append(word)
-                    traditional = traditional[j:]
-                    break
+        n = len(traditional)
+        dp = [{'score': float('inf'), 'last_word': None} for _ in range(n+1)]
+        dp[0]['score'] = 0
+        for i in range(1, n+1):
+            for j in range(max(0, i-4), i):
+                word = traditional[j:i]
+                if word_dict.get(word) or len(word) == 1:
+                    score = dp[j]['score'] + 1
+                    if score < dp[i]['score']:
+                        dp[i]['score'] = score
+                        dp[i]['last_word'] = word
+        tokenised = []
+        i = n
+        while i > 0:
+            word = dp[i]['last_word']
+            if tokenised and not (is_cjk(tokenised[-1]) or is_cjk(word)):
+                tokenised[-1] = word + tokenised[-1]
             else:
-                traditional = ""
+                tokenised.append(word)
+            i -= len(word)
+        tokenised.reverse()
         punctuations = re.compile(r"([.,!?\"#$%&()*+/:;<=>@[\]^`{|}~\t。．，、！？；：（）［］【】「」“”]\s*)")
         if self.keep_original:
             indices = [0] + [len(item) for item in tokenised]
