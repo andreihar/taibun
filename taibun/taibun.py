@@ -489,7 +489,7 @@ class Tokeniser(object):
             subword 
             for word in tokenised 
             for subword in (
-                (word[:-1], word[-1]) if (word[-1] == '的' or word[-1] == '矣') and len(word) > 1 
+                (word[:-1], word[-1]) if (word[-1] == '矣') and len(word) > 1 
                 else (word,)
             )
         ]
