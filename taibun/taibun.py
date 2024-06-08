@@ -12,6 +12,8 @@ with open(os.path.join(data_dir, "simplified.msgpack"), 'rb') as f:
     simp_dict = {**{v: k for k, v in trad_dict.items() if len(k) == 1}, **msgpack.unpackb(f.read(), raw=False)}
 with open(os.path.join(data_dir, "vars.msgpack"), 'rb') as f:
     vars_dict = msgpack.unpackb(f.read(), raw=False)
+with open(os.path.join(data_dir, "prons.msgpack"), 'rb') as f:
+    prons_dict = msgpack.unpackb(f.read(), raw=False)
 
 # Helper to check if the character is a Chinese character
 def is_cjk(input):
@@ -138,8 +140,14 @@ class Converter(object):
 
             def __getitem__(self, key):
                 value = self.word_dict.get(key)
-                if value and '/' in value:
-                    return value.split('/')[1] if self.dialect == 'north' else value.split('/')[0]
+                if value:
+                    if self.dialect == 'south':
+                        return value
+                    else:
+                        parts = [s for s in re.split('(--|-)', value.lower()) if s]
+                        variations = {variation.split('/')[0]: variation.split('/')[1] if len(variation.split('/')) > 1 else variation.split('/')[0] for char in key for variation in prons_dict[char]}
+                        parts = [variations[part] if part in variations else part for part in parts]
+                        return ''.join([parts[0].capitalize() if value[0].isupper() else parts[0]] + parts[1:])
                 return value
 
             def __contains__(self, key):
