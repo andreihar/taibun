@@ -66,12 +66,12 @@ class Converter(object):
     DEFAULT_SANDHI = object()
     SYSTEM_CONFIGS = {
         'tailo': {
-            'placement': [f'ia{tt}u',f'ua{tt}i',f'ua{tt}',f'ue{tt}',f'ui{tt}',f'a{tt}i',f'a{tt}u',f'o{tt}o',f'ia{tt}',f'iu{tt}',f'io{tt}',f'o{tt}o',f'a{tt}',f'o{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'n{tt}g',f'm{tt}'],
+            'placement': [f'ia{tt}u',f'ua{tt}i',f'ua{tt}',f'ue{tt}',f'ui{tt}',f'a{tt}i',f'a{tt}u',f'o{tt}o',f'ia{tt}',f'iu{tt}',f'io{tt}',f'o{tt}o',f'a{tt}',f'o{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'mn{tt}g',f'n{tt}g',f'm{tt}'],
             'tones': ['','','́','̀','','̂','̌','̄','̍','̋']
         },
         'poj': {
             'convert': {'nng':'nng','nnh':'hⁿ','nn':'ⁿ','ts':'ch','ing':'eng','uai':'oai','uan':'oan','ik':'ek','ua':'oa','ue':'oe','oo':'o͘'},
-            'placement': [f'oa{tt}h',f'oa{tt}n',f'oa{tt}ng',f'oa{tt}ⁿ',f'oa{tt}t',f'ia{tt}u',f'oe{tt}h',f'o{tt}e',f'oa{tt}i',f'u{tt}i',f'o{tt}a',f'a{tt}i',f'a{tt}u',f'ia{tt}',f'iu{tt}',f'io{tt}',f'a{tt}',f'o{tt}',f'o͘{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'n{tt}g',f'm{tt}'],
+            'placement': [f'oa{tt}h',f'oa{tt}n',f'oa{tt}ng',f'oa{tt}ⁿ',f'oa{tt}t',f'ia{tt}u',f'oe{tt}h',f'o{tt}e',f'oa{tt}i',f'u{tt}i',f'o{tt}a',f'a{tt}i',f'a{tt}u',f'ia{tt}',f'iu{tt}',f'io{tt}',f'a{tt}',f'o{tt}',f'o͘{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'mn{tt}g',f'n{tt}g',f'm{tt}'],
             'tones': ['','','́','̀','','̂','','̄','̍','']
         },
         'zhuyin': {
@@ -83,12 +83,12 @@ class Converter(object):
         },
         'pingyim': {
             'convert': {'p4':'p4','t4':'t4','k4':'k4','h4':'h4','p8':'p8','t8':'t8','k8':'k8','h8':'h8','ainn':'nai','iunn':'niu','ann':'na','onn':'noo','enn':'ne','inn':'ni','unn':'nu','au':'ao','ph':'p','nng':'lng','tsh':'c','ng':'ggn','ts':'z','th':'t','kh':'k','ir':'i','p':'b','b':'bb','t':'d','k':'g','g':'gg','j':'zz','n':'ln','m':'bbn'},
-            'placement': [f'ua{tt}i',f'ia{tt}o',f'a{tt}i',f'a{tt}o',f'oo{tt}',f'ia{tt}',f'iu{tt}',f'io{tt}',f'ua{tt}',f'ue{tt}',f'ui{tt}',f'a{tt}',f'o{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'n{tt}g',f'm{tt}',f'n{tt}'],
+            'placement': [f'ua{tt}i',f'ia{tt}o',f'a{tt}i',f'a{tt}o',f'oo{tt}',f'ia{tt}',f'iu{tt}',f'io{tt}',f'ua{tt}',f'ue{tt}',f'ui{tt}',f'a{tt}',f'o{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'mn{tt}g',f'n{tt}g',f'm{tt}'],
             'tones': ['','̄','̌','̀','̄','́','','̂','́','']
         },
         'tongiong': {
             'convert': {'p4':'p4','t4':'t4','k4':'k4','h4':'h4','p8':'p8','t8':'t8','k8':'k8','h8':'h8','oo':'o','om':'om','ong':'ong','ir':'i','tsh':'c','ts':'z','nng':'nng','ng':'ng','g':'gh','kh':'k','k':'g','ph':'p','p':'b','b':'bh','th':'t','t':'d','j':'r'},
-            'placement': [f'ua{tt}i',f'ia{tt}o',f'a{tt}i',f'a{tt}o',f'oo{tt}',f'ia{tt}',f'iu{tt}',f'io{tt}',f'ua{tt}',f'ue{tt}',f'ui{tt}',f'a{tt}',f'o{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'n{tt}g',f'm{tt}'],
+            'placement': [f'ua{tt}i',f'ia{tt}o',f'a{tt}i',f'a{tt}o',f'oo{tt}',f'ia{tt}',f'iu{tt}',f'io{tt}',f'ua{tt}',f'ue{tt}',f'ui{tt}',f'a{tt}',f'o{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'mn{tt}g',f'n{tt}g',f'm{tt}'],
             'tones': ['̊','','̀','̂','̄','̆','','̄','','́']
         },
         'ipa': {
