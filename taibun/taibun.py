@@ -126,9 +126,12 @@ class Converter(object):
 
         config = self.SYSTEM_CONFIGS.get(self.system)
         if 'tones' in config: self.tones = config['tones']
-        if 'placement' in config: self.placement = config['placement'] + [s.capitalize() for s in config['placement']]
-        if 'convert' in config: self.convert = {**config['convert'], **{k.capitalize(): v.capitalize() for k, v in config['convert'].items()}}
-        if 'convert2' in config: self.convert2 = {**config['convert2'], **{k.capitalize(): v.capitalize() for k, v in config['convert2'].items()}}
+        if 'placement' in config: 
+            first_part = config['placement'][:-2]
+            last_part = config['placement'][-2:]
+            self.placement = [s[0].upper() + s[1:] for s in first_part] + first_part + [s[0].upper() + s[1:] for s in last_part] + last_part
+        if 'convert' in config: self.convert = {**{k[0].upper() + k[1:]: v[0].upper() + v[1:] for k, v in config['convert'].items()}, **config['convert']}
+        if 'convert2' in config: self.convert2 = {**{k[0].upper() + k[1:]: v[0].upper() + v[1:] for k, v in config['convert2'].items()}, **config['convert2']}
 
         # Dialect
         self.sandhi_conversion = {'1':'7','7':'3','3':'2','2':'1','5':'7','p4':'p8','t4':'t8','k4':'k8','h4':'2','p8':'p4','t8':'t4','k8':'k4','h8':'3'}
