@@ -245,14 +245,15 @@ class Converter(object):
     # Helper to convert syllable from Tai-lo diacritic tones to number tones
     def __get_number_tone(self, input):
         finals = ['p', 't', 'k', 'h']
-        if re.search("á|é|í|ó|ú|ḿ|ńg|́", input): input += '2'
-        elif re.search("à|è|ì|ò|ù|m̀|ǹg|̀", input): input += '3'
-        elif re.search("â|ê|î|ô|û|m̂|n̂g|̂", input): input += '5'
-        elif re.search("ā|ē|ī|ō|ū|m̄|n̄g|̄", input): input += '7'
-        elif re.search('̍', input): input += '8'
-        elif input[-1] in finals: input += '4'
+        lower_input = input.lower()
+        if re.search("á|é|í|ó|ú|ḿ|ńg|́", lower_input): input += '2'
+        elif re.search("à|è|ì|ò|ù|m̀|ǹg|̀", lower_input): input += '3'
+        elif re.search("â|ê|î|ô|û|m̂|n̂g|̂", lower_input): input += '5'
+        elif re.search("ā|ē|ī|ō|ū|m̄|n̄g|̄", lower_input): input += '7'
+        elif re.search('̍', lower_input): input += '8'
+        elif lower_input[-1] in finals: input += '4'
         else: input += '1'
-        if input.startswith(self.suffix_token) and (input[-2] == 'h' or self.sandhi in ['auto', 'exc_last', 'incl_last'] or self.format == 'number'):
+        if input.startswith(self.suffix_token) and (input[-2:] == 'h4' or self.sandhi in ['auto', 'exc_last', 'incl_last'] or self.format == 'number'):
             input = input[:-1] + '0'
         input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
         return input
