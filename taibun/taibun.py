@@ -148,9 +148,20 @@ class Converter(object):
                         return value
                     else:
                         parts = [s for s in re.split('(--|-)', value.lower()) if s]
-                        variations = {variation.split('/')[0]: variation.split('/')[1] if len(variation.split('/')) > 1 else variation.split('/')[0] for char in key for variation in prons_dict[char]}
-                        parts = [variations[part] if part in variations else part for part in parts]
-                        return ''.join([parts[0].capitalize() if value[0].isupper() else parts[0]] + parts[1:])
+                        variations = {char: {variation.split('/')[0]: variation.split('/')[1] if len(variation.split('/')) > 1 else variation.split('/')[0] for variation in prons_dict[char]} for char in key}
+                        new_parts = []
+                        char_index = 0
+                        for part in parts:
+                            if part in ['--', '-']:
+                                new_parts.append(part)
+                            else:
+                                char = key[char_index]
+                                if char in variations and part in variations[char]:
+                                    new_parts.append(variations[char][part])
+                                else:
+                                    new_parts.append(part)
+                                char_index += 1
+                        return ''.join([new_parts[0].capitalize() if value[0].isupper() else new_parts[0]] + new_parts[1:])
                 return value
 
             def __contains__(self, key):
