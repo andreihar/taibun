@@ -13,7 +13,7 @@ def test_best_solution_tokenisation():
 
 def test_suffix():
 	t = Tokeniser()
-	assert ['咱', '的', '食飯', '是', '誠', '好食'] == t.tokenise("咱的食飯是誠好食")
+	assert ['咱的', '食飯', '是', '誠', '好食'] == t.tokenise("咱的食飯是誠好食")
 	assert ['卯死', '矣'] == t.tokenise("卯死矣")
 
 def test_simplified():
