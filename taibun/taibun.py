@@ -51,7 +51,7 @@ def to_traditional(input):
 Description: Converts Chinese characters to Taiwanese Hokkien phonetic transcriptions.
              Supports both Traditional and Simplified characters.
 Invariant: system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tongiong`, `IPA`
-           dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-leaning)
+           dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-leaning), `singapore` (Quanzhou-leaning with Singaporean characteristics)
            format = `mark` (diacritical), `number` (numeric), `strip` (no tones)
            delimiter = String that replaces the default delimiter
            sandhi = `auto`, `none`, `exc_last`, `incl_last`
@@ -75,7 +75,7 @@ class Converter(object):
             'tones': ['','','́','̀','','̂','','̄','̍','']
         },
         'zhuyin': {
-            'convert': {'p4':'ㆴ4','p8':'ㆴ8','k4':'ㆶ4','k8':'ㆶ8','t4':'ㆵ4','t8':'ㆵ8','h4':'ㆷ4','h8':'ㆷ8','h0': '0','tshing':'ㄑㄧㄥ','tshinn':'ㄑㆪ','phing':'ㄆㄧㄥ','phinn':'ㄆㆪ','tsing':'ㄐㄧㄥ','tsinn':'ㄐㆪ','ainn':'ㆮ','aunn':'ㆯ','giok':'ㆣㄧㄜㆶ','ngai':'ㄫㄞ','ngau':'ㄫㄠ','ngoo':'ㄫㆦ','ping':'ㄅㄧㄥ','pinn':'ㄅㆪ','senn':'ㄙㆥ','sing':'ㄒㄧㄥ','sinn':'ㄒㆪ','tshi':'ㄑㄧ','ang':'ㄤ','ann':'ㆩ','enn':'ㆥ','ing':'ㄧㄥ','inn':'ㆪ','mai':'ㄇㄞ','mau':'ㄇㄠ','mng':'ㄇㆭ','moo':'ㄇㆦ','mua':'ㄇㄨㄚ','mue':'ㄇㄨㆤ','mui':'ㄇㄨㄧ','nga':'ㄫㄚ','nge':'ㄫㆤ','ngi':'ㄫㄧ','ong':'ㆲ','onn':'ㆧ','tsh':'ㄘ','tsi':'ㄐㄧ','unn':'ㆫ','ai':'ㄞ','am':'ㆰ','an':'ㄢ','au':'ㄠ','ji':'ㆢㄧ','kh':'ㄎ','ma':'ㄇㄚ','me':'ㄇㆤ','mi':'ㄇㄧ','ng':'ㆭ','ok':'ㆦㆶ','om':'ㆱ','oo':'ㆦ','ph':'ㄆ','si':'ㄒㄧ','th':'ㄊ','ts':'ㄗ','a':'ㄚ','b':'ㆠ','e':'ㆤ','g':'ㆣ','h':'ㄏ','i':'ㄧ','j':'ㆡ','k':'ㄍ','l':'ㄌ','m':'ㆬ','n':'ㄋ','o':'ㄜ','p':'ㄅ','s':'ㄙ','t':'ㄉ','u':'ㄨ'},
+            'convert': {'p4':'ㆴ4','p8':'ㆴ8','k4':'ㆶ4','k8':'ㆶ8','t4':'ㆵ4','t8':'ㆵ8','h4':'ㆷ4','h8':'ㆷ8','h0': '0','tshing':'ㄑㄧㄥ','tshinn':'ㄑㆪ','phing':'ㄆㄧㄥ','phinn':'ㄆㆪ','tsing':'ㄐㄧㄥ','tsinn':'ㄐㆪ','ainn':'ㆮ','aunn':'ㆯ','giok':'ㆣㄧㄜㆶ','ngai':'ㄫㄞ','ngau':'ㄫㄠ','ngoo':'ㄫㆦ','ping':'ㄅㄧㄥ','pinn':'ㄅㆪ','senn':'ㄙㆥ','sing':'ㄒㄧㄥ','sinn':'ㄒㆪ','tshi':'ㄑㄧ','ang':'ㄤ','ann':'ㆩ','enn':'ㆥ','ing':'ㄧㄥ','eng':'ㆤㄥ','inn':'ㆪ','mai':'ㄇㄞ','mau':'ㄇㄠ','mng':'ㄇㆭ','moo':'ㄇㆦ','mua':'ㄇㄨㄚ','mue':'ㄇㄨㆤ','mui':'ㄇㄨㄧ','nga':'ㄫㄚ','nge':'ㄫㆤ','ngi':'ㄫㄧ','ong':'ㆲ','onn':'ㆧ','tsh':'ㄘ','tsi':'ㄐㄧ','unn':'ㆫ','ai':'ㄞ','am':'ㆰ','an':'ㄢ','au':'ㄠ','ji':'ㆢㄧ','kh':'ㄎ','ma':'ㄇㄚ','me':'ㄇㆤ','mi':'ㄇㄧ','ng':'ㆭ','ok':'ㆦㆶ','om':'ㆱ','oo':'ㆦ','ph':'ㄆ','si':'ㄒㄧ','th':'ㄊ','ts':'ㄗ','a':'ㄚ','b':'ㆠ','e':'ㆤ','g':'ㆣ','h':'ㄏ','i':'ㄧ','j':'ㆡ','k':'ㄍ','l':'ㄌ','m':'ㆬ','n':'ㄋ','o':'ㄜ','p':'ㄅ','s':'ㄙ','t':'ㄉ','u':'ㄨ'},
             'tones': ['','','ˋ','˪','','ˊ','','˫','˙']
         },
         'tlpa': {
@@ -92,7 +92,7 @@ class Converter(object):
             'tones': ['̊','','̀','̂','̄','̆','','̄','','́']
         },
         'ipa': {
-            'convert': {'tsing':'tɕiɪŋ','jiang':'dʑiaŋ','tshing':'tɕʰiɪŋ','tsik':'tɕiɪk','tshik':'tɕʰiɪk','jian':'dʑiɛn','jiat':'dʑiɛt','tshi':'tɕʰi','iann':'iã','ainn':'ãi','iang':'iaŋ','nng':'nŋ','mia':'miã','mui':'muĩ','mue':'muẽ','mua':'muã','ma':'mã','me':'mẽ','mi':'mĩ','moo':'mɔ̃','nia':'niã','nua':'nuã','na':'nã','ne':'nẽ','ni':'nĩ','noo':'nɔ̃','ngia':'ŋiã','ngiu':'ŋiũ','nga':'ŋã','nge':'ŋẽ','ngi':'ŋĩ','ngoo':'ŋɔ̃','ing':'iɪŋ','tsh':'tsʰ','tsi':'tɕi','ian':'iɛn','iat':'iɛt','onn':'ɔ̃','ong':'ɔŋ','ik':'iɪk','ji':'dʑi','kh':'kʰ','ng':'ŋ','oo':'ɔ','nn':'̃','hm':'hm̩','ph':'pʰ','th':'tʰ','ok':'ɔk','om':'ɔm','j':'dz','o':'ə'},
+            'convert': {'tsing':'tɕiɪŋ','jiang':'dʑiaŋ','tshing':'tɕʰiɪŋ','tsik':'tɕiɪk','tshik':'tɕʰiɪk','jian':'dʑiɛn','jiat':'dʑiɛt','tshi':'tɕʰi','iann':'iã','ainn':'ãi','iang':'iaŋ','nng':'nŋ','mia':'miã','mui':'muĩ','mue':'muẽ','mua':'muã','ma':'mã','me':'mẽ','mi':'mĩ','moo':'mɔ̃','nia':'niã','nua':'nuã','na':'nã','ne':'nẽ','ni':'nĩ','noo':'nɔ̃','ngia':'ŋiã','ngiu':'ŋiũ','nga':'ŋã','nge':'ŋẽ','ngi':'ŋĩ','ngoo':'ŋɔ̃','ing':'iɪŋ','eng':'eŋ','tsh':'tsʰ','tsi':'tɕi','ian':'iɛn','iat':'iɛt','onn':'ɔ̃','ong':'ɔŋ','ik':'iɪk','ji':'dʑi','kh':'kʰ','ng':'ŋ','oo':'ɔ','nn':'̃','hm':'hm̩','ph':'pʰ','th':'tʰ','ok':'ɔk','om':'ɔm','j':'dz','o':'ə'},
             'convert2': {'p4':'p̚4','p8':'p̚8','k4':'k̚4','k8':'k̚8','t4':'t̚4','t8':'t̚8','h4':'ʔ4','h8':'ʔ8','si':'ɕi','h0':'0'},
             'tones': ['','⁴⁴','⁵³','¹¹','²¹','²⁵','','²²','⁵']
         }
@@ -100,9 +100,14 @@ class Converter(object):
     __suffixes = ['啊','矣','喂','欸','唅','嘿','諾','乎','唷','啦','喔','嘖']
     __no_sandhi = ['這','彼','遮','遐']
     __location = ['頂','跤','外','內']
+    __singapore_prons = { '你':['lí/lú'], '我':["guá/uá","ngóo"], '物':["bu̍t","mi̍h","mih"] }
+    __singapore_words = {
+        '咖啡': { '咖': { 'ka':'ko' } }
+    }
 
     def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
         self.system = system.lower()
+        self.dialect = dialect.lower()
         self.format = format
         self.delimiter = delimiter if delimiter != self.DEFAULT_DELIMITER else self.__set_default_delimiter()
         self.sandhi = sandhi if sandhi != self.DEFAULT_SANDHI else self.__set_default_sandhi()
@@ -136,43 +141,78 @@ class Converter(object):
         # Dialect
         self.sandhi_conversion = {'1':'7','7':'3','3':'2','2':'1','5':'7','p4':'p8','t4':'t8','k4':'k8','h4':'2','p8':'p4','t8':'t4','k8':'k4','h8':'3'}
         self.a_sandhi = {'1':'7','2':'1','3':'1','5':'7','p4':'p8','t4':'t8','k4':'k8','h4':'1','p8':'p4','t8':'t4','k8':'k4','h8':'7'}
-        class WordDict:
-            def __init__(self, word_dict, dialect):
-                self.word_dict = word_dict
+
+        class PronsDictProxy:
+            def __init__(self, prons_dict, dialect, singapore_prons):
+                self.prons_dict = prons_dict
                 self.dialect = dialect
+                self.singapore_prons = singapore_prons
+
+            def __getitem__(self, key):
+                if key in self.singapore_prons and self.dialect == 'singapore':
+                    return self.singapore_prons[key]
+                return self.prons_dict[key]
+
+            def get(self, key, default=None):
+                if key in self.singapore_prons and self.dialect == 'singapore':
+                    return self.singapore_prons.get(key, default)
+                return self.prons_dict.get(key, default)
+
+        class WordDict:
+            def __init__(self, word_dict, prons_dict, dialect, singapore_words):
+                self.word_dict = word_dict
+                self.prons_dict = prons_dict
+                self.dialect = dialect
+                self.singapore_words = singapore_words
 
             def __getitem__(self, key):
                 value = self.word_dict.get(key)
-                if value:
-                    if self.dialect == 'south':
-                        return value
+                if not value or self.dialect == 'south':
+                    return value
+                parts = [s for s in re.split('(--|-)', value.lower()) if s]
+                variations = {char: {variation.split('/')[0]: variation.split('/')[1] if len(variation.split('/')) > 1 else variation.split('/')[0] for variation in self.prons_dict.get(char, [])} for char in key}
+
+                if self.dialect == 'singapore':
+                    substrings = set(
+                        key[i:j+1]
+                        for i in range(len(key))
+                        for j in range(i, len(key))
+                    )
+                    for substring in substrings:
+                        if substring in self.singapore_words:
+                            for char, mappings in self.singapore_words[substring].items():
+                                if char in variations:
+                                    variations[char].update(mappings)
+                    value = ''.join(variations.get(char, {}).get(char, char) for char in value)
+
+                new_parts = []
+                char_index = 0
+                for part in parts:
+                    if part in ['--', '-']:
+                        new_parts.append(part)
                     else:
-                        parts = [s for s in re.split('(--|-)', value.lower()) if s]
-                        variations = {char: {variation.split('/')[0]: variation.split('/')[1] if len(variation.split('/')) > 1 else variation.split('/')[0] for variation in prons_dict[char]} for char in key}
-                        new_parts = []
-                        char_index = 0
-                        for part in parts:
-                            if part in ['--', '-']:
-                                new_parts.append(part)
-                            else:
-                                char = key[char_index]
-                                if char in variations and part in variations[char]:
-                                    new_parts.append(variations[char][part])
-                                else:
-                                    new_parts.append(part)
-                                char_index += 1
-                        return ''.join([new_parts[0].capitalize() if value[0].isupper() else new_parts[0]] + new_parts[1:])
-                return value
+                        char = key[char_index]
+                        if char in variations and part in variations[char]:
+                            new_parts.append(variations[char][part])
+                        else:
+                            new_parts.append(part)
+                        char_index += 1
+                result = ''.join(new_parts)
+                return result.capitalize() if value[0].isupper() else result
 
             def __contains__(self, key):
                 return key in self.word_dict
-        
-        self.word_dict = WordDict(word_dict, dialect)
-        if dialect == 'north':
+
+        self.word_dict = WordDict(word_dict, PronsDictProxy(prons_dict, dialect, self.__singapore_prons), dialect, self.__singapore_words)
+
+        if dialect == 'north' or dialect == 'singapore':
             self.sandhi_conversion.update({'5':'3'})
             if self.system == 'ipa':
                 self.convert.update({'o':'o'})
-                self.tones = ['','⁵⁵','⁵¹','²¹','³²','²⁴','','³³','⁴']
+                if dialect == 'north':
+                    self.tones = ['','⁵⁵','⁵¹','²¹','³²','²⁴','','³³','⁴']
+                else:
+                    self.tones = ['','⁴⁴','⁴²','²¹','³²','²⁴','','²²','⁴']
 
 
     ### Interface functions
@@ -322,13 +362,17 @@ class Converter(object):
             if self.convert_non_cjk and result_list[i+1][0].startswith('--') or result_list[i+1][0] in self.__suffixes:
                 result_list[i] = (result_list[i][0], False)
         return result_list
+    
+    # Helper to convert Taiwanese pronunciation to Singaporean
+    def __convert_variant(self, input):
+        return input.replace('ing', 'eng') if self.dialect == 'singapore' else input
 
 
     ### Tai-lo to other transliteration systems converting
 
     # Helper to convert syllable from Tai-lo to Tai-lo
     def __tailo_to_tailo(self, input):
-        input = '-'.join(self.__get_mark_tone(nt, self.placement, self.tones) for nt in self.__get_number_tones(input))
+        input = '-'.join(self.__get_mark_tone(self.__convert_variant(nt), self.placement, self.tones) for nt in self.__get_number_tones(input))
         return input.replace(self.suffix_token, '--')
 
 
@@ -336,7 +380,7 @@ class Converter(object):
     def __tailo_to_poj(self, input):
         number_tones = self.__get_number_tones(input)
         input = '-'.join(
-            self.__get_mark_tone(self.__replacement_tool(self.convert, nt), self.placement, self.tones) 
+            self.__get_mark_tone(self.__replacement_tool(self.convert, self.__convert_variant(nt)), self.placement, self.tones) 
             for nt in number_tones
         )
         return input.replace(self.suffix_token, '--')
@@ -346,7 +390,7 @@ class Converter(object):
     def __tailo_to_zhuyin(self, input):
         output = []
         for nt in self.__get_number_tones((input[0].lower(), input[1])):
-            nt = self.__replacement_tool(self.convert, nt).replace(self.suffix_token, '')
+            nt = self.__replacement_tool(self.convert, self.__convert_variant(nt)).replace(self.suffix_token, '')
             if len(nt) > 2 and nt[-2] == 'ㄋ':
                 nt = nt[:-2] + 'ㄣ' + nt[-1]
             if self.format != 'number':
@@ -357,7 +401,7 @@ class Converter(object):
 
     # Helper to convert syllable from Tai-lo to TLPA
     def __tailo_to_tlpa(self, input):
-        input = '-'.join(self.__replacement_tool(self.convert, nt) for nt in self.__get_number_tones(input))
+        input = '-'.join(self.__replacement_tool(self.convert, self.__convert_variant(nt)) for nt in self.__get_number_tones(input))
         return input.replace(self.suffix_token, '')
 
 
@@ -365,7 +409,7 @@ class Converter(object):
     def __tailo_to_pingyim(self, input):
         output = []
         for nt in self.__get_number_tones(input):
-            replaced = self.__replacement_tool(self.convert, nt)
+            replaced = self.__replacement_tool(self.convert, self.__convert_variant(nt))
             if replaced[0] in ['i', 'I']: # Initial i
                 replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower())
             if replaced[0] in ['u', 'U']: # Initial u
@@ -392,9 +436,9 @@ class Converter(object):
     def __tailo_to_ti(self, input):
         number_tones = [nt[:-2] + 'or' + nt[-1] if nt[-2] == 'o' else nt for nt in self.__get_number_tones(input)]
         input = '-'.join(
-            self.__get_mark_tone(self.__replacement_tool(self.convert, nt), self.placement, self.tones) 
+            self.__get_mark_tone(self.__replacement_tool(self.convert, self.__convert_variant(nt)), self.placement, self.tones) 
             if self.format != 'number' 
-            else self.__replacement_tool(self.convert, nt) 
+            else self.__replacement_tool(self.convert, self.__convert_variant(nt)) 
             for nt in number_tones
         )
         return input.replace(self.suffix_token, '--')
@@ -404,7 +448,7 @@ class Converter(object):
     def __tailo_to_ipa(self, input):
         output = []
         for nt in self.__get_number_tones((input[0], input[1])):
-            nt = self.__replacement_tool(self.convert, nt).replace(self.suffix_token, '')
+            nt = self.__replacement_tool(self.convert, self.__convert_variant(nt)).replace(self.suffix_token, '')
             if 'ŋ' in nt:
                 if len(nt) > 2:
                     if all(c.lower() not in 'aeioɔu' for c in nt[:nt.index('ŋ')]) and nt.index('ŋ') != 0:
@@ -413,7 +457,7 @@ class Converter(object):
                     nt = nt.replace('ŋ', 'ŋ̍')
             if len(nt) == 2 and nt[0] == 'm':
                 nt = 'm̩' + nt[-1]
-            nt = self.__replacement_tool(self.convert2, nt)
+            nt = self.__replacement_tool(self.convert2, self.__convert_variant(nt))
             if self.format != 'number':
                 nt = ''.join(self.tones[int(t)] if t.isnumeric() else t for t in nt)
             output.append(unicodedata.normalize('NFC', nt))
