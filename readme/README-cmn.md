@@ -132,10 +132,11 @@ c.get(input)
 
 * `south` (預設) - 發音更接近[漳州話][zhangzhou-wiki]
 * `north` - 發音更接近[泉州話][quanzhou-wiki]
+* `singapore` - 帶有[新加坡特色][singapore-wiki]的泉州話發音
 
-| 文本   | south         | north         |
-| ------ | ------------- | ------------- |
-| 五月節 | Gōo-gue̍h-tseh | Gōo-ge̍h-tsueh |
+| 文本           | south                       | north                       | singapore                  |
+| -------------- | --------------------------- | --------------------------- | -------------------------- |
+| 五月節我啉咖啡 | Gōo-gue̍h-tseh guá lim ka-pi | Gōo-ge̍h-tsueh guá lim ka-pi | Gōo-ge̍h-tsueh uá lim ko-pi |
 
 #### Format
 
@@ -185,9 +186,9 @@ c.get(input)
 
 變調規則也會根據所選擇的方言而變化。
 
-| 文本 | 沒有變調 | south   | north   |
-| ---- | -------- | ------- | ------- |
-| 台灣 | Tâi-uân  | Tāi-uân | Tài-uân |
+| 文本 | 沒有變調 | south   | north / singapore |
+| ---- | -------- | ------- | ----------------- |
+| 台灣 | Tâi-uân  | Tāi-uân | Tài-uân           |
 
 #### Punctuation
 
@@ -278,6 +279,10 @@ c.get("我欲用箸食魚")
 c = Converter(dialect='north')
 c.get("我欲用箸食魚")
 >> Guá bueh īng tū tsia̍h hû
+
+c = new Converter({ dialect: 'singapore' });
+c.get("我欲用箸食魚");
+>> Uá bueh ēng tū tsia̍h hû
 
 ## Format
 c = Converter() # 在 Tailo 中，format 預設值: mark
@@ -446,5 +451,6 @@ is_cjk('我食pháng')
 [ipa-wiki]: https://zh.wikipedia.org/zh-tw/%E5%9C%8B%E9%9A%9B%E9%9F%B3%E6%A8%99
 [zhangzhou-wiki]: https://zh.wikipedia.org/zh-tw/%E6%BC%B3%E5%B7%9E%E8%AF%9D
 [quanzhou-wiki]: https://zh.wikipedia.org/zh-tw/%E6%B3%89%E5%B7%9E%E8%AF%9D
+[singapore-wiki]: https://zh.wikipedia.org/wiki/%E6%96%B0%E5%8A%A0%E5%9D%A1%E7%A6%8F%E5%BB%BA%E8%A9%B1
 [nltk-tokenize]: https://nltk.org/api/nltk.tokenize.html
 [sandhi-wiki]: https://zh.wikipedia.org/zh-tw/%E8%87%BA%E7%81%A3%E8%A9%B1#%E9%80%A3%E8%AE%80%E8%AE%8A%E8%AA%BF:~:text=%E3%80%82%5B144%5D-,%E9%80%A3%E8%AE%80%E8%AE%8A%E8%AA%BF,-%E9%80%A3%E8%AE%80%E8%AE%8A%E8%AA%BF
