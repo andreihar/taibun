@@ -6,7 +6,7 @@ hanji_sentence = ["太空朋友，恁好！恁食飽未"]
 hanji_a = ["廟尪仔","翁某仔","肉幼仔","花搭仔","微微仔","慢慢仔","尾蝶仔","佇厝仔頂我咧行","塗跤清氣矣","阮佇厝外攏講台語","佇公園內睏","遮有車禍無","這隻狗仔不時會吠"]
 
 def test_default():
-	test_data = [
+    test_data = [
         (["khai-sí","khá-khì","kià-huê/kià-hê","bah-pau","hip-au","hit-hō","khak-sìn","lâm-bīn","bī-lâi","bi̍h-tshio̍h","gia̍p-bū","hua̍t-kim","ha̍k-sing"], "Tailo"),
         (["khai-sí","khá-khì","kià-hôe/kià-hê","bah-pau","hip-au","hit-hō","khak-sìn","lâm-bīn","bī-lâi","bi̍h-chhio̍h","gia̍p-bū","hoa̍t-kim","ha̍k-seng"], "POJ"),
         (["ㄎㄞ ㄒㄧˋ","ㄎㄚˋ ㄎㄧ˪","ㄍㄧㄚ˪ ㄏㄨㆤˊ/ㄍㄧㄚ˪ ㄏㆤˊ","ㆠㄚㆷ ㄅㄠ","ㄏㄧㆴ ㄠ","ㄏㄧㆵ ㄏㄜ˫","ㄎㄚㆶ ㄒㄧㄣ˪","ㄌㆰˊ ㆠㄧㄣ˫","ㆠㄧ˫ ㄌㄞˊ","ㆠㄧㆷ˙ ㄑㄧㄜㆷ˙","ㆣㄧㄚㆴ˙ ㆠㄨ˫","ㄏㄨㄚㆵ˙ ㄍㄧㆬ","ㄏㄚㆶ˙ ㄒㄧㄥ"], "Zhuyin"),
@@ -15,9 +15,9 @@ def test_default():
         (["kāi-sì","ka-kî","già-huĕ/già-hĕ","bhà-bau","hip-au","hit-hōr","kak-sîn","lām-bhīn/lâm-bhīn","bhî-lăi","bhî-cioh","ghiāp-bhū","huāt-gim","hāk-sing"], "Tongiong"),
         (["kʰai⁴⁴ ɕi⁵³/kʰai⁵⁵ ɕi⁵¹","kʰa⁵³ kʰi¹¹/kʰa⁵¹ kʰi²¹","kia¹¹ hue²⁵/kia²¹ he²⁴","baʔ²¹ pau⁴⁴/baʔ³² pau⁵⁵","hip̚²¹ au⁴⁴/hip̚³² au⁵⁵","hit̚²¹ hə²²/hit̚³² ho³³","kʰak̚²¹ ɕin¹¹/kʰak̚³² ɕin²¹","lam²⁵ bin²²/lam²⁴ bin³³","bi²² lai²⁵/bi³³ lai²⁴","biʔ⁵ tɕʰiəʔ⁵/biʔ⁴ tɕʰioʔ⁴","giap̚⁵ bu²²/giap̚⁴ bu³³","huat̚⁵ kim⁴⁴/huat̚⁴ kim⁵⁵","hak̚⁵ ɕiɪŋ⁴⁴/hak̚⁴ ɕiɪŋ⁵⁵"], "IPA")
     ]
-	for transl, system in test_data:
-		data = list(zip(hanji_data, transl))
-		checker(data, Converter(system=system, punctuation='none'), Converter(system=system, dialect="north", punctuation='none'))
+    for transl, system in test_data:
+        data = list(zip(hanji_data, transl))
+        checker(data, Converter(system=system, punctuation='none'), Converter(system=system, dialect="north", punctuation='none'))
 
 def test_auto():
     test_data = [
