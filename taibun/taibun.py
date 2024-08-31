@@ -167,8 +167,7 @@ class Converter(object):
 
             def __getitem__(self, key):
                 value = self.word_dict.get(key)
-                if not value or self.dialect == 'south':
-                    return value
+                if not value or self.dialect == 'south': return value
                 parts = [s for s in re.split('(--|-)', value.lower()) if s]
                 variations = {char: {variation.split('/')[0]: variation.split('/')[1] if len(variation.split('/')) > 1 else variation.split('/')[0] for variation in self.prons_dict.get(char, [])} for char in key}
 
@@ -181,21 +180,17 @@ class Converter(object):
                     for substring in substrings:
                         if substring in self.singapore_words:
                             for char, mappings in self.singapore_words[substring].items():
-                                if char in variations:
-                                    variations[char].update(mappings)
+                                variations.setdefault(char, {}).update(mappings)
                     value = ''.join(variations.get(char, {}).get(char, char) for char in value)
 
                 new_parts = []
                 char_index = 0
                 for part in parts:
-                    if part in ['--', '-']:
+                    if part in ['--','-']:
                         new_parts.append(part)
                     else:
                         char = key[char_index]
-                        if char in variations and part in variations[char]:
-                            new_parts.append(variations[char][part])
-                        else:
-                            new_parts.append(part)
+                        new_parts.append(variations.get(char, {}).get(part, part))
                         char_index += 1
                 result = ''.join(new_parts)
                 return result.capitalize() if value[0].isupper() else result
@@ -234,16 +229,16 @@ class Converter(object):
             word = (self.word_dict[word[0]],) + word[1:]
         elif not self.convert_non_cjk or word[0] in ".,!?\"#$%&()*+/:;<=>@[\\]^`{|}~\t。．，、！？；：（）［］【】「」“”":
             return word[0]
-        word = self.conversion_func(word).replace('---', '--')
-        if self.format == 'number' and self.system in ['tailo', 'poj']:
+        word = self.conversion_func(word).replace('---','--')
+        if self.format == 'number' and self.system in ['tailo','poj']:
             word = self.__mark_to_number(word)
         if self.format == 'strip':
             if self.system == 'tlpa':
-                word = word.translate(str.maketrans('', '', ''.join(['1', '2', '3', '4', '5', '7', '8'])))
+                word = word.translate(str.maketrans('','',''.join(['1','2','3','4','5','7','8'])))
             if self.system == 'zhuyin':
-                word = word.translate(str.maketrans('', '', ''.join(['ˋ', '˪', 'ˊ', '˫', '˙'])))
+                word = word.translate(str.maketrans('','',''.join(['ˋ','˪','ˊ','˫','˙'])))
             if self.system == 'ipa':
-                word = word.translate(str.maketrans('', '', ''.join(['¹', '²', '³', '⁴', '⁵'])))
+                word = word.translate(str.maketrans('','',''.join(['¹','²','³','⁴','⁵'])))
             else: word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
         return word.replace('--', self.suffix_token).replace('-', self.delimiter).replace(self.suffix_token, '--')
 
@@ -267,10 +262,10 @@ class Converter(object):
     def __get_number_tones(self, input):
         words = self.__preprocess_word(input[0])
         number_tones = [self.__get_number_tone(w) for w in words if len(w) > 0]
-        if self.sandhi in ['auto', 'exc_last', 'incl_last'] or self.format == 'number':
+        if self.sandhi in ['auto','exc_last','incl_last'] or self.format == 'number':
             replace_with_zero = False
             number_tones = [s[:-1] + '0' if replace_with_zero or (replace_with_zero := s[-1] == '0') else s for s in number_tones]
-        if self.sandhi in ['auto', 'exc_last', 'incl_last']:
+        if self.sandhi in ['auto','exc_last','incl_last']:
             index = next((i for i, s in enumerate(number_tones) if s.startswith(self.suffix_token)), len(number_tones))
             if len(number_tones) != index and len(number_tones) > 1:
                 number_tones = self.__tone_sandhi(number_tones[:index], False) + number_tones[index:]
@@ -287,7 +282,7 @@ class Converter(object):
 
     # Helper to convert word from Tai-lo to number
     def __mark_to_number(self, input):
-        input = input.replace('--', '-'+self.suffix_token)
+        input = input.replace('--','-'+self.suffix_token)
         words = input.split('-')
         input = '-'.join(self.__get_number_tone(w) for w in words if len(w) > 0)
         return input.replace(self.suffix_token, '--')
@@ -295,7 +290,7 @@ class Converter(object):
 
     # Helper to convert syllable from Tai-lo diacritic tones to number tones
     def __get_number_tone(self, input):
-        finals = ['p', 't', 'k', 'h']
+        finals = ['p','t','k','h']
         lower_input = input.lower()
         if re.search("á|é|í|ó|ú|ḿ|ńg|́", lower_input): input += '2'
         elif re.search("à|è|ì|ò|ù|m̀|ǹg|̀", lower_input): input += '3'
@@ -304,7 +299,7 @@ class Converter(object):
         elif re.search('̍', lower_input): input += '8'
         elif lower_input[-1] in finals: input += '4'
         else: input += '1'
-        if input.startswith(self.suffix_token) and (input[-2:] == 'h4' or self.sandhi in ['auto', 'exc_last', 'incl_last'] or self.format == 'number'):
+        if input.startswith(self.suffix_token) and (input[-2:] == 'h4' or self.sandhi in ['auto','exc_last','incl_last'] or self.format == 'number'):
             input = input[:-1] + '0'
         input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
         return input
@@ -312,7 +307,7 @@ class Converter(object):
 
     # Helper to break down a word into syllables for conversion
     def __preprocess_word(self, word):
-        return word.replace('--', '-'+self.suffix_token).split('-')
+        return word.replace('--','-'+self.suffix_token).split('-')
 
 
     # Helper to convert syllable from Tai-lo number tones to diacritic tones
@@ -347,15 +342,12 @@ class Converter(object):
         }
         result_list = []
         for i, word in enumerate(input):
-            if i < len(input) - 1 and input[i+1] in self.__location:
-                result = False
-            elif word in self.__location or word in self.__no_sandhi:
+            if (i < len(input) - 1 and input[i+1] in self.__location) or word in self.__location or word in self.__no_sandhi:
                 result = False
             elif len(word) > 1 and word[-1] == "仔":
                 result = "a suff"
             else:
-                last = i < len(input) - 1
-                result = last if self.convert_non_cjk else last and is_cjk(input[i+1])
+                result = (i < len(input) - 1) if self.convert_non_cjk else (i < len(input) - 1 and is_cjk(input[i+1]))
             result_list.append((word, result))
         result_list = sandhi_logic.get(self.sandhi, result_list)
         for i in range(len(result_list) - 2, -1, -1):
@@ -365,7 +357,7 @@ class Converter(object):
     
     # Helper to convert Taiwanese pronunciation to Singaporean
     def __convert_variant(self, input):
-        return input.replace('ing', 'eng') if self.dialect == 'singapore' else input
+        return input.replace('ing','eng') if self.dialect == 'singapore' else input
 
 
     ### Tai-lo to other transliteration systems converting
@@ -410,16 +402,16 @@ class Converter(object):
         output = []
         for nt in self.__get_number_tones(input):
             replaced = self.__replacement_tool(self.convert, self.__convert_variant(nt))
-            if replaced[0] in ['i', 'I']: # Initial i
-                replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a', 'u', 'o'] else replaced.lower())
-            if replaced[0] in ['u', 'U']: # Initial u
-                replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 and replaced[1] in ['a', 'i', 'e', 'o'] else replaced.lower())
-            if nt[0] in ['m', 'M']: # Syllabic consonant m
+            if replaced[0] in ['i','I']: # Initial i
+                replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a','u','o'] else replaced.lower())
+            if replaced[0] in ['u','U']: # Initial u
+                replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 and replaced[1] in ['a','i','e','o'] else replaced.lower())
+            if nt[0] in ['m','M']: # Syllabic consonant m
                 if len(nt) == 2:
                     replaced = nt[0] + nt[-1]
                 elif nt[1] == 'n':
                     replaced = nt[0] + replaced[3:]
-            if nt[-3:-1] in ['ng', 'Ng']: # Coda ng
+            if nt[-3:-1] in ['ng','Ng']: # Coda ng
                 replaced = replaced[:-4] + nt[-3:-1] + nt[-1]
             if 'bbn' in replaced[-4:-1]: # Final m
                 replaced = replaced.replace('bbn', 'm', 1)
@@ -452,9 +444,9 @@ class Converter(object):
             if 'ŋ' in nt:
                 if len(nt) > 2:
                     if all(c.lower() not in 'aeioɔu' for c in nt[:nt.index('ŋ')]) and nt.index('ŋ') != 0:
-                        nt = nt.replace('ŋ', 'ŋ̍')
+                        nt = nt.replace('ŋ','ŋ̍')
                 elif len(nt) == 2:
-                    nt = nt.replace('ŋ', 'ŋ̍')
+                    nt = nt.replace('ŋ','ŋ̍')
             if len(nt) == 2 and nt[0] == 'm':
                 nt = 'm̩' + nt[-1]
             nt = self.__replacement_tool(self.convert2, self.__convert_variant(nt))
