@@ -1,10 +1,12 @@
-def checker(array, general_converter, north_converter):
+def checker(self, array, general_converter, north_converter):
     for word in array:
         hanji, transl = word
         transl = transl.strip().split('/')
-        assert transl[0] == general_converter.get(hanji)
+        result = general_converter.get(hanji)
+        self.assertEqual(transl[0], result, f"hanji: {hanji}, expected: {transl[0]}, got: {result}")
         if len(transl) > 1:
-            assert transl[1] == north_converter.get(hanji)
+            result_north = north_converter.get(hanji)
+            self.assertEqual(transl[1], result_north, f"hanji: {hanji}, expected (north): {transl[1]}, got: {result_north}")
 
 bilabial_c = ['啡','波','毛','麻']
 alveolar_c = ['地','唾','早','厝','思','耐','如','柳']
