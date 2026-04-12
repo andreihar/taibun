@@ -1,7 +1,8 @@
 import os
-import msgpack
 import re
 import unicodedata
+
+import msgpack
 
 data_dir = os.path.join(os.path.dirname(__file__), "data")
 with open(os.path.join(data_dir, "words.msgpack"), 'rb') as f:
@@ -70,7 +71,7 @@ class Converter(object):
             'tones': ['','','́','̀','','̂','̌','̄','̍','̋']
         },
         'poj': {
-            'convert': {'nng':'nng','nnh':'hⁿ','nn':'ⁿ','ts':'ch','ing':'eng','uai':'oai','uan':'oan','ik':'ek','ua':'oa','ue':'oe','oo':'o͘'},
+            'convert': {'nng':'nng','nnh':'hⁿ','nn':'ⁿ','ts':'ch','ing':'eng','uai':'oai','ik':'ek','ua':'oa','ue':'oe','oo':'o͘'},
             'placement': [f'oa{tt}h',f'oa{tt}n',f'oa{tt}ng',f'oa{tt}ⁿ',f'oa{tt}t',f'ia{tt}u',f'oe{tt}h',f'o{tt}e',f'oa{tt}i',f'u{tt}i',f'o{tt}a',f'a{tt}i',f'a{tt}u',f'ia{tt}',f'iu{tt}',f'io{tt}',f'a{tt}',f'o{tt}',f'o͘{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'mn{tt}g',f'n{tt}g',f'm{tt}'],
             'tones': ['','','́','̀','','̂','','̄','̍','']
         },
