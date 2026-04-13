@@ -83,7 +83,7 @@ class Converter(object):
             'convert': {'tsh':'ch','ts':'c'}
         },
         'pingyim': {
-            'convert': {'p4':'p4','t4':'t4','k4':'k4','h4':'h4','p8':'p8','t8':'t8','k8':'k8','h8':'h8','ainn':'nai','iunn':'niu','ann':'na','onn':'noo','enn':'ne','inn':'ni','unn':'nu','au':'ao','ph':'p','nng':'lng','tsh':'c','ng':'ggn','ts':'z','th':'t','kh':'k','ir':'i','p':'b','b':'bb','t':'d','k':'g','g':'gg','j':'zz','n':'ln','m':'bbn'},
+            'convert': {'p4':'p4','t4':'t4','k4':'k4','h4':'h4','p8':'p8','t8':'t8','k8':'k8','h8':'h8','au':'ao','ph':'p','nng':'lng','tsh':'c','ng':'ggn','ts':'z','th':'t','kh':'k','ir':'i','p':'b','b':'bb','t':'d','k':'g','g':'gg','j':'zz'},
             'placement': [f'ua{tt}i',f'ia{tt}o',f'a{tt}i',f'a{tt}o',f'oo{tt}',f'ia{tt}',f'iu{tt}',f'io{tt}',f'ua{tt}',f'ue{tt}',f'ui{tt}',f'a{tt}',f'o{tt}',f'e{tt}',f'i{tt}',f'u{tt}',f'm{tt}ggn',f'ggn{tt}',f'bbn{tt}',f'n{tt}g',f'm{tt}'],
             'tones': ['','̄','̌','̀','̄','́','','̂','́','']
         },
@@ -407,17 +407,38 @@ class Converter(object):
                 replaced = ('Y' if replaced[0] == 'I' else 'y') + (replaced[1:] if replaced[1] in ['a','u','o'] else replaced.lower())
             if replaced[0] in ['u','U']: # Initial u
                 replaced = ('W' if replaced[0] == 'U' else 'w') + (replaced[1:] if len(nt) > 2 and replaced[1] in ['a','i','e','o'] else replaced.lower())
-            if nt[0] in ['m','M']: # Syllabic consonant m
-                if len(nt) == 2:
-                    replaced = nt[0] + nt[-1]
-                elif nt[1] == 'n':
-                    replaced = nt[0] + replaced[3:]
+            if replaced[0] in ['n','N']: # Initial n
+                replaced = ('Ln' if replaced[0] == 'N' else 'ln') + replaced[1:]
+            if replaced[0] in ['m','M'] and replaced[1] in 'aeiou': # Initial m
+                replaced = ('Bbn' if replaced[0] == 'M' else 'bbn') + replaced[1:]
+            if 'nn' in replaced.lower(): # Nasalisation
+                idx = replaced.lower().find('nn')
+
+                # handle onn
+                if (
+                    idx > 0 and
+                    replaced[idx - 1] in ['o', 'O'] and
+                    (idx - 2 < 0 or replaced[idx - 2].lower() not in 'aeiou')
+                ):
+                    o_char = replaced[idx - 1]
+                    replaced = replaced[:idx - 1] + (o_char * 2) + replaced[idx:]
+                    idx += 1
+
+                replaced = replaced[:idx] + replaced[idx + 2:]
+                insert_pos = 0
+                for i in range(idx - 1, -1, -1):
+                    if replaced[i].lower() not in 'aeiou':
+                        insert_pos = i + 1
+                        break
+                replaced = replaced[:insert_pos] + 'n' + replaced[insert_pos:]
+
+            # if nt[0] in ['m','M']: # Syllabic consonant m
+            #     if len(nt) == 2:
+            #         replaced = nt[0] + nt[-1]
+            #     elif nt[1] == 'n':
+            #         replaced = nt[0] + replaced[3:]
             if nt[-3:-1] in ['ng','Ng']: # Coda ng
                 replaced = replaced[:-4] + nt[-3:-1] + nt[-1]
-            if 'bbn' in replaced[-4:-1]: # Final m
-                replaced = replaced.replace('bbn', 'm', 1)
-            if replaced[-3:-1] == 'ln': # Final n
-                replaced = replaced[:-3] + 'n' + replaced[-1]
             if self.format != 'number':
                 output.append(self.__get_mark_tone(replaced, self.placement, self.tones))
             else:
