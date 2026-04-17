@@ -55,6 +55,7 @@ Invariant: system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tong
            dialect = `south` (Zhangzhou-leaning, default), `north` (Quanzhou-leaning), `singapore` (Quanzhou-leaning with Singaporean characteristics)
            format = `mark` (diacritical), `number` (numeric), `strip` (no tones)
            delimiter = String that replaces the default delimiter
+           apostrophe = True (default for Pingyim), False
            sandhi = `auto`, `none`, `exc_last`, `incl_last`
            punctuation = `format` (Latin-style, default), `none` (preserve original)
            convert_non_cjk = True, False (default)
@@ -64,6 +65,7 @@ class Converter(object):
     suffix_token = '[ЅFFX_ТКŊ]'
     tt = '[ТŊ_ТКŊ]'
     DEFAULT_DELIMITER = object()
+    DEFAULT_APOSTROPHE = object()
     DEFAULT_SANDHI = object()
     SYSTEM_CONFIGS = {
         'tailo': {
@@ -106,11 +108,12 @@ class Converter(object):
         '咖啡': { '咖': { 'ka':'ko' } }
     }
 
-    def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
+    def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, apostrophe=DEFAULT_APOSTROPHE, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
         self.system = system.lower()
         self.dialect = dialect.lower()
         self.format = format
         self.delimiter = delimiter if delimiter != self.DEFAULT_DELIMITER else self.__set_default_delimiter()
+        self.apostrophe = apostrophe if apostrophe != self.DEFAULT_APOSTROPHE else self.__set_default_apostrophe()
         self.sandhi = sandhi if sandhi != self.DEFAULT_SANDHI else self.__set_default_sandhi()
         self.punctuation = punctuation
         self.convert_non_cjk = convert_non_cjk
@@ -142,6 +145,11 @@ class Converter(object):
         # Dialect
         self.sandhi_conversion = {'1':'7','7':'3','3':'2','2':'1','5':'7','p4':'p8','t4':'t8','k4':'k8','h4':'2','p8':'p4','t8':'t4','k8':'k4','h8':'3'}
         self.a_sandhi = {'1':'7','2':'1','3':'1','5':'7','p4':'p8','t4':'t8','k4':'k8','h4':'1','p8':'p4','t8':'t4','k8':'k4','h8':'7'}
+
+        # Apostrophe
+        if self.apostrophe:
+            syllables = ['a','ah','ai','aih','ainn','ak','am','an','ang','ann','ap','at','au','ba','bah','bai','bak','ban','bang','bat','bau','be','beh','bi','bian','biat','biau','bih','bik','bin','bing','bio','bit','biu','bo','bok','bong','boo','bu','bua','buah','buan','buat','bue','bueh','bui','bun','but','e','eh','enn','ga','gai','gak','gam','gan','gang','gau','ge','geh','gi','gia','giah','giak','giam','gian','giang','giap','giat','giau','gik','gim','gin','ging','gio','gioh','giok','giong','giu','go','gok','gong','goo','gu','gua','guan','guat','gue','gueh','gui','gun','ha','hah','hai','haih','hainn','hak','ham','han','hang','hann','hannh','hap','hat','hau','haunnh','he','heh','hi','hia','hiah','hiam','hian','hiang','hiann','hiannh','hiap','hiat','hiau','hiauh','hik','him','hin','hing','hinn','hio','hioh','hiok','hiong','hip','hit','hiu','hiunn','hm','hmh','hng','hngh','ho','hoh','hok','hong','honn','honnh','hoo','hooh','hu','hua','huah','huai','huainn','huan','huann','huat','hue','hueh','hui','huih','huinn','hun','hut','i','ia','iah','iam','ian','iang','iann','iap','iat','iau','iaunn','ik','im','in','ing','inn','io','ioh','iok','iong','ip','it','iu','iunn','ji','jia','jiah','jiam','jian','jiang','jiap','jiat','jiau','jim','jin','jio','jiok','jiong','jip','jit','jiu','ju','juah','jue','jun','ka','kah','kai','kainn','kak','kam','kan','kang','kann','kap','kat','kau','kauh','ke','keh','kenn','kha','khah','khai','khainn','khak','kham','khan','khang','khann','khap','khat','khau','khaunnh','khe','kheh','khenn','khennh','khi','khia','khiah','khiak','khiam','khian','khiang','khiap','khiat','khiau','khih','khik','khim','khin','khing','khinn','khio','khioh','khiok','khiong','khip','khit','khiu','khiunn','khng','khngh','kho','khok','khong','khoo','khu','khua','khuah','khuai','khuan','khuann','khuat','khue','khueh','khuh','khui','khuinn','khun','khut','ki','kia','kiah','kiam','kian','kiann','kiap','kiat','kiau','kih','kik','kim','kin','king','kinn','kio','kioh','kiok','kiong','kip','kiu','kiunn','kng','ko','koh','kok','kong','konn','koo','ku','kua','kuah','kuai','kuainn','kuan','kuann','kuat','kue','kueh','kui','kuih','kuinn','kun','kut','la','lah','lai','lak','lam','lan','lang','lap','lat','lau','lauh','le','leh','li','lia','liah','liam','lian','liang','liap','liat','liau','lih','lik','lim','lin','ling','lio','lioh','liok','liong','lip','lit','liu','lo','loh','lok','long','loo','looh','lop','lu','lua','luah','luan','luat','lue','lueh','luh','lui','lun','lut','m','ma','mah','mai','mau','mauh','me','meh','mi','mia','mian','miau','mih','mng','mngh','moo','mooh','mua','mue','mui','na','nah','nai','nau','nauh','ne','neh','ng','nga','ngai','ngau','nge','ngeh','ngi','ngia','ngiau','ngiauh','ngiu','ngoo','ni','nia','niau','nih','niu','nng','noo','nua','o','oh','ok','om','ong','onn','oo','ooh','pa','pah','pai','pak','pan','pang','pat','pau','pe','peh','penn','pha','phah','phai','phainn','phak','phan','phang','phann','phau','phauh','phe','pheh','phenn','phi','phiah','phiak','phian','phiang','phiann','phiat','phiau','phih','phik','phin','phing','phinn','phio','phit','phngh','pho','phoh','phok','phong','phoo','phu','phua','phuah','phuan','phuann','phuat','phue','phueh','phuh','phui','phun','phut','pi','piah','piak','pian','piang','piann','piat','piau','pih','pik','pin','ping','pinn','pio','pit','piu','png','po','poh','pok','pong','poo','pu','pua','puah','puan','puann','puat','pue','pueh','puh','pui','puinn','pun','put','sa','sah','sai','sak','sam','san','sang','sann','sannh','sap','sat','sau','se','seh','senn','si','sia','siah','siak','siam','sian','siang','siann','siap','siat','siau','sih','sik','sim','sin','sing','sinn','sio','sioh','siok','siong','sip','sit','siu','siunn','sng','so','soh','sok','som','song','soo','su','sua','suah','suainn','suan','suann','suat','sue','sueh','suh','sui','sun','sut','ta','tah','tai','tainn','tak','tam','tan','tang','tann','tap','tat','tau','tauh','te','teh','tenn','tha','thah','thai','thak','tham','than','thang','thann','thap','that','thau','the','theh','thenn','thi','thiah','thiam','thian','thiann','thiap','thiat','thiau','thih','thik','thim','thin','thing','thinn','thio','thiok','thiong','thiu','thng','tho','thoh','thok','thong','thoo','thu','thua','thuah','thuan','thuann','thuat','thue','thuh','thui','thun','thut','ti','tia','tiah','tiak','tiam','tian','tiann','tiap','tiat','tiau','tih','tik','tim','tin','ting','tinn','tio','tioh','tiok','tiong','tit','tiu','tiuh','tiunn','tng','to','toh','tok','tom','tong','too','tsa','tsah','tsai','tsainn','tsak','tsam','tsan','tsang','tsann','tsap','tsat','tsau','tse','tseh','tsenn','tsha','tshah','tshai','tshak','tsham','tshan','tshang','tshann','tshap','tshat','tshau','tshauh','tshe','tsheh','tshenn','tshi','tshia','tshiah','tshiak','tshiam','tshian','tshiang','tshiann','tshiap','tshiat','tshiau','tshih','tshik','tshim','tshin','tshing','tshinn','tshio','tshioh','tshiok','tshiong','tship','tshit','tshiu','tshiunn','tshng','tshngh','tsho','tshoh','tshok','tshong','tshoo','tshu','tshua','tshuah','tshuan','tshuang','tshuann','tshue','tshueh','tshuh','tshui','tshun','tshut','tsi','tsia','tsiah','tsiam','tsian','tsiang','tsiann','tsiap','tsiat','tsiau','tsih','tsik','tsim','tsin','tsing','tsinn','tsio','tsioh','tsiok','tsiong','tsip','tsit','tsiu','tsiuh','tsiunn','tsng','tso','tsoh','tsok','tsong','tsoo','tsu','tsua','tsuah','tsuainn','tsuan','tsuann','tsuat','tsue','tsueh','tsuh','tsui','tsun','tsut','tu','tua','tuah','tuan','tuann','tuat','tue','tuh','tui','tuinn','tun','tut','u','ua','uah','uai','uainn','uan','uang','uann','uat','ue','ueh','uh','ui','uih','uinn','un','ut']
+            self.syllables = set([self.__strip_mark(self.conversion_func((s, False))) for s in syllables])
 
         class PronsDictProxy:
             def __init__(self, prons_dict, dialect, singapore_prons):
@@ -234,13 +242,9 @@ class Converter(object):
         if self.format == 'number' and self.system in ['tailo','poj']:
             word = self.__mark_to_number(word)
         if self.format == 'strip':
-            if self.system == 'tlpa':
-                word = word.translate(str.maketrans('','',''.join(['1','2','3','4','5','7','8'])))
-            if self.system == 'zhuyin':
-                word = word.translate(str.maketrans('','',''.join(['ˋ','˪','ˊ','˫','˙'])))
-            if self.system == 'ipa':
-                word = word.translate(str.maketrans('','',''.join(['¹','²','³','⁴','⁵'])))
-            else: word = "".join(c for c in unicodedata.normalize("NFD", word) if unicodedata.category(c) != "Mn")
+            word = self.__strip_mark(word)
+        if self.delimiter == '' and self.apostrophe:
+            return self.__add_apostrophes(word)
         return word.replace('--', self.suffix_token).replace('-', self.delimiter).replace(self.suffix_token, '--')
 
 
@@ -249,6 +253,12 @@ class Converter(object):
         if self.system == 'tlpa' or self.system == 'zhuyin' or self.system == 'ipa': return ' '
         if self.system == 'pingyim': return ''
         return '-'
+    
+
+    # Helper functions to set disambiguating apostrophe according to transliteration system if wasn't explicitly defined by user
+    def __set_default_apostrophe(self):
+        if self.system == 'pingyim': return True
+        return False
 
 
     # Helper functions to set sandhi according to transliteration system if wasn't explicitly defined by user
@@ -355,7 +365,69 @@ class Converter(object):
             if self.convert_non_cjk and result_list[i+1][0].startswith('--') or result_list[i+1][0] in self.__suffixes:
                 result_list[i] = (result_list[i][0], False)
         return result_list
+
+
+    # Helper function to remove tone markings
+    def __strip_mark(self, input):
+        if self.system == 'tlpa':
+            input = input.translate(str.maketrans('','',''.join(['1','2','3','4','5','7','8'])))
+        if self.system == 'zhuyin':
+            input = input.translate(str.maketrans('','',''.join(['ˋ','˪','ˊ','˫','˙'])))
+        if self.system == 'ipa':
+            input = input.translate(str.maketrans('','',''.join(['¹','²','³','⁴','⁵'])))
+        else: input = "".join(c for c in unicodedata.normalize("NFD", input) if unicodedata.category(c) != "Mn")
+        return input
+
+
+    # Helper function to determine if an apostrophe is needed between two syllables
+    def __needs_apostrophe(self, s1, s2):
+        def normalise(s):
+            return "".join(c for c in unicodedata.normalize("NFD", s) if unicodedata.category(c) != "Mn").lower()
+        s1n = normalise(s1)
+        s2n = normalise(s2)
+
+        combined = s1n + s2n
+
+        # Case 1: merges into a valid syllable
+        if combined in self.syllables:
+            return True
+
+        # Case 2: alternative segmentation exists
+        for i in range(1, len(combined)):
+            alt1 = combined[:i]
+            alt2 = combined[i:]
+
+            if (alt1, alt2) != (s1n, s2n):
+                if alt1 in self.syllables and alt2 in self.syllables:
+                    return True
+
+        return False
+
+
+    # Helper function to add apostrophes between syllables where needed to prevent ambiguity
+    def __add_apostrophes(self, syllables):
+        def split_syllables(s):
+            return [
+                ('--' + sp if i and j == 0 else sp)
+                for i, part in enumerate(s.split('--'))
+                for j, sp in enumerate(part.split('-'))
+                if sp
+            ]
+        syllables = split_syllables(syllables)
+        result = syllables[0]
+
+        for i in range(len(syllables) - 1):
+            s1 = syllables[i]
+            s2 = syllables[i+1]
+
+            if self.__needs_apostrophe(s1, s2):
+                result += "'" + s2
+            else:
+                result += s2
+
+        return result
     
+
     # Helper to convert Taiwanese pronunciation to Singaporean
     def __convert_variant(self, input):
         return input.replace('ing','eng') if self.dialect == 'singapore' else input
