@@ -59,6 +59,7 @@ Invariant: system = `Tailo` (default), `POJ`, `Zhuyin`, `TLPA`, `Pingyim`, `Tong
            sandhi = `auto`, `none`, `exc_last`, `incl_last`
            punctuation = `format` (Latin-style, default), `none` (preserve original)
            convert_non_cjk = True, False (default)
+           output_tokens = True, False (default)
 """
 class Converter(object):
 
@@ -108,7 +109,7 @@ class Converter(object):
         '咖啡': { '咖': { 'ka':'ko' } }
     }
 
-    def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, apostrophe=DEFAULT_APOSTROPHE, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False):
+    def __init__(self, system='Tailo', dialect='south', format='mark', delimiter=DEFAULT_DELIMITER, apostrophe=DEFAULT_APOSTROPHE, sandhi=DEFAULT_SANDHI, punctuation='format', convert_non_cjk=False, output_tokens=False):
         self.system = system.lower()
         self.dialect = dialect.lower()
         self.format = format
@@ -117,6 +118,7 @@ class Converter(object):
         self.sandhi = sandhi if sandhi != self.DEFAULT_SANDHI else self.__set_default_sandhi()
         self.punctuation = punctuation
         self.convert_non_cjk = convert_non_cjk
+        self.output_tokens = output_tokens
         self.__declarations(dialect.lower())
 
 
@@ -224,9 +226,11 @@ class Converter(object):
     # Convert tokenised text into specified transliteration system
     def get(self, input):
         converted = Tokeniser(False).tokenise(input)
-        converted = ' '.join(self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(converted)).strip()
+        converted = [self.__convert_tokenised(i).strip() for i in self.__tone_sandhi_position(converted)]
         if self.punctuation == 'format':
-            return self.__format_text(self.__format_punctuation_western(converted[0].upper() + converted[1:]))
+            return self.__format_punctuation_western(converted)
+        if self.output_tokens:
+            return converted
         return self.__format_punctuation_cjk(converted)
 
 
@@ -548,12 +552,15 @@ class Converter(object):
 
     # Helper to convert Chinese punctuation to Latin punctuation with appropriate spacing
     def __format_punctuation_western(self, input):
-        punctiation_mapping = {'。':'.', '．':' ', '，':',', '、':',', '！':'!', '？':'?', '；':';', '：':':',
+        punctuation_mapping = {'。':'.', '．':' ', '，':',', '、':',', '！':'!', '？':'?', '；':';', '：':':',
                                '）':')', '］':']', '】':']', '（':'(', '［':'[', '【':'['}
+        input = [punctuation_mapping.get(token, token) for token in input]
+        input = self.__format_text(input)
+        if self.output_tokens:
+            return input
+        input = ' '.join(input).strip()
         left_space = {'.':'.', ',':',', '!':'!', '?':'?', ';':';', ':':':', ')':')', ']':']', '」':'"', '”':'"', '--':'--'}
         right_space = {'(':'(', '[':'[', '「':'"', '“':'"'}
-        for punct_ch, punct_lat in punctiation_mapping.items():
-            input = input.replace(punct_ch, punct_lat)
         for left, space in left_space.items():
             input = input.replace(' ' + left, space).replace(left, space)
         for right, space in right_space.items():
@@ -563,6 +570,7 @@ class Converter(object):
 
     # Helper to restore original CJK punctuation with appropriate spacing
     def __format_punctuation_cjk(self, input):
+        input = ' '.join(input).strip()
         left_space = ['。', '．', '，', '、', '！', '？', '；', '：', '）', '］', '】', '」', '”', '--']
         right_space = ['（', '［', '【', '「', '“']
         for punct in left_space:
@@ -573,11 +581,13 @@ class Converter(object):
 
 
     # Helper to capitalise text in according to punctuation
-    def __format_text(self, input):
-        punc_filter = re.compile(r"([.!?]\s*)")
-        split_with_punc = punc_filter.split(input)
-        split_with_punc = [i[0].upper() + i[1:] if len(i) > 1 else i for i in split_with_punc]
-        return "".join(split_with_punc)
+    def __format_text(self, tokens):
+        capitalise_next = True
+        for i, t in enumerate(tokens):
+            if capitalise_next and t:
+                tokens[i] = t[0].upper() + t[1:]
+            capitalise_next = t in {'.', '!', '?'}
+        return tokens
 
 
 """
