@@ -503,12 +503,6 @@ class Converter(object):
                         insert_pos = i + 1
                         break
                 replaced = replaced[:insert_pos] + 'n' + replaced[insert_pos:]
-
-            # if nt[0] in ['m','M']: # Syllabic consonant m
-            #     if len(nt) == 2:
-            #         replaced = nt[0] + nt[-1]
-            #     elif nt[1] == 'n':
-            #         replaced = nt[0] + replaced[3:]
             if nt[-3:-1] in ['ng','Ng']: # Coda ng
                 replaced = replaced[:-4] + nt[-3:-1] + nt[-1]
             if self.format != 'number':
