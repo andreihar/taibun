@@ -11,11 +11,12 @@ apostrophe = True
 sandhi = 'auto'
 punctuation = 'format'
 convert_non_cjk = True
+output_tokens = True
 
 with open('output.txt', 'w', encoding='utf-8') as f:
     for i, s in enumerate(system):
-        c_south = Converter(system=s, format=format, delimiter=delimiter, apostrophe=apostrophe, sandhi=sandhi, punctuation=punctuation, convert_non_cjk = convert_non_cjk)
-        c_north = Converter(system=s, dialect="north", format=format, delimiter=delimiter, apostrophe=apostrophe, sandhi=sandhi, punctuation=punctuation, convert_non_cjk = convert_non_cjk)
+        c_south = Converter(system=s, format=format, delimiter=delimiter, apostrophe=apostrophe, sandhi=sandhi, punctuation=punctuation, convert_non_cjk=convert_non_cjk, output_tokens=output_tokens)
+        c_north = Converter(system=s, dialect="north", format=format, delimiter=delimiter, apostrophe=apostrophe, sandhi=sandhi, punctuation=punctuation, convert_non_cjk=convert_non_cjk, output_tokens=output_tokens)
         transl = []
         for hanji in hanji_data:
             south = c_south.get(hanji)

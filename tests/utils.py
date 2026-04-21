@@ -1,12 +1,36 @@
 def checker(self, array, general_converter, north_converter):
-    for word in array:
-        hanji, transl = word
-        transl = transl.strip().split('/')
+    for hanji, transl in array:
+
+        # Case 1: "general/north"
+        if isinstance(transl, str):
+            parts = transl.strip().split('/')
+            expected_general = parts[0].strip()
+            expected_north = parts[1].strip() if len(parts) > 1 else None
+
+        # Case 2: [general, north]
+        elif isinstance(transl, list):
+            expected_general = transl[0]
+            expected_north = transl[1] if len(transl) > 1 else None
+
+        else:
+            raise TypeError(f"Unsupported transl format: {type(transl)}")
+
+        # Test general
         result = general_converter.get(hanji)
-        self.assertEqual(transl[0], result, f"hanji: {hanji}, expected: {transl[0]}, got: {result}")
-        if len(transl) > 1:
+        self.assertEqual(
+            expected_general,
+            result,
+            f"hanji: {hanji}, expected: {expected_general}, got: {result}"
+        )
+
+        # Test north if present
+        if expected_north is not None:
             result_north = north_converter.get(hanji)
-            self.assertEqual(transl[1], result_north, f"hanji: {hanji}, expected (north): {transl[1]}, got: {result_north}")
+            self.assertEqual(
+                expected_north,
+                result_north,
+                f"hanji: {hanji}, expected (north): {expected_north}, got: {result_north}"
+            )
 
 bilabial_c = ['啡','波','毛','麻']
 alveolar_c = ['地','唾','早','厝','思','耐','如','柳']
