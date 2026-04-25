@@ -54,6 +54,7 @@ Includes word tokeniser for Taiwanese Hokkien.
             <li><a href="#dialect">Dialect</a></li>
             <li><a href="#format">Format</a></li>
             <li><a href="#delimiter">Delimiter</a></li>
+            <li><a href="#apostrophe">Apostrophe</a></li>
             <li><a href="#sandhi">Sandhi</a></li>
             <li><a href="#punctuation">Punctuation</a></li>
             <li><a href="#convert-non-cjk">Convert non-CJK</a></li>
@@ -163,6 +164,22 @@ Default value depends on the chosen `system`:
 | text | '-'     | ''     | ' '     |
 | ---- | ------- | ------ | ------- |
 | 台灣 | Tâi-uân | Tâiuân | Tâi uân |
+
+#### Apostrophe
+
+`apostrophe` Boolean - controls whether apostrophes are inserted to disambiguate syllable boundaries when no delimiter is used. When delimiter is set to `''`, adjacent syllables may become ambiguous when written together. Apostrophes can be inserted to explicitly separate syllables and prevent misreading. This option has no effect when a non-empty delimiter is used.
+
+`True` - insert apostrophes where necessary to clarify syllable boundaries
+`False` - do not insert apostrophes
+
+Default value depends on the chosen `system`:
+
+* `True` - for `Pingyim`
+* `False` - for `Tailo`, `POJ`, `Tongiong`, `Zhuyin`, `TLPA`, `IPA`
+
+| text | True   | False |
+| ---- | ------ | ----- |
+| 囡仔 | Ggǐn'ǎ | Ggǐnǎ |
 
 #### Sandhi
 
@@ -280,7 +297,7 @@ c = Converter(dialect='north')
 c.get("我欲用箸食魚")
 >> Guá bueh īng tū tsia̍h hû
 
-c = new Converter({ dialect: 'singapore' });
+c = Converter(dialect='singapore');
 c.get("我欲用箸食魚");
 >> Uá bueh ēng tū tsia̍h hû
 
@@ -305,6 +322,15 @@ c.get("先生講，學生恬恬聽。")
 c = Converter(system='Pingyim', delimiter='-')
 c.get("先生講，學生恬恬聽。")
 >> Siān-snī gǒng, hág-sīng diâm-diâm tinā.
+
+## Apostrophe
+c = Converter(delimiter='') # for Tailo, apostrophe False by default
+c.get("太空朋友")
+>> Thàikhong pîngiú
+
+c = Converter(delimiter='', apostrophe=True)
+c.get("太空朋友")
+>> Thàikhong pîng'iú
 
 ## Sandhi
 c = Converter() # for Tailo, sandhi none by default
