@@ -164,6 +164,22 @@ c.get(input)
 | ---- | ------- | ------ | ------- |
 | 台灣 | Tâi-uân | Tâiuân | Tâi uân |
 
+#### Apostrophe
+
+`apostrophe` Boolean - 控制佇未使用分隔符號時是無插入撇號來解散音節邊界歧義。當分隔符號設定為 `''` 時，相倚音節連寫可能會產生歧義。會使插入撇號來明確分隔音節，防止誤讀。當使用非空分隔符號時，這選項無效。
+
+`True` - 著愛時加上撇號以明確音節邊界
+`False` - 莫加撇號
+
+預設值看所選的 `system` 決定:
+
+* `True` - 對著 `Pingyim`
+* `False` - 對著 `Tailo`, `POJ`, `Tongiong`, `Zhuyin`, `TLPA`, `IPA`
+
+| 文本 | True   | False |
+| ---- | ------ | ----- |
+| 囡仔 | Ggǐn'ǎ | Ggǐnǎ |
+
 #### Sandhi
 
 `sandhi` String - 用[台語變調規則][sandhi-wiki]。
@@ -211,6 +227,18 @@ c.get(input)
 | 文本      | False                   | True                    |
 | --------- | ----------------------- | ----------------------- |
 | 我食pháng | ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ pháng | ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ ㄆㄤˋ |
+
+#### Output Tokens
+
+`output_tokens` Boolean - 控制輸出是以分單字元素列單的形式傳回，抑是以孤項格式化字串的形式傳回。
+
+* `True` - 轉換後回傳詞元列單。
+* `False` (預設) - 傳回格式化後的句子字串。
+
+| 文本         | False           | True                              |
+| ------------ | --------------- | --------------------------------- |
+| 朋友，你好！ | Pîng-iú, lí hó! | ['Pîng-iú', ',', 'lí', 'hó', '!'] |
+
 
 ### Tokeniser
 
@@ -280,8 +308,8 @@ c = Converter(dialect='north')
 c.get("我欲用箸食魚")
 >> Guá bueh īng tū tsia̍h hû
 
-c = new Converter({ dialect: 'singapore' });
-c.get("我欲用箸食魚");
+c = Converter(dialect='singapore')
+c.get("我欲用箸食魚")
 >> Uá bueh ēng tū tsia̍h hû
 
 ## Format
@@ -305,6 +333,15 @@ c.get("先生講，學生恬恬聽。")
 c = Converter(system='Pingyim', delimiter='-')
 c.get("先生講，學生恬恬聽。")
 >> Siān-snī gǒng, hág-sīng diâm-diâm tinā.
+
+## Apostrophe
+c = Converter(delimiter='') # 佇 Tailo 中, apostrophe 預設值: False
+c.get("太空朋友")
+>> Thàikhong pîngiú
+
+c = Converter(delimiter='', apostrophe=True)
+c.get("太空朋友")
+>> Thàikhong pîng'iú
 
 ## Sandhi
 c = Converter() # 佇 Tailo 中，sandhi 預設值: none
@@ -340,6 +377,15 @@ c.get("我食pháng")
 c = Converter(system='Zhuyin', convert_non_cjk=True)
 c.get("我食pháng")
 >> ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ ㄆㄤˋ
+
+## Output Tokens
+c = Converter() # convert_non_cjk 預設值: False
+c.get("太空朋友，恁好！恁食飽未？")
+>> Thài-khong pîng-iú, lín-hó! Lín tsia̍h-pá buē?
+
+c = Converter(output_tokens=True)
+c.get("太空朋友，恁好！恁食飽未？")
+>> ['Thài-khong', 'pîng-iú', ',', 'lín-hó', '!', 'Lín', 'tsia̍h-pá', 'buē', '?']
 
 
 # Tokeniser
