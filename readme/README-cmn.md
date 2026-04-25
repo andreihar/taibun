@@ -104,7 +104,7 @@ $ pip install taibun
 
 ```python
 # 建構子
-c = Converter(system, dialect, format, delimiter, sandhi, punctuation, convert_non_cjk)
+c = Converter(system, dialect, format, delimiter, apostrophe, sandhi, punctuation, convert_non_cjk, output_tokens)
 
 # 音譯中文字
 c.get(input)

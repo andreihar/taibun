@@ -106,7 +106,7 @@ $ pip install taibun
 
 ```python
 # Constructor
-c = Converter(system, dialect, format, delimiter, sandhi, punctuation, convert_non_cjk)
+c = Converter(system, dialect, format, delimiter, apostrophe, sandhi, punctuation, convert_non_cjk, output_tokens)
 
 # Transliterate Chinese characters
 c.get(input)
