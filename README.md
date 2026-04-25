@@ -58,6 +58,7 @@ Includes word tokeniser for Taiwanese Hokkien.
             <li><a href="#sandhi">Sandhi</a></li>
             <li><a href="#punctuation">Punctuation</a></li>
             <li><a href="#convert-non-cjk">Convert non-CJK</a></li>
+            <li><a href="#output-tokens">Output Tokens</a></li>
           </ul>
         </li>
         <li>
@@ -229,6 +230,17 @@ Sandhi rules also change depending on the dialect chosen.
 | --------- | ----------------------- | ----------------------- |
 | 我食pháng | ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ pháng | ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ ㄆㄤˋ |
 
+#### Output Tokens
+
+`output_tokens` Boolean - controls whether the output is returned as a list of tokenised elements instead of a single formatted string.
+
+* `True` - returns a list of tokens after conversion
+* `False` (default) - returns a fully formatted sentence as a string
+
+| text         | False           | True                              |
+| ------------ | --------------- | --------------------------------- |
+| 朋友，你好！ | Pîng-iú, lí hó! | ['Pîng-iú', ',', 'lí', 'hó', '!'] |
+
 ### Tokeniser
 
 `Tokeniser` class performs [NLTK wordpunct_tokenize][nltk-tokenize]-like tokenisation of a Taiwanese Hokkien sentence.
@@ -297,8 +309,8 @@ c = Converter(dialect='north')
 c.get("我欲用箸食魚")
 >> Guá bueh īng tū tsia̍h hû
 
-c = Converter(dialect='singapore');
-c.get("我欲用箸食魚");
+c = Converter(dialect='singapore')
+c.get("我欲用箸食魚")
 >> Uá bueh ēng tū tsia̍h hû
 
 ## Format
@@ -366,6 +378,15 @@ c.get("我食pháng")
 c = Converter(system='Zhuyin', convert_non_cjk=True)
 c.get("我食pháng")
 >> ㆣㄨㄚˋ ㄐㄧㄚㆷ˙ ㄆㄤˋ
+
+## Output Tokens
+c = Converter() # False output_tokens default
+c.get("太空朋友，恁好！恁食飽未？")
+>> Thài-khong pîng-iú, lín-hó! Lín tsia̍h-pá buē?
+
+c = Converter(output_tokens=True)
+c.get("太空朋友，恁好！恁食飽未？")
+>> ['Thài-khong', 'pîng-iú', ',', 'lín-hó', '!', 'Lín', 'tsia̍h-pá', 'buē', '?']
 
 
 # Tokeniser
